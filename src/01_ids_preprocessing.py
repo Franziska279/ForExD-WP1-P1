@@ -1,0 +1,81 @@
+"""
+USDA Disturbance Data Processing Script
+=======================================
+
+Author: Franziska Müller
+Date: 24.05.2024
+
+This script performs data processing tasks on IDS USDA disturbance data for Region 8.
+It follows a series of steps to filter, manipulate, and save the data for further analysis.
+
+Steps:
+1. Loading CSV File: Load USDA disturbance data from a CSV file.
+2. Converting WKT Geometries: Convert WKT geometries to Shapely geometries.
+3. Converting to GeoDataFrame: Convert DataFrame to GeoDataFrame for spatial operations.
+4. Filtering Data: Filter disturbance records based on criteria such as timeframe and disturbance type.
+5. Renaming Columns: Rename columns for clarity and consistency.
+6. Exploding Multipolygons: Explode multipolygons into individual polygons for analysis.
+7. Saving Results: Save processed data to a CSV file.
+
+Results are saved in the specified directory with a confirmation message printed upon completion.
+"""
+
+# Import necessary libraries
+import pandas as pd
+import geopandas as gpd
+from shapely import wkt
+import os
+
+
+
+def main():
+    # Step 1: Read the CSV file into a DataFrame
+    print("Step 1: Loading CSV file...")
+    input_file = "/Net/Groups/BGI/work_2/ForExD/USDA/tables/CONUS_Region8_dissolved.csv"
+    df = pd.read_csv(input_file)
+
+    # Step 2: Convert the WKT geometries to Shapely geometries
+    print("Step 2: Converting WKT geometries...")
+    df['geometry'] = df['geometry'].apply(wkt.loads)
+
+    # Step 3: Convert the DataFrame to a GeoDataFrame
+    print("Step 3: Converting DataFrame to GeoDataFrame...")
+    gdf = gpd.GeoDataFrame(df, geometry='geometry')
+
+    # Set the coordinate reference system (CRS) if it's not already set
+    gdf.set_crs(epsg=4326, inplace=True)
+
+    # Step 4: Filter for disturbances recorded between 2016 and 2020
+    print("Step 4: Filtering disturbances recorded between 2016 and 2020...")
+    gdf_timeframe = gdf[(gdf['SURVEY_YEAR'] > 2016) & (gdf['SURVEY_YEAR'] <= 2020)]
+
+    # Filter out specific disturbance types
+    excluded_types = ['other', 'multi_damage', 'other_abiotic', 'other_biotic']
+    rslt_df = gdf_timeframe[~gdf_timeframe['DCA_ID'].isin(excluded_types)].copy()
+
+    # Step 5: Rename the column 'Unnamed: 0' to 'index_usda'
+    print("Step 5: Rename columns for clarity and consistency")
+    rslt_df.rename(columns={'Unnamed: 0': 'index_usda'}, inplace=True)
+
+    # Step 6: Explode multipolygons into individual polygons
+    print("Step 6: Exploding multipolygons into individual polygons...")
+    exploded_df = rslt_df.explode(index_parts=True)
+
+    # Reset the index to ensure a clean index
+    exploded_df.reset_index(drop=True, inplace=True)
+
+    # Define the absolute path to the "results" folder
+    results_folder = "/Net/Groups/BGI/scratch/fmueller/ForExD-WP1-P1/results"
+
+    # Define the output CSV file path
+    output_file = os.path.join(results_folder, "region8_dca_filtered_ids_usda_polygons.csv")
+
+    # Step 7: Save the exploded DataFrame to a CSV file in the results folder
+    print(f"Step 7: Saving results to: {output_file}...")
+    exploded_df.to_csv(output_file, index=False)
+
+    # Display the path of the saved CSV file
+    print(f"Results saved to: {output_file}")
+
+if __name__ == "__main__":
+    main()
