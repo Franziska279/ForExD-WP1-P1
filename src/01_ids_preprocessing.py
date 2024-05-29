@@ -64,14 +64,18 @@ def main():
     # Reset the index to ensure a clean index
     exploded_df.reset_index(drop=True, inplace=True)
 
+    # Step 7: Generate new index_usda values
+    print("Step 7: Generating new index_usda values...")
+    exploded_df['index_usda'] = exploded_df.apply(lambda row: f"{row['DCA_ID']}_{row['SURVEY_YEAR']}_{row.name}", axis=1)
+
     # Define the absolute path to the "results" folder
     results_folder = "/Net/Groups/BGI/scratch/fmueller/ForExD-WP1-P1/results"
 
     # Define the output CSV file path
     output_file = os.path.join(results_folder, "region8_dca_filtered_ids_usda_polygons.csv")
 
-    # Step 7: Save the exploded DataFrame to a CSV file in the results folder
-    print(f"Step 7: Saving results to: {output_file}...")
+    # Step 8: Save the exploded DataFrame to a CSV file in the results folder
+    print(f"Step 8: Saving results to: {output_file}...")
     exploded_df.to_csv(output_file, index=False)
 
     # Display the path of the saved CSV file
