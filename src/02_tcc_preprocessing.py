@@ -62,20 +62,20 @@ def main():
     minx, miny, maxx, maxy = -100, 25, -75, 40
 
     # Define file paths
-    output_dir = "/Net/Groups/BGI/work_2/ForExD/WP1/Data/NLCD_TCC_version_2021.4/nlcd_tcc_conus_2017_v2021-4/"
+    output_dir = "/Net/Groups/BGI/work_2/ForExD/WP1/Data/nlcd_tcc_CONUS_2017_v2021-4/"
 
-    input_raster_file = output_dir + "nlcd_tcc_conus_2017_v2021_4.tif"
+    input_raster_file = output_dir + "nlcd_tcc_conus_2017_v2021-4.tif"
     output_file_resampled = output_dir + "wp1_nlcd_tcc_conus_2017_v2021_4_20m.tif"
     output_file_epsg4326 = output_dir + "wp1_nlcd_tcc_conus_2017_v2021_4_20m_4326.tif"
     output_file_cropped = output_dir + "wp1_nlcd_tcc_conus_2017_v2021_4_20m_4326_cropped_region_08.tif"
 
-    # # Step 1: Change the resolution to 20x20 meters
-    # print("Step 1: Changing the resolution to 20x20 meters...")
-    # change_resolution(input_raster_file, output_file_resampled, (20, 20))
+    # Step 1: Change the resolution to 20x20 meters
+    print("Step 1: Changing the resolution to 20x20 meters...")
+    change_resolution(input_raster_file, output_file_resampled, (20, 20))
 
-    # # Step 2: Reproject the file to EPSG:4326
-    # print("Step 2: Reprojecting the file to EPSG:4326...")
-    # reproject_to_epsg4326(output_file_resampled, output_file_epsg4326)
+    # Step 2: Reproject the file to EPSG:4326
+    print("Step 2: Reprojecting the file to EPSG:4326...")
+    reproject_to_epsg4326(output_file_resampled, output_file_epsg4326)
     
     # Step 3: Crop the file based on the shapefile
     print("Step 3: Cropping the file based on the shapefile...")
