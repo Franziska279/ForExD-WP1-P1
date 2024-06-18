@@ -1,113 +1,105 @@
-import xarray as xr
-import numpy as np
 import os
 import sys
-import pystac_client
-import planetary_computer as pc
-import stackstac
-import earthnet_minicuber as emc
-import rasterio
-import logging  
+import calendar
+import logging
+import concurrent.futures
 import geopandas as gpd
-import mypythonlib
+import xarray as xr
+from retry import retry
+import earthnet_minicuber as emc
 from mypythonlib import myfunctions, phenolopy
 
 # Hide warnings (many since some xarray class uses some deprecated python function on 3.9)
 import warnings
 warnings.filterwarnings('ignore')
 
+# Define retry decorator with maximum attempts and wait between retries
+@retry(Exception, tries=5, delay=5, backoff=2)
+def download_minicube(lon, lat, year, month, output_folder, idx):
+    filename = os.path.join(output_folder, f"{idx}_{year}_{month:02d}.nc")
+    if os.path.exists(filename):
+        print(f"Minicube for {year}-{month:02d} already exists. Skipping...")
+        return
+
+    print(f"Loading Minicube for {year}-{month:02d}")
+    last_day = calendar.monthrange(year, month)[1]
+    
+    specs = {
+        "lon_lat": (lon, lat),
+        "xy_shape": (1024, 1024),
+        "resolution": 20,
+        "time_interval": f"{year}-{month:02d}-01/{year}-{month:02d}-{last_day:02d}",
+        "providers": [
+            {
+                "name": "s2",
+                "kwargs": {
+                    "bands": ["B01", "B02", "B03", "B04", "B05", "B06", "B07", "B08", "B8A", "B09", "B10", "B11", "B12"], 
+                    "best_orbit_filter": True, "five_daily_filter": True, "brdf_correction": True, 
+                    "cloud_mask": True, "cloud_mask_rescale_factor": 2, "aws_bucket": "planetary_computer"
+                }
+            }
+        ]
+    }
+
+    mc = emc.load_minicube(specs, compute=True)
+    
+    # Save minicube to a NetCDF file
+    print(f"Saving minicube for {year}-{month:02d} to {filename}")
+    comp = dict(zlib=True, complevel=9)
+    encoding = {var: comp for var in mc.data_vars}
+    mc.to_netcdf(filename, encoding=encoding)
+
 def generate_output_folder(idx, dir):
-
-    # Define the folder to save the NetCDF files
-    output_folder = f"/{dir}/{idx}"
-    # Ensure the output folder exists
+    output_folder = os.path.join(dir, str(idx))
     os.makedirs(output_folder, exist_ok=True)
-
     return output_folder
 
-
-
 def minicuber_download(idx, intersecting_grid_gdf_events_unique, output_folder):
-
     first_polygon = intersecting_grid_gdf_events_unique.geometry.iloc[idx]
-
-
     lon = first_polygon.centroid.x
     lat = first_polygon.centroid.y
     start_year = 2015
     last_year = 2023
 
-    import os
+    # Number of concurrent workers should match the cpus-per-task value in the SLURM script
+    with concurrent.futures.ProcessPoolExecutor(max_workers=2) as executor:  # Adjust max_workers as needed
+        futures = []
+        for year in range(start_year, last_year + 1):
+            for month in range(1, 13):
+                futures.append(
+                    executor.submit(download_minicube, lon, lat, year, month, output_folder, idx)
+                )
 
-    # Iterate over all years from prev_year to next_year
-    for year in range(start_year, last_year + 1):
-        try:
-            # Check if the NetCDF file for the current year already exists
-            filename = os.path.join(output_folder, f"{idx}_{year}.nc")
-            if os.path.exists(filename):
-                print(f"Minicube for year {year} already exists. Skipping...")
-                continue
-
-            print(f"Loading Minicube for year {year}")
-            specs = {
-                "lon_lat": (lon, lat), # center pixel
-                "xy_shape": (1292, 1292), # width, height of cutout around center pixel
-                "resolution": 20, # in meters.. will use this on a local UTM grid..
-                "time_interval": f"{year}-01-01/{year}-12-31",
-                "providers": [
-                    {
-                        "name": "s2",
-                        "kwargs": {"bands": ["B01","B02", "B03", "B04", "B05", "B06", "B07", "B08", "B8A", "B09", "B10", "B11", "B12"], "best_orbit_filter": True, "five_daily_filter": True, "brdf_correction": True, "cloud_mask": True, "cloud_mask_rescale_factor": 2, "aws_bucket": "planetary_computer"}
-                    }
-                    ]
-            }
-
-            mc = emc.load_minicube(specs, compute=True)
-            
-            # Save minicube to a NetCDF file
-            filename = os.path.join(output_folder, f"{idx}_{year}.nc")
-            print(f"Saving minicube for year {year} to {filename}")
-            comp = dict(zlib=True, complevel=9)
-            encoding = {var: comp for var in mc.data_vars}
-            print(encoding)
-
-            mc.to_netcdf(filename, encoding=encoding)
-        
-        except Exception as e:
-            logging.debug(f"The file {idx} for year {year} did not have an id. Error: {e}")
+        for future in concurrent.futures.as_completed(futures):
+            try:
+                future.result()
+            except Exception as e:
+                logging.debug(f"Failed to download a minicube. Error: {e}")
 
     print("End download")
 
-
-
 def merge_minicubes(idx, output_folder):
-    # Expected years range
     expected_years = range(2015, 2024)
+    expected_files = [f"{idx}_{year}_{month:02d}.nc" for year in expected_years for month in range(1, 13)]
 
-    # List of expected file names
-    expected_files = [f"{idx}_{year}.nc" for year in expected_years]
-
-    # Get all NetCDF files in the output folder
     nc_files = [file for file in os.listdir(output_folder) if file.endswith('.nc')]
 
-    # Check if all expected files are present
     missing_files = [file for file in expected_files if file not in nc_files]
     if missing_files:
         print(f"Missing files: {missing_files}")
-        print(f"Breaking of the merging .... ")
-        
-    else:
-        # All files are present, proceed with merging
-        merged_filename = os.path.join(output_folder, f"{idx}_merged.nc")
+        print("Breaking off the merging.")
+        return
+    
+    merged_filename = os.path.join(output_folder, f"{idx}_merged.nc")
+    print(f"Merging all NetCDF files into {merged_filename}")
 
-        print(f"Merging all NetCDF files into {merged_filename}")
+    files_to_merge = [os.path.join(output_folder, file) for file in nc_files]
+    merged_ds = xr.open_mfdataset(files_to_merge, combine='nested', concat_dim='time')
+    merged_ds.to_netcdf(merged_filename)
+    print("End merging")
+    print("\nStart preprocessing:")
+    preprocess_and_reduce_minicube(merged_ds, idx, output_folder)
 
-        # Open and merge all NetCDF files along the time axis
-        merged_ds = xr.open_mfdataset([os.path.join(output_folder, file) for file in nc_files], combine='nested', concat_dim='time')
-        merged_ds.to_netcdf(merged_filename)
-        print("End merging")
-        print("\n Start preprocessing:")
-        preprocess_and_reduce_minicube(merged_ds, idx, output_folder)
 
 def preprocess_and_reduce_minicube(ds, idx, output_folder):
 
@@ -209,6 +201,7 @@ def main():
     merge_minicubes(index, output_folder)
 
     print('\nDone')
+
 
 if __name__ == "__main__":
 
