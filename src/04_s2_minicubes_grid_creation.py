@@ -72,7 +72,7 @@ def create_convex_hulls(refdm_path, ids_path, grid_gdf):
     """
 
     # Step 1: Load the REFDM shapefile and USDA polygons CSV file
-    print("Step 5.1: Load the REFDM shapefile and USDA polygons CSV file")
+    print("Step 4.1: Load the REFDM shapefile and USDA polygons CSV file")
     refdm_gdf = gpd.read_file(refdm_path)
     ids_usda = pd.read_csv(ids_path)
     ids_usda['geometry'] = ids_usda['geometry'].apply(wkt.loads)
@@ -92,18 +92,18 @@ def create_convex_hulls(refdm_path, ids_path, grid_gdf):
         ids_gdf = ids_gdf.to_crs(refdm_gdf.crs)
 
     # Step 2: Dissolve REFDM polygons by 'USDA_IDX'
-    print("Step 5.2: Dissolving the REFDM polygons by 'USDA_IDX'")
+    print("Step 4.2: Dissolving the REFDM polygons by 'USDA_IDX'")
     dissolved_refdm = refdm_gdf.dissolve(by='USDA_IDX').reset_index()
 
     # Step 3: Spatial join to intersect dissolved REFDM with USDA polygons
-    print("Step 5.3: Intersecting USDA polygons with dissolved REFDM")
+    print("Step 4.3: Intersecting USDA polygons with dissolved REFDM")
     merged_gdf = gpd.sjoin(dissolved_refdm, ids_gdf, how='left', predicate='intersects')
 
     # Keep only 'geometry' and 'USDA_IDX' columns
     merged_gdf = merged_gdf[['geometry', 'USDA_IDX']]
 
     # Step 4: Create convex hulls from the dissolved geometries
-    print("Step 5.4: Creating convex hulls from dissolved geometries")
+    print("Step 4.4: Creating convex hulls from dissolved geometries")
     dissolved_merged_gdf = merged_gdf.dissolve(by='USDA_IDX')
     
     convex_hulls = []
@@ -118,7 +118,7 @@ def create_convex_hulls(refdm_path, ids_path, grid_gdf):
         grid_gdf = grid_gdf.to_crs(convex_hulls_gdf.crs)
 
     # Step 5: Find grid cells intersecting with convex hulls
-    print("Step 5.5: Finding grid cells intersecting with convex hulls")
+    print("Step 4.5: Finding grid cells intersecting with convex hulls")
     intersected_gdf = gpd.sjoin(grid_gdf, convex_hulls_gdf, how='inner', predicate='intersects')
     intersected_gdf = intersected_gdf.drop(columns=['index_right','index']).drop_duplicates().reset_index(drop=True)
 
@@ -175,26 +175,21 @@ def main():
     cell_size = 0.043
     grid_gdf = create_grid(bounds, cell_size)
 
-    # Step 4: Save the grid as a shapefile
-    output_path = "/Net/Groups/BGI/scratch/fmueller/ForExD-WP1-P1/results/grid.shp"
-    print(f"Step 4: Saving the grid to {output_path}")
-    grid_gdf.to_file(output_path)
-
-    # Step 5: Create convex hulls and find the intersecting grid cells
-    print("Step 5: Creating convex hulls and identifying intersecting grid cells")
+    # Step 4: Create convex hulls and find the intersecting grid cells
+    print("Step 4: Creating convex hulls and identifying intersecting grid cells")
     intersected, convex_hulls = create_convex_hulls(refdm_path, ids_path, grid_gdf)
 
-    # Step 6: Plot the grids
-    print("Step 6: Plotting the grids")
+    # Step 5: Plot the grids
+    print("Step 5: Plotting the grids")
     plot_combined(intersected, convex_hulls)
 
     # Save the intersected grid cells
     intersected_output_path = "/Net/Groups/BGI/scratch/fmueller/ForExD-WP1-P1/results/intersected_grid.shp"
     intersected.to_file(intersected_output_path)
-    print(f"Step 7: Saved intersected grids to {intersected_output_path}")
+    print(f"Step 6: Saved intersected grids to {intersected_output_path}")
     
     # Final output
-    print(f"Step 8: Completed the process. Total number of grids created: {len(grid_gdf)}")
+    print(f"Step 7: Completed the process. Total number of grids created: {len(grid_gdf)}")
 
 if __name__ == "__main__":
     main()
