@@ -1,10 +1,10 @@
 #!/bin/bash
-#SBATCH --array=7-7%20
+#SBATCH --array=8-8%20
 #SBATCH --partition=work
 #SBATCH --nodes=2               # Increase the number of nodes to 2
-#SBATCH --ntasks=4              # Increase the number of tasks to 4
+#SBATCH --ntasks=2             # Increase the number of tasks to 4
 #SBATCH --cpus-per-task=2       # Number of CPUs per task
-#SBATCH --mem-per-cpu=64G       # Memory per CPU
+#SBATCH --mem-per-cpu=120G       # Memory per CPU
 #SBATCH --job-name=mini_downloading
 #SBATCH --time=3-00:00:00
 #SBATCH --mail-type=END
