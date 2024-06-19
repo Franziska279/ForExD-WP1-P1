@@ -8,97 +8,100 @@ import xarray as xr
 from retry import retry
 import earthnet_minicuber as emc
 from mypythonlib import myfunctions, phenolopy
+import os
+import xarray as xr
+from tqdm import tqdm
 
-# Hide warnings (many since some xarray class uses some deprecated python function on 3.9)
-import warnings
-warnings.filterwarnings('ignore')
+# # Hide warnings (many since some xarray class uses some deprecated python function on 3.9)
+# import warnings
+# warnings.filterwarnings('ignore')
 
-# Define retry decorator with maximum attempts and wait between retries
-@retry(Exception, tries=5, delay=5, backoff=2)
-def download_minicube(lon, lat, year, month, output_folder, idx):
-    filename = os.path.join(output_folder, f"{idx}_{year}_{month:02d}.nc")
-    if os.path.exists(filename):
-        print(f"Minicube for {year}-{month:02d} already exists. Skipping...")
-        return
+# # Define retry decorator with maximum attempts and wait between retries
+# @retry(Exception, tries=5, delay=5, backoff=2)
+# def download_minicube(lon, lat, year, month, output_folder, idx):
+#     filename = os.path.join(output_folder, f"{idx}_{year}_{month:02d}.nc")
+#     if os.path.exists(filename):
+#         print(f"Minicube for {year}-{month:02d} already exists. Skipping...")
+#         return
 
-    print(f"Loading Minicube for {year}-{month:02d}")
-    last_day = calendar.monthrange(year, month)[1]
+#     print(f"Loading Minicube for {year}-{month:02d}")
+#     last_day = calendar.monthrange(year, month)[1]
     
-    specs = {
-        "lon_lat": (lon, lat),
-        "xy_shape": (1024, 1024),
-        "resolution": 20,
-        "time_interval": f"{year}-{month:02d}-01/{year}-{month:02d}-{last_day:02d}",
-        "providers": [
-            {
-                "name": "s2",
-                "kwargs": {
-                    "bands": ["B01", "B02", "B03", "B04", "B05", "B06", "B07", "B08", "B8A", "B09", "B10", "B11", "B12"], 
-                    "best_orbit_filter": True, "five_daily_filter": True, "brdf_correction": True, 
-                    "cloud_mask": True, "cloud_mask_rescale_factor": 2, "aws_bucket": "planetary_computer"
-                }
-            }
-        ]
-    }
+#     specs = {
+#         "lon_lat": (lon, lat),
+#         "xy_shape": (1024, 1024),
+#         "resolution": 20,
+#         "time_interval": f"{year}-{month:02d}-01/{year}-{month:02d}-{last_day:02d}",
+#         "providers": [
+#             {
+#                 "name": "s2",
+#                 "kwargs": {
+#                     "bands": ["B01", "B02", "B03", "B04", "B05", "B06", "B07", "B08", "B8A", "B09", "B10", "B11", "B12"], 
+#                     "best_orbit_filter": True, "five_daily_filter": True, "brdf_correction": True, 
+#                     "cloud_mask": True, "cloud_mask_rescale_factor": 2, "aws_bucket": "planetary_computer"
+#                 }
+#             }
+#         ]
+#     }
 
-    mc = emc.load_minicube(specs, compute=True)
+#     mc = emc.load_minicube(specs, compute=True)
     
-    # Save minicube to a NetCDF file
-    print(f"Saving minicube for {year}-{month:02d} to {filename}")
-    comp = dict(zlib=True, complevel=9)
-    encoding = {var: comp for var in mc.data_vars}
-    mc.to_netcdf(filename, encoding=encoding)
+#     # Save minicube to a NetCDF file
+#     print(f"Saving minicube for {year}-{month:02d} to {filename}")
+#     comp = dict(zlib=True, complevel=9)
+#     encoding = {var: comp for var in mc.data_vars}
+#     mc.to_netcdf(filename, encoding=encoding)
 
-def generate_output_folder(idx, dir):
-    output_folder = os.path.join(dir, str(idx))
-    os.makedirs(output_folder, exist_ok=True)
-    return output_folder
+# def generate_output_folder(idx, dir):
+#     output_folder = os.path.join(dir, str(idx))
+#     os.makedirs(output_folder, exist_ok=True)
+#     return output_folder
 
-def minicuber_download(idx, intersecting_grid_gdf_events_unique, output_folder):
-    first_polygon = intersecting_grid_gdf_events_unique.geometry.iloc[idx]
-    lon = first_polygon.centroid.x
-    lat = first_polygon.centroid.y
-    start_year = 2015
-    last_year = 2023
+# def minicuber_download(idx, intersecting_grid_gdf_events_unique, output_folder):
+#     first_polygon = intersecting_grid_gdf_events_unique.geometry.iloc[idx]
+#     lon = first_polygon.centroid.x
+#     lat = first_polygon.centroid.y
+#     start_year = 2015
+#     last_year = 2023
 
-    # Number of concurrent workers should match the cpus-per-task value in the SLURM script
-    with concurrent.futures.ProcessPoolExecutor(max_workers=2) as executor:  # Adjust max_workers as needed
-        futures = []
-        for year in range(start_year, last_year + 1):
-            for month in range(1, 13):
-                futures.append(
-                    executor.submit(download_minicube, lon, lat, year, month, output_folder, idx)
-                )
+#     # Number of concurrent workers should match the cpus-per-task value in the SLURM script
+#     with concurrent.futures.ProcessPoolExecutor(max_workers=2) as executor:  # Adjust max_workers as needed
+#         futures = []
+#         for year in range(start_year, last_year + 1):
+#             for month in range(1, 13):
+#                 futures.append(
+#                     executor.submit(download_minicube, lon, lat, year, month, output_folder, idx)
+#                 )
 
-        for future in concurrent.futures.as_completed(futures):
-            try:
-                future.result()
-            except Exception as e:
-                logging.debug(f"Failed to download a minicube. Error: {e}")
+#         for future in concurrent.futures.as_completed(futures):
+#             try:
+#                 future.result()
+#             except Exception as e:
+#                 logging.debug(f"Failed to download a minicube. Error: {e}")
 
-    print("End download")
+#     print("End download")
 
-def merge_minicubes(idx, output_folder):
-    expected_years = range(2015, 2024)
-    expected_files = [f"{idx}_{year}_{month:02d}.nc" for year in expected_years for month in range(1, 13)]
+# def merge_minicubes(idx, output_folder):
+#     expected_years = range(2015, 2024)
+#     expected_files = [f"{idx}_{year}_{month:02d}.nc" for year in expected_years for month in range(1, 13)]
 
-    nc_files = [file for file in os.listdir(output_folder) if file.endswith('.nc')]
+#     nc_files = [file for file in os.listdir(output_folder) if file.endswith('.nc')]
 
-    missing_files = [file for file in expected_files if file not in nc_files]
-    if missing_files:
-        print(f"Missing files: {missing_files}")
-        print("Breaking off the merging.")
-        return
+#     missing_files = [file for file in expected_files if file not in nc_files]
+#     if missing_files:
+#         print(f"Missing files: {missing_files}")
+#         print("Breaking off the merging.")
+#         return
     
-    merged_filename = os.path.join(output_folder, f"{idx}_merged.nc")
-    print(f"Merging all NetCDF files into {merged_filename}")
+#     merged_filename = os.path.join(output_folder, f"{idx}_merged.nc")
+#     print(f"Merging all NetCDF files into {merged_filename}")
 
-    files_to_merge = [os.path.join(output_folder, file) for file in nc_files]
-    merged_ds = xr.open_mfdataset(files_to_merge, combine='nested', concat_dim='time')
-    merged_ds.to_netcdf(merged_filename)
-    print("End merging")
-    print("\nStart preprocessing:")
-    preprocess_and_reduce_minicube(merged_ds, idx, output_folder)
+#     files_to_merge = [os.path.join(output_folder, file) for file in nc_files]
+#     merged_ds = xr.open_mfdataset(files_to_merge, combine='nested', concat_dim='time')
+#     merged_ds.to_netcdf(merged_filename)
+#     print("End merging")
+#     print("\nStart preprocessing:")
+#     preprocess_and_reduce_minicube(merged_ds, idx, output_folder)
 
 
 def preprocess_and_reduce_minicube(ds, idx, output_folder):
@@ -179,32 +182,183 @@ def preprocess_and_reduce_minicube(ds, idx, output_folder):
     print(f"Saved to path = {outputpath}")
 
     
+# def main():
+#     # Check if correct number of arguments are provided
+#     if len(sys.argv) != 4:
+#         print("Usage: python minicube_download_preprocessing_pipeline.py SLURM_ARRAY_TASK_ID INPUT_FILE OUTPUT_DIR")
+#         sys.exit(1)
+
+#     # Parse command line arguments
+#     slurm_array_task_id = sys.argv[1]
+#     input_file = sys.argv[2]
+#     output_dir = sys.argv[3]
+
+#     print(f"Running Task ID {slurm_array_task_id}")
+
+#     index = int(slurm_array_task_id)
+#     gdf_grid = gpd.read_file(input_file)
+
+#     output_folder = generate_output_folder(index, output_dir)
+#     # Run the function
+#     minicuber_download(index, gdf_grid, output_folder)
+#     merge_minicubes(index, output_folder)
+
+#     print('\nDone')
+
+
+# if __name__ == "__main__":
+
+#     main()
+
+
+import xarray as xr
+import numpy as np
+import os
+import sys
+import logging  
+import geopandas as gpd
+import concurrent.futures
+import calendar
+from retry import retry
+
+# Configure logging
+logging.basicConfig(filename='minicube_downloader.log', level=logging.DEBUG, 
+                    format='%(asctime)s %(levelname)s:%(message)s')
+
+def generate_output_folder(idx, dir):
+    output_folder = f"/{dir}/{idx}"
+    os.makedirs(output_folder, exist_ok=True)
+    return output_folder
+
+# Define retry decorator with maximum attempts and wait between retries
+@retry(Exception, tries=5, delay=5, backoff=2)
+def download_minicube(lon, lat, year, month, output_folder, idx):
+    filename = os.path.join(output_folder, f"{idx}_{year}_{month:02d}.nc")
+    if os.path.exists(filename):
+        logging.info(f"Minicube for {year}-{month:02d} already exists. Skipping...")
+        return
+
+    logging.info(f"Loading Minicube for {year}-{month:02d}")
+    last_day = calendar.monthrange(year, month)[1]
+    
+    specs = {
+        "lon_lat": (lon, lat),
+        "xy_shape": (1024, 1024),
+        "resolution": 20,
+        "time_interval": f"{year}-{month:02d}-01/{year}-{month:02d}-{last_day:02d}",
+        "providers": [
+            {
+                "name": "s2",
+                "kwargs": {"bands": ["B01", "B02", "B03", "B04", "B05", "B06", "B07", "B08", "B8A", "B09", "B10", "B11", "B12"], 
+                           "best_orbit_filter": True, "five_daily_filter": True, "brdf_correction": True, 
+                           "cloud_mask": True, "cloud_mask_rescale_factor": 2, "aws_bucket": "planetary_computer"}
+            }
+        ]
+    }
+
+    mc = emc.load_minicube(specs, compute=True)
+    
+    logging.info(f"Saving minicube for {year}-{month:02d} to {filename}")
+    comp = dict(zlib=True, complevel=9)
+    encoding = {var: comp for var in mc.data_vars}
+    mc.to_netcdf(filename, encoding=encoding)
+
+def minicuber_download(idx, intersecting_grid_gdf_events_unique, output_folder):
+    first_polygon = intersecting_grid_gdf_events_unique.geometry.iloc[idx]
+    lon = first_polygon.centroid.x
+    lat = first_polygon.centroid.y
+    start_year = 2015
+    last_year = 2023
+
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        futures = []
+        for year in range(start_year, last_year + 1):
+            for month in range(1, 13):
+                futures.append(
+                    executor.submit(download_minicube, lon, lat, year, month, output_folder, idx)
+                )
+
+        for future in concurrent.futures.as_completed(futures):
+            try:
+                future.result()
+            except Exception as e:
+                logging.error(f"Failed to download a minicube. Error: {e}")
+
+    logging.info("End download")
+
+def merge_minicubes(idx, output_folder):
+    # Expected years range
+    expected_years = range(2015, 2024)
+    expected_files = [f"{idx}_{year}_{month:02d}.nc" for year in expected_years for month in range(1, 13)]
+    nc_files = [file for file in os.listdir(output_folder) if file.endswith('.nc')]
+
+    # Check if all expected files are present
+    missing_files = [file for file in expected_files if file not in nc_files]
+    if missing_files:
+        print(f"Missing files: {missing_files}")
+        print(f"Breaking off the merging ... ")
+    else:
+        valid_files = []
+        empty_files = []
+
+        for file in nc_files:
+            file_path = os.path.join(output_folder, file)
+            try:
+                ds = xr.open_dataset(file_path, chunks={})
+                if ds.dims:  # Check if the dataset has any dimensions
+                    valid_files.append(file)
+                else:
+                    empty_files.append(file)
+            except Exception as e:
+                print(f"Error opening file {file}: {e}")
+                empty_files.append(file)
+        
+        if empty_files:
+            print(f"Empty files: {empty_files}")
+            print(f"Removing empty files from the merging list.")
+
+        if valid_files:
+            merged_filename = os.path.join(output_folder, f"{idx}_merged.nc")
+            print(f"Merging valid NetCDF files into {merged_filename}")
+
+            # Specify coords='minimal' to handle differing coordinates
+            file_paths = [os.path.join(output_folder, file) for file in valid_files]
+            
+            # Use dask for parallel processing and lazy loading
+            datasets = [xr.open_dataset(fp, chunks={}) for fp in tqdm(file_paths, desc="Opening files")]
+            
+            # Perform lazy concatenation
+            merged_ds = xr.concat(datasets, dim='time', coords='minimal')
+
+            # Write the merged dataset to disk
+            merged_ds.to_netcdf(merged_filename, compute=True)
+            print("End merging")
+        else:
+            print("No valid files found for merging.")
+
+        print("\n Start preprocessing:")
+        preprocess_and_reduce_minicube(merged_ds, idx, output_folder)
+
+
 def main():
-    # Check if correct number of arguments are provided
     if len(sys.argv) != 4:
         print("Usage: python minicube_download_preprocessing_pipeline.py SLURM_ARRAY_TASK_ID INPUT_FILE OUTPUT_DIR")
         sys.exit(1)
 
-    # Parse command line arguments
     slurm_array_task_id = sys.argv[1]
     input_file = sys.argv[2]
     output_dir = sys.argv[3]
 
-    print(f"Running Task ID {slurm_array_task_id}")
+    logging.info(f"Running Task ID {slurm_array_task_id}")
 
     index = int(slurm_array_task_id)
     gdf_grid = gpd.read_file(input_file)
 
     output_folder = generate_output_folder(index, output_dir)
-    # Run the function
-    minicuber_download(index, gdf_grid, output_folder)
+    #minicuber_download(index, gdf_grid, output_folder)
     merge_minicubes(index, output_folder)
 
-    print('\nDone')
-
+    logging.info('Done')
 
 if __name__ == "__main__":
-
     main()
-
-
