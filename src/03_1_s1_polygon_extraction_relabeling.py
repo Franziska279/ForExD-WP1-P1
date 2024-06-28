@@ -1,3 +1,27 @@
+"""
+S1 Change Detection Data Processing Script
+==========================================
+
+Author: Franziska Müller
+Date: 28.06.2024
+
+This script processes S1 Change Detection data from NetCDF files, applies a Tree Canopy Cover (TCC) mask,
+extracts polygons from the data, and filters these polygons based on USDA survey data. The resulting polygons
+are saved to a shapefile.
+
+Steps:
+1. Preprocess the NetCDF dataset.
+2. Apply a TCC mask to the preprocessed dataset.
+3. Extract polygons from the masked dataset.
+4. Filter and aggregate the extracted polygons based on USDA survey data.
+5. Save the resulting polygons to a shapefile.
+
+The script accepts the following parameters as arguments:
+- input_path: Path to the input NetCDF file.
+- ids_usda_path: Path to the CSV file containing USDA polygons.
+
+"""
+
 import os
 import argparse
 import rioxarray
@@ -11,13 +35,9 @@ from affine import Affine
 from shapely.geometry import box, shape
 
 def extract_filename_part(filename):
-    # Split the filename by underscores
+    """Extracts a specific part of the filename up to the 10th underscore-separated part."""
     parts = filename.split('_')
-    
-    # Join the parts up to and including the year
-    # Assumes the year is always the 8th part of the filename
     extracted_part = '_'.join(parts[0:10])
-    
     return extracted_part
 
 def preprocess_dataset(input_file, filename):
@@ -85,45 +105,42 @@ def preprocess_dataset(input_file, filename):
 
 def apply_tcc_mask(dataset):
 
-    # Step 1: Defining the NetCDF file
-    print("Step 1: Defining the NetCDF file...")
-   
-    # Step 2: Define the path to the TIF file
-    print("Step 2: Defining the path to the TIF file...")
+    # Step 1: Define the path to the TIF file
+    print("Step 1: Defining the path to the TIF file...")
     TCC_path_2017 = "/Net/Groups/BGI/work_2/ForExD/WP1/Data/nlcd_tcc_CONUS_2017_v2021-4/wp1_nlcd_tcc_conus_2017_v2021_4_20m_4326_cropped_region_08.tif"
 
-    # Step 3: Open the entire TIF file
-    print("Step 3: Opening the entire TIF file...")
+    # Step 2: Open the entire TIF file
+    print("Step 2: Opening the entire TIF file...")
     tcc_2017 = rioxarray.open_rasterio(TCC_path_2017, decode_coords="all", masked=True)
 
-    # Step 4: Extract the spatial extent from the NetCDF file
-    print("Step 4: Extracting spatial extent from the NetCDF file...")
+    # Step 3: Extract the spatial extent from the NetCDF file
+    print("Step 3: Extracting spatial extent from the NetCDF file...")
     min_lon, max_lon = dataset['x'].min(), dataset['x'].max()
     min_lat, max_lat = dataset['y'].min(), dataset['y'].max()
 
-    # Step 5: Select the subset using xarray's indexing capabilities
-    print("Step 5: Selecting the subset using xarray's indexing capabilities...")
+    # Step 4: Select the subset using xarray's indexing capabilities
+    print("Step 4: Selecting the subset using xarray's indexing capabilities...")
     subset = tcc_2017.sel(x=slice(min_lon, max_lon), y=slice(max_lat, min_lat))
 
-    # Step 6: Calculate the minimum value of the subset
-    print("Step 6: Calculating the minimum value of the subset...")
+    # Step 5: Calculate the minimum value of the subset
+    print("Step 5: Calculating the minimum value of the subset...")
     min_value = subset.min() if not subset.isnull().all() else 0
 
-    # Step 7: Calculate the normalized subset
-    print("Step 7: Calculating the normalized subset...")
+    # Step 6: Calculate the normalized subset
+    print("Step 6: Calculating the normalized subset...")
     normalized_subset = (subset - min_value) / (subset.max() - min_value) if subset.max() != min_value else subset
 
-    # Step 8: Set values equal to 1 to 0
-    print("Step 8: Setting values equal to 1 to 0...")
+    # Step 7: Set values equal to 1 to 0
+    print("Step 7: Setting values equal to 1 to 0...")
     normalized_subset = normalized_subset.where(normalized_subset != 1, 0)
 
-    # Step 9: Reindex the normalized subset to match the coordinates of dataset_wgs84
-    print("Step 9: Reindexing the normalized subset...")
+    # Step 8: Reindex the normalized subset to match the coordinates of dataset_wgs84
+    print("Step 8: Reindexing the normalized subset...")
     normalized_subset = normalized_subset.reindex(x=dataset.coords['x'], method='nearest')
     normalized_subset = normalized_subset.reindex(y=dataset.coords['y'], method='nearest')
 
-    # Step 10: Apply masking based on the normalized subset
-    print("Step 10: Applying masking based on the normalized subset...")
+    # Step 9: Apply masking based on the normalized subset
+    print("Step 9: Applying masking based on the normalized subset...")
     masked_mc = dataset.where(normalized_subset > 0.3, 0).fillna(0)
 
     return masked_mc
@@ -262,15 +279,18 @@ def process_and_filter_polygons(ids_usda_path, polygons_gdf, s1_year, filename):
 
 def main(input_path, ids_usda_path):
     
-    # Define the paths
+    """
+    Main function to orchestrate the processing steps.
+
+    Parameters:
+    - input_path (str): Path to the input NetCDF file.
+    - ids_usda_path (str): Path to the CSV file containing USDA polygons.
+    """
     filename = os.path.basename(input_path)
-    print("Filename:", filename)
     s1_year = int(filename.split('_year_')[-1].split('_')[0])
-    print(s1_year)
 
-    # input_path = "/Net/Groups/BGI/work_2/ForExD/WP1/Data/s1_change_detection_northamerica/EQUI7_NA020M_E084N024T3_rqatrend_VH_A_thresh_3.0_year_2016_cluster_compressed.nc"
-    # ids_usda_path = "/Net/Groups/BGI/scratch/fmueller/ForExD-WP1-P1/results/region8_dca_filtered_ids_usda_polygons.csv"
-
+    print(f"Starting processing for file: {filename}")
+    
 
     print("Starting the preprocessing of the S1 Change detected raster file...")
     preprocessed_dataset = preprocess_dataset(input_path, filename)
@@ -292,3 +312,10 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     main(args.input_path, args.ids_usda_path)
+
+    # input_path = "/Net/Groups/BGI/work_2/ForExD/WP1/Data/s1_change_detection_northamerica/EQUI7_NA020M_E084N024T3_rqatrend_VH_A_thresh_3.0_year_2016_cluster_compressed.nc"
+    # ids_usda_path = "/Net/Groups/BGI/scratch/fmueller/ForExD-WP1-P1/results/region8_dca_filtered_ids_usda_polygons.csv"
+
+
+
+    # main(input_path, ids_usda_path)
