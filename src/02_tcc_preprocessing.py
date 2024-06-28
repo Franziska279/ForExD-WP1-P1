@@ -7,7 +7,7 @@ Date: 27.05.2024
 This script performs the following steps:
 1. Reproject the input raster file to EPSG:4326.
 2. Change the resolution of the reprojected file to 20x20 meters.
-3. Crop the resampled file based on the bounds region 8.
+3. Crop the resampled file based on the rough bounds of region 8.
 4. Delete intermediate files.
 
 Make sure to update the input file paths, output file paths, and shapefile path
@@ -56,10 +56,11 @@ def crop_to_shapefile(input_file, output_file, minx, miny, maxx, maxy):
     subprocess.run(command, shell=True)
     print("Cropping completed.")
 
+
 def main():
 
     # Define cropping bounds 
-    minx, miny, maxx, maxy = -100, 25, -75, 40
+    minx, miny, maxx, maxy = -110, 22, -75, 42
 
     # Define file paths
     output_dir = "/Net/Groups/BGI/work_2/ForExD/WP1/Data/nlcd_tcc_CONUS_2017_v2021-4/"
@@ -68,6 +69,7 @@ def main():
     output_file_resampled = output_dir + "wp1_nlcd_tcc_conus_2017_v2021_4_20m.tif"
     output_file_epsg4326 = output_dir + "wp1_nlcd_tcc_conus_2017_v2021_4_20m_4326.tif"
     output_file_cropped = output_dir + "wp1_nlcd_tcc_conus_2017_v2021_4_20m_4326_cropped_region_08.tif"
+
 
     # Step 1: Change the resolution to 20x20 meters
     print("Step 1: Changing the resolution to 20x20 meters...")
@@ -82,9 +84,9 @@ def main():
     crop_to_shapefile(output_file_epsg4326, output_file_cropped, minx, miny, maxx, maxy)
 
     # Step 4: Delete intermediate files
-    print("Step 4: Deleting intermediate files...")
-    #os.remove(output_file_epsg4326)
-    os.remove(output_file_resampled)
+    # print("Step 4: Save netcdf for plotting ...")
+    # os.remove(output_file_epsg4326)
+    # os.remove(output_file_resampled)
 
     print("Preprocessing completed")
 
