@@ -1,9 +1,45 @@
 <mxfile host="app.diagrams.net" agent="Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:128.0) Gecko/20100101 Firefox/128.0" version="24.7.6">
   <diagram name="Page-1" id="8Twm7m9lnIussuPsgHXW">
-    <mxGraphModel>
+    <mxGraphModel dx="1348" dy="795" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
+        <mxCell id="4WI7Zdf98EF5DAPGfGNB-1" value="01_ids_preprocessing.py" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="80" y="120" width="220" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="4WI7Zdf98EF5DAPGfGNB-2" value="02_tcc_preprocessing.py" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="420" y="120" width="220" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="4WI7Zdf98EF5DAPGfGNB-3" value="03_0_scheduler.py" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="80" y="240" width="220" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="4WI7Zdf98EF5DAPGfGNB-4" value="03_1_s1_polygon_extraction_relabeling.py" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="240" y="280" width="290" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="4WI7Zdf98EF5DAPGfGNB-5" value="03_2_merge_s1cd_files.py" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="240" y="320" width="290" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="4WI7Zdf98EF5DAPGfGNB-7" value="04_s2_minicubes_grid_creation.py" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="80" y="440" width="220" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="4WI7Zdf98EF5DAPGfGNB-8" value="05_s2_minicubes_downloading.sh" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="90" y="570" width="220" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="4WI7Zdf98EF5DAPGfGNB-9" value="05_1_s2_minicubes_preprocessing.sh" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="340" y="570" width="220" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="4WI7Zdf98EF5DAPGfGNB-10" value="06_analysis_radar_enhancement.py" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="90" y="660" width="250" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="4WI7Zdf98EF5DAPGfGNB-11" value="07_analysis.py" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="90" y="740" width="250" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="4WI7Zdf98EF5DAPGfGNB-12" value="07_extract_vis.py" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="370" y="740" width="250" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="4WI7Zdf98EF5DAPGfGNB-14" value="&lt;div style=&quot;color: #3b3b3b;background-color: #ffffff;font-family: &#39;Droid Sans Mono&#39;, &#39;monospace&#39;, monospace;font-weight: normal;font-size: 14px;line-height: 19px;white-space: pre;&quot;&gt;&lt;div&gt;&lt;ul&gt;&lt;li&gt;&lt;font color=&quot;#000000&quot;&gt;Creating a grid with a cell size of 0.043 degrees&lt;/font&gt;&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;ul&gt;&lt;li&gt;Create and save Convex Hulls&lt;br&gt;&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;align=left;" vertex="1" parent="1">
+          <mxGeometry x="321" y="400" width="480" height="120" as="geometry" />
+        </mxCell>
       </root>
     </mxGraphModel>
   </diagram>
