@@ -31,7 +31,7 @@ import logging
 MAX_JOBS = 20
 INPUT_PATHS = "/Net/Groups/BGI/work_2/ForExD/WP1/Data/s1_change_detection_northamerica/"
 IDS_USDA_PATH = "/Net/Groups/BGI/scratch/fmueller/ForExD-WP1-P1/results/region8_dca_filtered_ids_usda_polygons.csv"
-OUTPUT_FILENAME = "radar_enhanced_forest_disturbance_mapping.shp"
+OUTPUT_FILENAME = "radar_enhanced_forest_disturbance_mapping_pre_1_post_3_years.shp"
 SHAPEFILES_DIR = "/Net/Groups/BGI/scratch/fmueller/ForExD-WP1-P1/results/03_s1cd_polygons/"
 OUTPUT_DIR = "/Net/Groups/BGI/scratch/fmueller/ForExD-WP1-P1/results/"
 TARGET_CRS = "EPSG:4326"
