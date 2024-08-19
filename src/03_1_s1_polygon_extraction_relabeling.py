@@ -210,7 +210,7 @@ def process_nc_file(masked_mc, filename):
     return all_polygons_gdf
 
 
-def process_and_filter_polygons(ids_usda_path, polygons_gdf, s1_year, filename):
+def process_and_filter_polygons(ids_usda_path, polygons_gdf, s1_year, filter_years, filename):
     # Step 1: Load the ids_usda file
     print("Step 1: Loading the ids_usda file...")
     ids_usda = pd.read_csv(ids_usda_path)
@@ -227,7 +227,7 @@ def process_and_filter_polygons(ids_usda_path, polygons_gdf, s1_year, filename):
     
     # Step 3: Filter elements from ids_usda within a +-1 year buffer of s1_year
     print(f"Step 3: Filtering ids_usda for elements within a +-1 year buffer of {s1_year}...")
-    ids_usda_filtered = ids_usda_gdf[(ids_usda_gdf['SURVEY_YEAR'] >= s1_year - 1) & (ids_usda_gdf['SURVEY_YEAR'] <= s1_year + 1)]
+    ids_usda_filtered = ids_usda_gdf[(ids_usda_gdf['SURVEY_YEAR'] >= s1_year - 1) & (ids_usda_gdf['SURVEY_YEAR'] <= s1_year + filter_years)]
     print(f"Filtered down from {len(ids_usda_gdf)} to {len(ids_usda_filtered)} entries within the 2 year buffer.")
 
     # Step 4: Spatially join polygons_gdf and ids_usda_filtered
@@ -299,7 +299,7 @@ def main(input_path, ids_usda_path):
     print("Starting the polygon extraction process...")
     polygons_gdf = process_nc_file( masked_dataset, filename)
     print("Starting the filtering process...")
-    process_and_filter_polygons(ids_usda_path, polygons_gdf, s1_year, filename)
+    process_and_filter_polygons(ids_usda_path, polygons_gdf, s1_year, 3, filename)
     print("\nPreprocessing, masking, extracting polygons, filtering  and aggregating completed.")
 
 
