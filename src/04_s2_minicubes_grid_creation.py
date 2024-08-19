@@ -56,7 +56,7 @@ from shapely import wkt
 from shapely.geometry import MultiPolygon
 from tqdm import tqdm
 
-def create_convex_hulls(refdm_path, ids_path, grid_gdf):
+def create_convex_hulls(refdm_path, ids_path, grid_gdf, output_file_path):
     """
     Create convex hulls from the reference disturbance map (REFDM) and intersecting USDA polygons,
     then find the grid cells that intersect with these convex hulls.
@@ -106,12 +106,24 @@ def create_convex_hulls(refdm_path, ids_path, grid_gdf):
     print("Step 4.4: Creating convex hulls from dissolved geometries")
     dissolved_merged_gdf = merged_gdf.dissolve(by='USDA_IDX')
     
+
     convex_hulls = []
-    for geom in tqdm(dissolved_merged_gdf['geometry'], desc="Creating convex hulls", unit="hull"):
-        convex_hulls.append(MultiPolygon([geom.convex_hull]))
+    usda_idxs = []
+    for idx, row in tqdm(dissolved_merged_gdf.iterrows(), total=len(dissolved_merged_gdf), desc="Creating convex hulls", unit="hull"):
+        convex_hulls.append(MultiPolygon([row['geometry'].convex_hull]))
+        usda_idxs.append(idx)
 
-    convex_hulls_gdf = gpd.GeoDataFrame(geometry=convex_hulls, crs=refdm_gdf.crs).reset_index()
+    convex_hulls_gdf = gpd.GeoDataFrame({'geometry': convex_hulls, 'USDA_IDX': usda_idxs}, crs=refdm_gdf.crs).reset_index(drop=True)
+    convex_hulls_gdf.to_file(output_file_path)
 
+
+    # convex_hulls = []
+    # for geom in tqdm(dissolved_merged_gdf['geometry'], desc="Creating convex hulls", unit="hull"):
+    #     convex_hulls.append(MultiPolygon([geom.convex_hull]))
+
+    # convex_hulls_gdf = gpd.GeoDataFrame(geometry=convex_hulls, crs=refdm_gdf.crs).reset_index()
+    # convex_hulls_gdf.to_file(output_file_path)
+    
     # Ensure CRS match before spatial join
     if grid_gdf.crs != convex_hulls_gdf.crs:
         print("CRS mismatch detected between grid and convex hulls. Reprojecting grid to match convex hulls CRS.")
@@ -120,7 +132,7 @@ def create_convex_hulls(refdm_path, ids_path, grid_gdf):
     # Step 5: Find grid cells intersecting with convex hulls
     print("Step 4.5: Finding grid cells intersecting with convex hulls")
     intersected_gdf = gpd.sjoin(grid_gdf, convex_hulls_gdf, how='inner', predicate='intersects')
-    intersected_gdf = intersected_gdf.drop(columns=['index_right','index']).drop_duplicates().reset_index(drop=True)
+    intersected_gdf = intersected_gdf.drop(columns=['index_right','USDA_IDX']).drop_duplicates().reset_index(drop=True)
 
     # Output the number of intersected grids
     print(f"Amount of Grids: {len(intersected_gdf)}")
@@ -165,6 +177,8 @@ def main():
     TCC_path_2017 = "/Net/Groups/BGI/work_2/ForExD/WP1/Data/nlcd_tcc_CONUS_2017_v2021-4/wp1_nlcd_tcc_conus_2017_v2021_4_20m_4326_cropped_region_08.tif"
     refdm_path = "/Net/Groups/BGI/scratch/fmueller/ForExD-WP1-P1/results/radar_enhanced_forest_disturbance_mapping.shp"
     ids_path = "/Net/Groups/BGI/scratch/fmueller/ForExD-WP1-P1/results/region8_dca_filtered_ids_usda_polygons.csv"
+    output_file_path = "/Net/Groups/BGI/scratch/fmueller/ForExD-WP1-P1/results/convex_hulls_refdm.shp"
+    intersected_output_path = "/Net/Groups/BGI/scratch/fmueller/ForExD-WP1-P1/results/minicubes_grid.shp"
 
     # Step 2: Get the rough boundary of Region 8
     print("Step 2: Obtaining the rough boundary of Region 8")
@@ -174,17 +188,17 @@ def main():
     print("Step 3: Creating a grid with a cell size of 0.043 degrees")
     cell_size = 0.043
     grid_gdf = create_grid(bounds, cell_size)
+    grid_gdf.to_file("/Net/Groups/BGI/scratch/fmueller/ForExD-WP1-P1/results/minicubes_grid_regio8.shp")
 
     # Step 4: Create convex hulls and find the intersecting grid cells
     print("Step 4: Creating convex hulls and identifying intersecting grid cells")
-    intersected, convex_hulls = create_convex_hulls(refdm_path, ids_path, grid_gdf)
+    intersected, convex_hulls = create_convex_hulls(refdm_path, ids_path, grid_gdf, output_file_path)
 
     # Step 5: Plot the grids
     print("Step 5: Plotting the grids")
     plot_combined(intersected, convex_hulls)
-
+    
     # Save the intersected grid cells
-    intersected_output_path = "/Net/Groups/BGI/scratch/fmueller/ForExD-WP1-P1/results/intersected_grid.shp"
     intersected.to_file(intersected_output_path)
     print(f"Step 6: Saved intersected grids to {intersected_output_path}")
     
