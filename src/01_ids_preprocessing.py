@@ -80,7 +80,8 @@ def remove_overlapping_entries(df, year_col='SURVEY_YEAR', geometry_col='geometr
         geom = row[geometry_col]
 
         # Define the time window for overlap check
-        time_window = (df[year_col] >= (year - 10)) & (df[year_col] <= (year + 5))
+        #time_window = (df[year_col] >= (year - 10)) & (df[year_col] <= (year + 5))
+        time_window = (df[year_col] >= (year - 5)) & (df[year_col] <= (year + 5))
 
         # Check for spatial overlaps within the time window
         #spatial_overlaps = df[time_window][df[geometry_col].intersects(geom)]
@@ -99,7 +100,7 @@ def remove_overlapping_entries(df, year_col='SURVEY_YEAR', geometry_col='geometr
 def main():
 
     # Define the paths to folders
-    input_file = "/Net/Groups/BGI/work_2/ForExD/USDA/tables_new/CONUS_Region8_dissolved.csv"
+    input_file = "/Net/Groups/BGI/work_2/ForExD/USDA/tables/CONUS_Region8_dissolved.csv"
     results_folder = "/Net/Groups/BGI/scratch/fmueller/ForExD-WP1-P1/results"
 
     # Step 1: Read the CSV file into a DataFrame
