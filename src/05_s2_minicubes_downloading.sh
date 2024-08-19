@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --array=52,54
+#SBATCH --array=1
 #SBATCH --partition=work
 #SBATCH --nodes=1              # Use only one node
 #SBATCH --ntasks=4             # Use 4 tasks
@@ -18,8 +18,10 @@ echo "Running Task ID $SLURM_ARRAY_TASK_ID"
 PYTHON=/Net/Groups/BGI/scratch/fmueller/miniconda3/envs/minicuber/bin/python
 
 # Specify input file and output directory
-OUTPUT_DIR="/Net/Groups/BGI/scratch/fmueller/Data/s2_region8_nc_256px_vi/"
-INPUT_FILE="/Net/Groups/BGI/scratch/fmueller/ForExD-WP1-P1/results/fire_drought_minicubes.shp"
+OUTPUT_DIR="/Net/Groups/BGI/scratch/fmueller/Data/s2/512/"
+#INPUT_FILE="/Net/Groups/BGI/scratch/fmueller/ForExD-WP1-P1/results/fire_drought_minicubes.shp"
+INPUT_FILE="/Net/Groups/BGI/scratch/fmueller/ForExD-WP1-P1/results/cleaned_centroids.shp"
+
 
 # Execute Python script with SLURM array task ID, input file, and output directory arguments
 $PYTHON /Net/Groups/BGI/scratch/fmueller/ForExD-WP1-P1/src/05_s2_minicubes_downloading.py $SLURM_ARRAY_TASK_ID $INPUT_FILE $OUTPUT_DIR

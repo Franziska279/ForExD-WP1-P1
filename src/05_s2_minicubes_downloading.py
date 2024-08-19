@@ -216,7 +216,7 @@ def download_minicube(lon, lat, year, month, output_folder, idx):
     
     specs = {
         "lon_lat": (lon, lat),
-        "xy_shape": (256, 256),
+        "xy_shape": (512, 512),
         "resolution": 20,
         "time_interval": f"{year}-{month:02d}-01/{year}-{month:02d}-{last_day:02d}",
         "providers": [
