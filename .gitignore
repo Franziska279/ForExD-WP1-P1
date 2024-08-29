@@ -1,6 +1,7 @@
 # ignore ALL these files 
 results/03_s1cd_polygons/
 logs/
+results/tmp
 results/
 data/
 figures/ids_refdm_timeseries_drought/
