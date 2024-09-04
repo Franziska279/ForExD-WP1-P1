@@ -3,7 +3,8 @@ results/03_s1cd_polygons/
 logs/
 results/tmp
 results/
-data/
+grids/
+overlapping_results/
 figures/ids_refdm_timeseries_drought/
 figures/ids_refdm_timeseries_vegiation_indecies_drought/
 environment/.env/
