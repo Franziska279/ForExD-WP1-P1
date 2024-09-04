@@ -66,6 +66,7 @@ def merge_disturbance_events(datasets):
 
     # Group by 'time' and calculate the mean
     merged_data = concatenated_data.groupby('time').mean()
+    std = merged_data.std()
 
     return merged_data
 
@@ -389,6 +390,12 @@ def extract_median_percentiles_distance_per_VI(data_ids, data_refdm):
             median_diff_refdm = difference_max_refdm.median(dim=['x', 'y'])
             q25_diff_refdm = difference_max_refdm.quantile(0.25, dim=['x', 'y'])
             q75_diff_refdm = difference_max_refdm.quantile(0.75, dim=['x', 'y'])
+            # Calculate the mean and standard deviation
+            mean_diff_ids = difference_max_ids.mean(dim=['x', 'y'])
+            #std_diff_ids = difference_max_ids.std(dim=['x', 'y'])
+
+            mean_diff_refdm = difference_max_refdm.mean(dim=['x', 'y'])
+            #std_diff_refdm = difference_max_refdm.std(dim=['x', 'y'])
 
             # Append the data to the respective lists
             ids_median.append(median_diff_ids)
