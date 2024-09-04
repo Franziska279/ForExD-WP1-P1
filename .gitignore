@@ -6,3 +6,4 @@ results/
 data/
 figures/ids_refdm_timeseries_drought/
 figures/ids_refdm_timeseries_vegiation_indecies_drought/
+environment/.env/
