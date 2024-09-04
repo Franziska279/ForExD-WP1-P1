@@ -1,0 +1,1227 @@
+2024-09-03 18:54:35,168 - INFO - > Available CUDA devices: 1
+2024-09-03 18:54:35,287 - INFO - > Load the Minicube 19 ...
+2024-09-03 18:54:35,385 - INFO - > Load the Minicube 20 ...
+2024-09-03 18:54:35,392 - INFO - > Load the Minicube 21 ...
+2024-09-03 18:54:35,509 - INFO - > Load the Minicube 22 ...
+2024-09-03 18:54:35,812 - INFO - Resolution: 10
+2024-09-03 18:54:35,813 - INFO - > Load the Minicube 23 ...
+2024-09-03 18:54:35,826 - INFO - Resolution: 10
+2024-09-03 18:54:35,835 - INFO - Resolution: 10
+2024-09-03 18:54:35,843 - INFO - Resolution: 10
+2024-09-03 18:54:35,972 - INFO - Resolution: 10
+2024-09-03 18:54:43,711 - INFO - > Save the Minicube 22 ...
+2024-09-03 18:55:05,668 - INFO - > Save the Minicube 19 ...
+2024-09-03 18:55:21,283 - INFO - > Save the Minicube 23 ...
+2024-09-03 18:55:37,864 - INFO - > Save the Minicube 21 ...
+2024-09-03 18:55:38,373 - INFO - > Save the Minicube 20 ...
+2024-09-03 19:35:57,694 - INFO - > Successfully saved the Minicube 22 at /net/projects/forexd/WP1/Data/S2_Cubes_IDS_R8//22_10_512_20152024_equi7_NA.zarr ...
+2024-09-03 19:35:57,697 - INFO - > Load the Minicube 24 ...
+2024-09-03 19:35:57,751 - INFO - Resolution: 10
+2024-09-03 19:36:04,410 - INFO - > Successfully saved the Minicube 19 at /net/projects/forexd/WP1/Data/S2_Cubes_IDS_R8//19_10_512_20152024_equi7_NA.zarr ...
+2024-09-03 19:36:04,414 - INFO - > Load the Minicube 25 ...
+2024-09-03 19:36:04,490 - INFO - Resolution: 10
+2024-09-03 19:36:09,964 - INFO - > Successfully saved the Minicube 23 at /net/projects/forexd/WP1/Data/S2_Cubes_IDS_R8//23_10_512_20152024_equi7_NA.zarr ...
+2024-09-03 19:36:09,967 - INFO - > Load the Minicube 26 ...
+2024-09-03 19:36:10,020 - INFO - Resolution: 10
+2024-09-03 19:36:12,607 - INFO - > Save the Minicube 24 ...
+2024-09-03 19:36:14,294 - INFO - > Save the Minicube 25 ...
+2024-09-03 19:36:17,176 - INFO - > Save the Minicube 26 ...
+2024-09-03 19:36:18,689 - INFO - > Successfully saved the Minicube 21 at /net/projects/forexd/WP1/Data/S2_Cubes_IDS_R8//21_10_512_20152024_equi7_NA.zarr ...
+2024-09-03 19:36:18,692 - INFO - > Load the Minicube 27 ...
+2024-09-03 19:36:18,772 - INFO - Resolution: 10
+2024-09-03 19:36:22,763 - INFO - > Successfully saved the Minicube 20 at /net/projects/forexd/WP1/Data/S2_Cubes_IDS_R8//20_10_512_20152024_equi7_NA.zarr ...
+2024-09-03 19:36:22,768 - INFO - > Load the Minicube 28 ...
+2024-09-03 19:36:22,850 - INFO - Resolution: 10
+2024-09-03 19:36:54,628 - INFO - > Save the Minicube 28 ...
+2024-09-03 19:37:01,049 - INFO - > Save the Minicube 27 ...
+2024-09-03 19:58:30,750 - INFO - > Successfully saved the Minicube 25 at /net/projects/forexd/WP1/Data/S2_Cubes_IDS_R8//25_10_512_20152024_equi7_NA.zarr ...
+2024-09-03 19:58:30,755 - INFO - > Load the Minicube 29 ...
+2024-09-03 19:58:30,830 - INFO - Resolution: 10
+2024-09-03 19:58:36,580 - INFO - > Successfully saved the Minicube 26 at /net/projects/forexd/WP1/Data/S2_Cubes_IDS_R8//26_10_512_20152024_equi7_NA.zarr ...
+2024-09-03 19:58:36,585 - INFO - > Load the Minicube 30 ...
+2024-09-03 19:58:36,662 - INFO - Resolution: 10
+2024-09-03 19:58:38,879 - INFO - > Save the Minicube 29 ...
+2024-09-03 19:58:45,971 - INFO - > Save the Minicube 30 ...
+2024-09-03 19:58:46,014 - INFO - > Successfully saved the Minicube 27 at /net/projects/forexd/WP1/Data/S2_Cubes_IDS_R8//27_10_512_20152024_equi7_NA.zarr ...
+2024-09-03 19:58:46,021 - INFO - > Load the Minicube 31 ...
+2024-09-03 19:58:46,095 - INFO - Resolution: 10
+2024-09-03 19:58:48,520 - INFO - > Successfully saved the Minicube 28 at /net/projects/forexd/WP1/Data/S2_Cubes_IDS_R8//28_10_512_20152024_equi7_NA.zarr ...
+2024-09-03 19:58:48,524 - INFO - > Load the Minicube 32 ...
+2024-09-03 19:58:48,592 - INFO - Resolution: 10
+2024-09-03 19:58:56,006 - INFO - > Save the Minicube 31 ...
+2024-09-03 19:58:56,058 - INFO - > Successfully saved the Minicube 24 at /net/projects/forexd/WP1/Data/S2_Cubes_IDS_R8//24_10_512_20152024_equi7_NA.zarr ...
+2024-09-03 19:58:56,063 - INFO - > Load the Minicube 33 ...
+2024-09-03 19:58:56,136 - INFO - Resolution: 10
+2024-09-03 19:59:05,768 - INFO - > Save the Minicube 32 ...
+2024-09-03 19:59:13,577 - INFO - > Save the Minicube 33 ...
+2024-09-03 20:25:15,606 - INFO - > Successfully saved the Minicube 29 at /net/projects/forexd/WP1/Data/S2_Cubes_IDS_R8//29_10_512_20152024_equi7_NA.zarr ...
+2024-09-03 20:25:15,611 - INFO - > Load the Minicube 34 ...
+2024-09-03 20:25:15,691 - INFO - Resolution: 10
+2024-09-03 20:25:17,038 - INFO - > Successfully saved the Minicube 31 at /net/projects/forexd/WP1/Data/S2_Cubes_IDS_R8//31_10_512_20152024_equi7_NA.zarr ...
+2024-09-03 20:25:17,042 - INFO - > Load the Minicube 35 ...
+2024-09-03 20:25:17,123 - INFO - Resolution: 10
+2024-09-03 20:25:31,256 - INFO - > Successfully saved the Minicube 32 at /net/projects/forexd/WP1/Data/S2_Cubes_IDS_R8//32_10_512_20152024_equi7_NA.zarr ...
+2024-09-03 20:25:31,260 - INFO - > Load the Minicube 36 ...
+2024-09-03 20:25:31,341 - INFO - Resolution: 10
+2024-09-03 20:25:33,853 - INFO - > Save the Minicube 34 ...
+2024-09-03 20:25:35,083 - INFO - > Save the Minicube 35 ...
+2024-09-03 20:25:35,822 - INFO - > Successfully saved the Minicube 33 at /net/projects/forexd/WP1/Data/S2_Cubes_IDS_R8//33_10_512_20152024_equi7_NA.zarr ...
+2024-09-03 20:25:35,827 - INFO - > Load the Minicube 37 ...
+2024-09-03 20:25:35,910 - INFO - Resolution: 10
+2024-09-03 20:25:42,738 - INFO - > Save the Minicube 36 ...
+2024-09-03 20:25:42,856 - INFO - > Successfully saved the Minicube 30 at /net/projects/forexd/WP1/Data/S2_Cubes_IDS_R8//30_10_512_20152024_equi7_NA.zarr ...
+2024-09-03 20:25:42,860 - INFO - > Load the Minicube 38 ...
+2024-09-03 20:25:42,937 - INFO - Resolution: 10
+2024-09-03 20:25:51,565 - INFO - > Save the Minicube 37 ...
+2024-09-03 20:25:51,619 - INFO - > Save the Minicube 38 ...
+2024-09-03 20:49:18,922 - INFO - > Successfully saved the Minicube 38 at /net/projects/forexd/WP1/Data/S2_Cubes_IDS_R8//38_10_512_20152024_equi7_NA.zarr ...
+2024-09-03 20:49:18,927 - INFO - > Load the Minicube 39 ...
+2024-09-03 20:49:19,008 - INFO - Resolution: 10
+2024-09-03 20:49:19,877 - INFO - > Successfully saved the Minicube 35 at /net/projects/forexd/WP1/Data/S2_Cubes_IDS_R8//35_10_512_20152024_equi7_NA.zarr ...
+2024-09-03 20:49:19,880 - INFO - > Load the Minicube 40 ...
+2024-09-03 20:49:19,964 - INFO - Resolution: 10
+2024-09-03 20:49:25,346 - INFO - > Save the Minicube 40 ...
+2024-09-03 20:49:28,765 - INFO - > Save the Minicube 39 ...
+2024-09-03 20:49:33,999 - INFO - > Successfully saved the Minicube 36 at /net/projects/forexd/WP1/Data/S2_Cubes_IDS_R8//36_10_512_20152024_equi7_NA.zarr ...
+2024-09-03 20:49:34,003 - INFO - > Load the Minicube 41 ...
+2024-09-03 20:49:34,088 - INFO - Resolution: 10
+2024-09-03 20:49:36,699 - INFO - > Successfully saved the Minicube 34 at /net/projects/forexd/WP1/Data/S2_Cubes_IDS_R8//34_10_512_20152024_equi7_NA.zarr ...
+2024-09-03 20:49:36,703 - INFO - > Load the Minicube 42 ...
+2024-09-03 20:49:36,786 - INFO - Resolution: 10
+2024-09-03 20:49:40,523 - INFO - > Save the Minicube 41 ...
+2024-09-03 20:49:40,578 - INFO - > Successfully saved the Minicube 37 at /net/projects/forexd/WP1/Data/S2_Cubes_IDS_R8//37_10_512_20152024_equi7_NA.zarr ...
+2024-09-03 20:49:40,582 - INFO - > Load the Minicube 43 ...
+2024-09-03 20:49:40,638 - INFO - Resolution: 10
+2024-09-03 20:49:42,956 - INFO - > Save the Minicube 42 ...
+2024-09-03 20:49:49,397 - INFO - > Save the Minicube 43 ...
+2024-09-03 21:08:04,574 - INFO - > Successfully saved the Minicube 41 at /net/projects/forexd/WP1/Data/S2_Cubes_IDS_R8//41_10_512_20152024_equi7_NA.zarr ...
+2024-09-03 21:08:04,583 - INFO - > Load the Minicube 44 ...
+2024-09-03 21:08:04,668 - INFO - Resolution: 10
+2024-09-03 21:08:07,209 - INFO - > Successfully saved the Minicube 42 at /net/projects/forexd/WP1/Data/S2_Cubes_IDS_R8//42_10_512_20152024_equi7_NA.zarr ...
+2024-09-03 21:08:07,212 - INFO - > Load the Minicube 45 ...
+2024-09-03 21:08:07,270 - INFO - Resolution: 10
+2024-09-03 21:08:13,358 - INFO - > Save the Minicube 44 ...
+2024-09-03 21:08:13,412 - INFO - > Save the Minicube 45 ...
+2024-09-03 21:08:18,300 - INFO - > Successfully saved the Minicube 43 at /net/projects/forexd/WP1/Data/S2_Cubes_IDS_R8//43_10_512_20152024_equi7_NA.zarr ...
+2024-09-03 21:08:18,304 - INFO - > Load the Minicube 46 ...
+2024-09-03 21:08:18,378 - INFO - Resolution: 10
+2024-09-03 21:08:23,592 - INFO - > Save the Minicube 46 ...
+2024-09-03 21:08:34,148 - INFO - > Successfully saved the Minicube 39 at /net/projects/forexd/WP1/Data/S2_Cubes_IDS_R8//39_10_512_20152024_equi7_NA.zarr ...
+2024-09-03 21:08:34,153 - INFO - > Load the Minicube 47 ...
+2024-09-03 21:08:34,230 - INFO - Resolution: 10
+2024-09-03 21:08:40,631 - INFO - > Save the Minicube 47 ...
+2024-09-03 21:08:54,311 - INFO - > Successfully saved the Minicube 40 at /net/projects/forexd/WP1/Data/S2_Cubes_IDS_R8//40_10_512_20152024_equi7_NA.zarr ...
+2024-09-03 21:08:54,318 - INFO - > Load the Minicube 48 ...
+2024-09-03 21:08:54,400 - INFO - Resolution: 10
+2024-09-03 21:08:59,089 - INFO - > Save the Minicube 48 ...
+2024-09-03 21:24:48,119 - INFO - > Successfully saved the Minicube 47 at /net/projects/forexd/WP1/Data/S2_Cubes_IDS_R8//47_10_512_20152024_equi7_NA.zarr ...
+2024-09-03 21:24:48,123 - INFO - > Load the Minicube 49 ...
+2024-09-03 21:24:48,180 - INFO - Resolution: 10
+2024-09-03 21:24:59,659 - INFO - > Successfully saved the Minicube 45 at /net/projects/forexd/WP1/Data/S2_Cubes_IDS_R8//45_10_512_20152024_equi7_NA.zarr ...
+2024-09-03 21:24:59,663 - INFO - > Load the Minicube 50 ...
+2024-09-03 21:24:59,745 - INFO - Resolution: 10
+2024-09-03 21:25:01,734 - INFO - > Save the Minicube 49 ...
+2024-09-03 21:25:06,639 - INFO - > Successfully saved the Minicube 46 at /net/projects/forexd/WP1/Data/S2_Cubes_IDS_R8//46_10_512_20152024_equi7_NA.zarr ...
+2024-09-03 21:25:06,645 - INFO - > Load the Minicube 51 ...
+2024-09-03 21:25:06,739 - INFO - Resolution: 10
+2024-09-03 21:25:06,767 - INFO - > Successfully saved the Minicube 44 at /net/projects/forexd/WP1/Data/S2_Cubes_IDS_R8//44_10_512_20152024_equi7_NA.zarr ...
+2024-09-03 21:25:06,772 - INFO - > Load the Minicube 52 ...
+2024-09-03 21:25:06,853 - INFO - Resolution: 10
+2024-09-03 21:25:08,894 - INFO - > Successfully saved the Minicube 48 at /net/projects/forexd/WP1/Data/S2_Cubes_IDS_R8//48_10_512_20152024_equi7_NA.zarr ...
+2024-09-03 21:25:08,898 - INFO - > Load the Minicube 53 ...
+2024-09-03 21:25:08,979 - INFO - Resolution: 10
+2024-09-03 21:25:14,645 - INFO - > Save the Minicube 53 ...
+2024-09-03 21:25:17,887 - INFO - > Save the Minicube 51 ...
+2024-09-03 21:25:32,084 - INFO - > Save the Minicube 50 ...
+2024-09-03 21:25:32,606 - INFO - > Save the Minicube 52 ...
+2024-09-03 21:39:32,130 - INFO - > Successfully saved the Minicube 52 at /net/projects/forexd/WP1/Data/S2_Cubes_IDS_R8//52_10_512_20152024_equi7_NA.zarr ...
+2024-09-03 21:39:32,135 - INFO - > Load the Minicube 54 ...
+2024-09-03 21:39:32,222 - INFO - Resolution: 10
+2024-09-03 21:39:34,506 - INFO - > Successfully saved the Minicube 51 at /net/projects/forexd/WP1/Data/S2_Cubes_IDS_R8//51_10_512_20152024_equi7_NA.zarr ...
+2024-09-03 21:39:34,512 - INFO - > Load the Minicube 55 ...
+2024-09-03 21:39:34,593 - INFO - Resolution: 10
+2024-09-03 21:39:35,966 - INFO - > Successfully saved the Minicube 50 at /net/projects/forexd/WP1/Data/S2_Cubes_IDS_R8//50_10_512_20152024_equi7_NA.zarr ...
+2024-09-03 21:39:35,971 - INFO - > Load the Minicube 56 ...
+2024-09-03 21:39:36,057 - INFO - Resolution: 10
+2024-09-03 21:39:36,146 - INFO - > Successfully saved the Minicube 53 at /net/projects/forexd/WP1/Data/S2_Cubes_IDS_R8//53_10_512_20152024_equi7_NA.zarr ...
+2024-09-03 21:39:36,152 - INFO - > Load the Minicube 57 ...
+2024-09-03 21:39:36,235 - INFO - Resolution: 10
+2024-09-03 21:39:39,361 - INFO - > Save the Minicube 54 ...
+2024-09-03 21:39:39,448 - INFO - > Successfully saved the Minicube 49 at /net/projects/forexd/WP1/Data/S2_Cubes_IDS_R8//49_10_512_20152024_equi7_NA.zarr ...
+2024-09-03 21:39:39,454 - INFO - > Load the Minicube 58 ...
+2024-09-03 21:39:39,532 - INFO - Resolution: 10
+2024-09-03 21:39:43,977 - INFO - > Save the Minicube 57 ...
+2024-09-03 21:39:47,446 - INFO - > Save the Minicube 55 ...
+2024-09-03 21:40:06,025 - INFO - > Save the Minicube 58 ...
+2024-09-03 21:40:12,673 - INFO - > Save the Minicube 56 ...
+2024-09-03 21:44:17,940 - ERROR - An error occurred for index 57: CUDA driver error: out of memory
+2024-09-03 21:44:17,943 - INFO - > Load the Minicube 59 ...
+2024-09-03 21:44:18,026 - INFO - Resolution: 10
+2024-09-03 21:44:18,064 - ERROR - An error occurred for index 58: CUDA driver error: out of memory
+2024-09-03 21:44:18,064 - INFO - > Load the Minicube 60 ...
+2024-09-03 21:44:18,155 - INFO - Resolution: 10
+2024-09-03 21:44:20,857 - ERROR - An error occurred for index 56: CUDA driver error: out of memory
+2024-09-03 21:44:20,857 - INFO - > Load the Minicube 61 ...
+2024-09-03 21:44:20,944 - INFO - Resolution: 10
+2024-09-03 21:44:21,017 - ERROR - An error occurred for index 55: CUDA driver error: out of memory
+2024-09-03 21:44:21,018 - INFO - > Load the Minicube 62 ...
+2024-09-03 21:44:21,118 - INFO - Resolution: 10
+2024-09-03 21:44:27,413 - INFO - > Save the Minicube 61 ...
+2024-09-03 21:44:30,781 - INFO - > Save the Minicube 62 ...
+2024-09-03 21:44:30,783 - INFO - > Save the Minicube 60 ...
+2024-09-03 21:44:30,937 - INFO - > Save the Minicube 59 ...
+2024-09-03 21:44:33,190 - ERROR - An error occurred for index 54: The following operation failed in the TorchScript interpreter.
+Traceback of TorchScript (most recent call last):
+RuntimeError: CUDA out of memory. Tried to allocate 50.00 MiB. GPU 0 has a total capacity of 47.54 GiB of which 9.19 MiB is free. Process 1135374 has 270.00 MiB memory in use. Process 3222355 has 1.19 GiB memory in use. Process 3222283 has 1.19 GiB memory in use. Process 3222218 has 1.18 GiB memory in use. Process 3222339 has 1.17 GiB memory in use. Process 3222240 has 1.18 GiB memory in use. Process 3222295 has 1.20 GiB memory in use. Process 3222271 has 1.18 GiB memory in use. Process 3222286 has 1.19 GiB memory in use. Process 3222210 has 1.19 GiB memory in use. Process 3222323 has 1.17 GiB memory in use. Process 3222226 has 1.17 GiB memory in use. Process 3222307 has 1.18 GiB memory in use. Process 3222352 has 1.16 GiB memory in use. Process 3222300 has 1.18 GiB memory in use. Process 3222263 has 1.18 GiB memory in use. Process 3222334 has 1.18 GiB memory in use. Process 3222311 has 1.19 GiB memory in use. Process 3222245 has 1.18 GiB memory in use. Process 3222203 has 1.17 GiB memory in use. Process 3222291 has 1.19 GiB memory in use. Process 3222316 has 1.17 GiB memory in use. Process 3222254 has 1.18 GiB memory in use. Process 3222279 has 1.18 GiB memory in use. Process 3222326 has 1.18 GiB memory in use. Process 3222234 has 1.19 GiB memory in use. Process 3222341 has 1.17 GiB memory in use. Including non-PyTorch memory, this process has 1.14 GiB memory in use. Process 3222337 has 1.19 GiB memory in use. Process 3222231 has 1.18 GiB memory in use. Process 3222265 has 1.18 GiB memory in use. Process 3222305 has 1.18 GiB memory in use. Process 3222357 has 1.19 GiB memory in use. Process 3222346 has 1.19 GiB memory in use. Process 3222253 has 1.19 GiB memory in use. Process 3222273 has 1.16 GiB memory in use. Process 3222319 has 1.18 GiB memory in use. Process 3222215 has 1.19 GiB memory in use. Process 3222212 has 1.19 GiB memory in use. Process 3222243 has 1.16 GiB memory in use. Process 3222261 has 1.16 GiB memory in use. Of the allocated memory 183.32 MiB is allocated by PyTorch, and 62.68 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+2024-09-03 21:44:33,245 - INFO - > Load the Minicube 63 ...
+2024-09-03 21:44:33,390 - INFO - Resolution: 10
+2024-09-03 21:44:46,234 - INFO - > Save the Minicube 63 ...
+2024-09-03 21:44:52,238 - ERROR - An error occurred for index 62: The following operation failed in the TorchScript interpreter.
+Traceback of TorchScript, serialized code (most recent call last):
+  File "code/__torch__/segmentation_models_pytorch/decoders/unet/model/___torch_mangle_3371.py", line 14, in forward
+    decoder = self.decoder
+    encoder = self.encoder
+    _0, _1, _2, _3, _4, = (encoder).forward(x, )
+                           ~~~~~~~~~~~~~~~~ <--- HERE
+    _5 = (decoder).forward(_0, _1, _2, _3, _4, )
+    return (segmentation_head).forward(_5, )
+  File "code/__torch__/segmentation_models_pytorch/encoders/efficientnet/___torch_mangle_3297.py", line 65, in forward
+    _bn0 = self._bn0
+    _conv_stem = self._conv_stem
+    _23 = (_bn0).forward((_conv_stem).forward(x, ), )
+                          ~~~~~~~~~~~~~~~~~~~ <--- HERE
+    _24 = (_swish).forward(_23, )
+    _25 = (_2).forward((_1).forward((_0).forward(_24, ), ), )
+  File "code/__torch__/efficientnet_pytorch/utils/___torch_mangle_2950.py", line 12, in forward
+    weight = self.weight
+    static_padding = self.static_padding
+    input = torch._convolution((static_padding).forward(x, ), weight, None, [2, 2], [0, 0], [1, 1], False, [0, 0], 1, False, False, True, True)
+                                ~~~~~~~~~~~~~~~~~~~~~~~ <--- HERE
+    return input
+  File "code/__torch__/torch/nn/modules/padding/___torch_mangle_2949.py", line 8, in forward
+  def forward(self: __torch__.torch.nn.modules.padding.___torch_mangle_2949.ZeroPad2d,
+    x: Tensor) -> Tensor:
+    x0 = torch.pad(x, [0, 1, 0, 1], "constant", 0.)
+         ~~~~~~~~~ <--- HERE
+    return x0
+
+Traceback of TorchScript, original code (most recent call last):
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/padding.py(25): forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1488): _slow_forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1501): _call_impl
+/users/cezbar/.local/lib/python3.10/site-packages/efficientnet_pytorch/utils.py(274): forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1488): _slow_forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1501): _call_impl
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/container.py(217): forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1488): _slow_forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1501): _call_impl
+/users/cezbar/.local/lib/python3.10/site-packages/segmentation_models_pytorch/encoders/efficientnet.py(66): forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1488): _slow_forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1501): _call_impl
+/users/cezbar/.local/lib/python3.10/site-packages/segmentation_models_pytorch/base/model.py(29): forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1488): _slow_forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1501): _call_impl
+/users/cezbar/.local/lib/python3.10/site-packages/torch/jit/_trace.py(1056): trace_module
+/users/cezbar/.local/lib/python3.10/site-packages/torch/jit/_trace.py(794): trace
+<stdin>(1): <module>
+RuntimeError: CUDA out of memory. Tried to allocate 26.00 MiB. GPU 0 has a total capacity of 47.54 GiB of which 23.19 MiB is free. Process 1135374 has 270.00 MiB memory in use. Process 3222355 has 1.19 GiB memory in use. Process 3222283 has 1.19 GiB memory in use. Process 3222218 has 1.18 GiB memory in use. Process 3222339 has 1.17 GiB memory in use. Process 3222240 has 1.18 GiB memory in use. Process 3222295 has 1.20 GiB memory in use. Process 3222271 has 1.18 GiB memory in use. Process 3222286 has 1.19 GiB memory in use. Process 3222210 has 1.19 GiB memory in use. Process 3222323 has 1.18 GiB memory in use. Process 3222226 has 1.18 GiB memory in use. Process 3222307 has 1.18 GiB memory in use. Process 3222352 has 1.12 GiB memory in use. Process 3222300 has 1.18 GiB memory in use. Process 3222263 has 1.18 GiB memory in use. Process 3222334 has 1.18 GiB memory in use. Process 3222311 has 1.19 GiB memory in use. Process 3222245 has 1.18 GiB memory in use. Process 3222203 has 1.18 GiB memory in use. Process 3222291 has 1.19 GiB memory in use. Process 3222316 has 1.17 GiB memory in use. Process 3222254 has 1.18 GiB memory in use. Process 3222279 has 1.18 GiB memory in use. Process 3222326 has 1.18 GiB memory in use. Process 3222234 has 1.19 GiB memory in use. Process 3222341 has 1.18 GiB memory in use. Including non-PyTorch memory, this process has 1.14 GiB memory in use. Process 3222337 has 1.19 GiB memory in use. Process 3222231 has 1.18 GiB memory in use. Process 3222265 has 1.18 GiB memory in use. Process 3222305 has 1.19 GiB memory in use. Process 3222357 has 1.19 GiB memory in use. Process 3222346 has 1.19 GiB memory in use. Process 3222253 has 1.19 GiB memory in use. Process 3222273 has 1.16 GiB memory in use. Process 3222319 has 1.18 GiB memory in use. Process 3222215 has 1.19 GiB memory in use. Process 3222212 has 1.19 GiB memory in use. Process 3222243 has 1.16 GiB memory in use. Process 3222261 has 1.16 GiB memory in use. Of the allocated memory 234.66 MiB is allocated by PyTorch, and 7.34 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+2024-09-03 21:44:52,239 - INFO - > Load the Minicube 64 ...
+2024-09-03 21:44:52,333 - INFO - Resolution: 10
+2024-09-03 21:44:55,880 - ERROR - An error occurred for index 63: CUDA driver error: out of memory
+2024-09-03 21:44:55,884 - INFO - > Load the Minicube 65 ...
+2024-09-03 21:44:55,967 - INFO - Resolution: 10
+2024-09-03 21:44:57,945 - ERROR - An error occurred for index 61: CUDA driver error: out of memory
+2024-09-03 21:44:57,962 - INFO - > Load the Minicube 66 ...
+2024-09-03 21:44:58,057 - INFO - Resolution: 10
+2024-09-03 21:45:01,555 - INFO - > Save the Minicube 64 ...
+2024-09-03 21:45:04,208 - INFO - > Save the Minicube 65 ...
+2024-09-03 21:45:05,798 - INFO - > Save the Minicube 66 ...
+2024-09-03 21:45:05,833 - ERROR - An error occurred for index 59: CUDA driver error: out of memory
+2024-09-03 21:45:05,837 - INFO - > Load the Minicube 67 ...
+2024-09-03 21:45:05,893 - INFO - Resolution: 10
+2024-09-03 21:45:10,603 - ERROR - An error occurred for index 65: The following operation failed in the TorchScript interpreter.
+Traceback of TorchScript, serialized code (most recent call last):
+  File "code/__torch__/segmentation_models_pytorch/decoders/unet/model/___torch_mangle_3371.py", line 14, in forward
+    decoder = self.decoder
+    encoder = self.encoder
+    _0, _1, _2, _3, _4, = (encoder).forward(x, )
+                           ~~~~~~~~~~~~~~~~ <--- HERE
+    _5 = (decoder).forward(_0, _1, _2, _3, _4, )
+    return (segmentation_head).forward(_5, )
+  File "code/__torch__/segmentation_models_pytorch/encoders/efficientnet/___torch_mangle_3297.py", line 67, in forward
+    _23 = (_bn0).forward((_conv_stem).forward(x, ), )
+    _24 = (_swish).forward(_23, )
+    _25 = (_2).forward((_1).forward((_0).forward(_24, ), ), )
+           ~~~~~~~~~~~ <--- HERE
+    _26 = (_4).forward((_3).forward(_25, ), )
+    _27 = (_7).forward((_6).forward((_5).forward(_26, ), ), )
+  File "code/__torch__/efficientnet_pytorch/model/___torch_mangle_2989.py", line 27, in forward
+    _expand_conv = self._expand_conv
+    _0 = (_expand_conv).forward(argument_1, )
+    _1 = (_swish).forward((_bn0).forward(_0, ), )
+                           ~~~~~~~~~~~~~ <--- HERE
+    _2 = (_bn1).forward((_depthwise_conv).forward(_1, ), )
+    _3 = (_swish).forward1(_2, )
+  File "code/__torch__/torch/nn/modules/batchnorm/___torch_mangle_2977.py", line 17, in forward
+    bias = self.bias
+    weight = self.weight
+    input = torch.batch_norm(argument_1, weight, bias, running_mean, running_var, False, 0.010000000000000009, 0.001, True)
+            ~~~~~~~~~~~~~~~~ <--- HERE
+    return input
+
+Traceback of TorchScript, original code (most recent call last):
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/functional.py(2450): batch_norm
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/batchnorm.py(171): forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1488): _slow_forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1501): _call_impl
+/users/cezbar/.local/lib/python3.10/site-packages/efficientnet_pytorch/model.py(106): forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1488): _slow_forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1501): _call_impl
+/users/cezbar/.local/lib/python3.10/site-packages/segmentation_models_pytorch/encoders/efficientnet.py(73): forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1488): _slow_forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1501): _call_impl
+/users/cezbar/.local/lib/python3.10/site-packages/segmentation_models_pytorch/base/model.py(29): forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1488): _slow_forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1501): _call_impl
+/users/cezbar/.local/lib/python3.10/site-packages/torch/jit/_trace.py(1056): trace_module
+/users/cezbar/.local/lib/python3.10/site-packages/torch/jit/_trace.py(794): trace
+<stdin>(1): <module>
+RuntimeError: CUDA out of memory. Tried to allocate 50.00 MiB. GPU 0 has a total capacity of 47.54 GiB of which 37.19 MiB is free. Process 1135374 has 270.00 MiB memory in use. Process 3222355 has 1.19 GiB memory in use. Process 3222283 has 1.20 GiB memory in use. Process 3222218 has 1.18 GiB memory in use. Process 3222339 has 1.17 GiB memory in use. Process 3222240 has 1.18 GiB memory in use. Process 3222295 has 1.20 GiB memory in use. Process 3222271 has 1.18 GiB memory in use. Process 3222286 has 1.21 GiB memory in use. Including non-PyTorch memory, this process has 1.09 GiB memory in use. Process 3222323 has 1.18 GiB memory in use. Process 3222226 has 1.18 GiB memory in use. Process 3222307 has 1.18 GiB memory in use. Process 3222352 has 1.12 GiB memory in use. Process 3222300 has 1.18 GiB memory in use. Process 3222263 has 1.18 GiB memory in use. Process 3222334 has 1.18 GiB memory in use. Process 3222311 has 1.20 GiB memory in use. Process 3222245 has 1.18 GiB memory in use. Process 3222203 has 1.18 GiB memory in use. Process 3222291 has 1.19 GiB memory in use. Process 3222316 has 1.17 GiB memory in use. Process 3222254 has 1.18 GiB memory in use. Process 3222279 has 1.18 GiB memory in use. Process 3222326 has 1.18 GiB memory in use. Process 3222234 has 1.20 GiB memory in use. Process 3222341 has 1.18 GiB memory in use. Process 3222221 has 1.15 GiB memory in use. Process 3222337 has 1.20 GiB memory in use. Process 3222231 has 1.18 GiB memory in use. Process 3222265 has 1.18 GiB memory in use. Process 3222305 has 1.19 GiB memory in use. Process 3222357 has 1.19 GiB memory in use. Process 3222346 has 1.19 GiB memory in use. Process 3222253 has 1.19 GiB memory in use. Process 3222273 has 1.16 GiB memory in use. Process 3222319 has 1.18 GiB memory in use. Process 3222215 has 1.19 GiB memory in use. Process 3222212 has 1.19 GiB memory in use. Process 3222243 has 1.16 GiB memory in use. Process 3222261 has 1.16 GiB memory in use. Of the allocated memory 183.72 MiB is allocated by PyTorch, and 12.28 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+2024-09-03 21:45:10,607 - INFO - > Load the Minicube 68 ...
+2024-09-03 21:45:10,694 - INFO - Resolution: 10
+2024-09-03 21:45:17,462 - INFO - > Save the Minicube 67 ...
+2024-09-03 21:45:17,490 - ERROR - An error occurred for index 64: The following operation failed in the TorchScript interpreter.
+Traceback of TorchScript, serialized code (most recent call last):
+  File "code/__torch__/segmentation_models_pytorch/decoders/unet/model/___torch_mangle_3371.py", line 14, in forward
+    decoder = self.decoder
+    encoder = self.encoder
+    _0, _1, _2, _3, _4, = (encoder).forward(x, )
+                           ~~~~~~~~~~~~~~~~ <--- HERE
+    _5 = (decoder).forward(_0, _1, _2, _3, _4, )
+    return (segmentation_head).forward(_5, )
+  File "code/__torch__/segmentation_models_pytorch/encoders/efficientnet/___torch_mangle_3297.py", line 65, in forward
+    _bn0 = self._bn0
+    _conv_stem = self._conv_stem
+    _23 = (_bn0).forward((_conv_stem).forward(x, ), )
+                          ~~~~~~~~~~~~~~~~~~~ <--- HERE
+    _24 = (_swish).forward(_23, )
+    _25 = (_2).forward((_1).forward((_0).forward(_24, ), ), )
+  File "code/__torch__/efficientnet_pytorch/utils/___torch_mangle_2950.py", line 12, in forward
+    weight = self.weight
+    static_padding = self.static_padding
+    input = torch._convolution((static_padding).forward(x, ), weight, None, [2, 2], [0, 0], [1, 1], False, [0, 0], 1, False, False, True, True)
+                                ~~~~~~~~~~~~~~~~~~~~~~~ <--- HERE
+    return input
+  File "code/__torch__/torch/nn/modules/padding/___torch_mangle_2949.py", line 8, in forward
+  def forward(self: __torch__.torch.nn.modules.padding.___torch_mangle_2949.ZeroPad2d,
+    x: Tensor) -> Tensor:
+    x0 = torch.pad(x, [0, 1, 0, 1], "constant", 0.)
+         ~~~~~~~~~ <--- HERE
+    return x0
+
+Traceback of TorchScript, original code (most recent call last):
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/padding.py(25): forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1488): _slow_forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1501): _call_impl
+/users/cezbar/.local/lib/python3.10/site-packages/efficientnet_pytorch/utils.py(274): forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1488): _slow_forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1501): _call_impl
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/container.py(217): forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1488): _slow_forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1501): _call_impl
+/users/cezbar/.local/lib/python3.10/site-packages/segmentation_models_pytorch/encoders/efficientnet.py(66): forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1488): _slow_forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1501): _call_impl
+/users/cezbar/.local/lib/python3.10/site-packages/segmentation_models_pytorch/base/model.py(29): forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1488): _slow_forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1501): _call_impl
+/users/cezbar/.local/lib/python3.10/site-packages/torch/jit/_trace.py(1056): trace_module
+/users/cezbar/.local/lib/python3.10/site-packages/torch/jit/_trace.py(794): trace
+<stdin>(1): <module>
+RuntimeError: CUDA out of memory. Tried to allocate 26.00 MiB. GPU 0 has a total capacity of 47.54 GiB of which 5.19 MiB is free. Process 1135374 has 270.00 MiB memory in use. Process 3222355 has 1.19 GiB memory in use. Process 3222283 has 1.21 GiB memory in use. Process 3222218 has 1.18 GiB memory in use. Process 3222339 has 1.17 GiB memory in use. Process 3222240 has 1.18 GiB memory in use. Process 3222295 has 1.20 GiB memory in use. Process 3222271 has 1.18 GiB memory in use. Process 3222286 has 1.21 GiB memory in use. Process 3222210 has 1.11 GiB memory in use. Process 3222323 has 1.18 GiB memory in use. Process 3222226 has 1.18 GiB memory in use. Process 3222307 has 1.18 GiB memory in use. Process 3222352 has 1.12 GiB memory in use. Process 3222300 has 1.18 GiB memory in use. Process 3222263 has 1.18 GiB memory in use. Process 3222334 has 1.18 GiB memory in use. Process 3222311 has 1.20 GiB memory in use. Process 3222245 has 1.19 GiB memory in use. Process 3222203 has 1.18 GiB memory in use. Process 3222291 has 1.19 GiB memory in use. Process 3222316 has 1.17 GiB memory in use. Process 3222254 has 1.18 GiB memory in use. Process 3222279 has 1.18 GiB memory in use. Process 3222326 has 1.18 GiB memory in use. Process 3222234 has 1.20 GiB memory in use. Process 3222341 has 1.18 GiB memory in use. Process 3222221 has 1.26 GiB memory in use. Including non-PyTorch memory, this process has 1.08 GiB memory in use. Process 3222231 has 1.18 GiB memory in use. Process 3222265 has 1.18 GiB memory in use. Process 3222305 has 1.19 GiB memory in use. Process 3222357 has 1.19 GiB memory in use. Process 3222346 has 1.19 GiB memory in use. Process 3222253 has 1.19 GiB memory in use. Process 3222273 has 1.16 GiB memory in use. Process 3222319 has 1.18 GiB memory in use. Process 3222215 has 1.19 GiB memory in use. Process 3222212 has 1.19 GiB memory in use. Process 3222243 has 1.16 GiB memory in use. Process 3222261 has 1.16 GiB memory in use. Of the allocated memory 176.42 MiB is allocated by PyTorch, and 15.58 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+2024-09-03 21:45:17,490 - INFO - > Load the Minicube 69 ...
+2024-09-03 21:45:17,590 - INFO - Resolution: 10
+2024-09-03 21:45:19,772 - ERROR - An error occurred for index 66: CUDA out of memory. Tried to allocate 2.00 MiB. GPU 0 has a total capacity of 47.54 GiB of which 5.19 MiB is free. Process 1135374 has 270.00 MiB memory in use. Process 3222355 has 1.19 GiB memory in use. Process 3222283 has 1.21 GiB memory in use. Process 3222218 has 1.18 GiB memory in use. Process 3222339 has 1.17 GiB memory in use. Process 3222240 has 1.18 GiB memory in use. Process 3222295 has 1.20 GiB memory in use. Process 3222271 has 1.18 GiB memory in use. Process 3222286 has 1.21 GiB memory in use. Process 3222210 has 1.11 GiB memory in use. Process 3222323 has 1.18 GiB memory in use. Process 3222226 has 1.18 GiB memory in use. Process 3222307 has 1.18 GiB memory in use. Process 3222352 has 1.12 GiB memory in use. Process 3222300 has 1.18 GiB memory in use. Process 3222263 has 1.18 GiB memory in use. Process 3222334 has 1.18 GiB memory in use. Process 3222311 has 1.20 GiB memory in use. Process 3222245 has 1.19 GiB memory in use. Process 3222203 has 1.18 GiB memory in use. Process 3222291 has 1.19 GiB memory in use. Process 3222316 has 1.17 GiB memory in use. Process 3222254 has 1.18 GiB memory in use. Process 3222279 has 1.18 GiB memory in use. Process 3222326 has 1.18 GiB memory in use. Process 3222234 has 1.20 GiB memory in use. Process 3222341 has 1.18 GiB memory in use. Process 3222221 has 1.26 GiB memory in use. Including non-PyTorch memory, this process has 1.08 GiB memory in use. Process 3222231 has 1.18 GiB memory in use. Process 3222265 has 1.18 GiB memory in use. Process 3222305 has 1.19 GiB memory in use. Process 3222357 has 1.19 GiB memory in use. Process 3222346 has 1.19 GiB memory in use. Process 3222253 has 1.19 GiB memory in use. Process 3222273 has 1.16 GiB memory in use. Process 3222319 has 1.18 GiB memory in use. Process 3222215 has 1.19 GiB memory in use. Process 3222212 has 1.19 GiB memory in use. Process 3222243 has 1.16 GiB memory in use. Process 3222261 has 1.16 GiB memory in use. Of the allocated memory 178.05 MiB is allocated by PyTorch, and 13.95 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+2024-09-03 21:45:19,776 - INFO - > Load the Minicube 70 ...
+2024-09-03 21:45:19,866 - INFO - Resolution: 10
+2024-09-03 21:45:20,231 - ERROR - An error occurred for index 60: CUDA driver error: out of memory
+2024-09-03 21:45:20,231 - INFO - > Load the Minicube 71 ...
+2024-09-03 21:45:20,308 - INFO - Resolution: 10
+2024-09-03 21:45:25,097 - INFO - > Save the Minicube 68 ...
+2024-09-03 21:45:32,993 - INFO - > Save the Minicube 71 ...
+2024-09-03 21:45:34,687 - INFO - > Save the Minicube 69 ...
+2024-09-03 21:45:34,741 - ERROR - An error occurred for index 67: The following operation failed in the TorchScript interpreter.
+Traceback of TorchScript, serialized code (most recent call last):
+  File "code/__torch__/segmentation_models_pytorch/decoders/unet/model/___torch_mangle_3371.py", line 14, in forward
+    decoder = self.decoder
+    encoder = self.encoder
+    _0, _1, _2, _3, _4, = (encoder).forward(x, )
+                           ~~~~~~~~~~~~~~~~ <--- HERE
+    _5 = (decoder).forward(_0, _1, _2, _3, _4, )
+    return (segmentation_head).forward(_5, )
+  File "code/__torch__/segmentation_models_pytorch/encoders/efficientnet/___torch_mangle_3297.py", line 65, in forward
+    _bn0 = self._bn0
+    _conv_stem = self._conv_stem
+    _23 = (_bn0).forward((_conv_stem).forward(x, ), )
+                          ~~~~~~~~~~~~~~~~~~~ <--- HERE
+    _24 = (_swish).forward(_23, )
+    _25 = (_2).forward((_1).forward((_0).forward(_24, ), ), )
+  File "code/__torch__/efficientnet_pytorch/utils/___torch_mangle_2950.py", line 12, in forward
+    weight = self.weight
+    static_padding = self.static_padding
+    input = torch._convolution((static_padding).forward(x, ), weight, None, [2, 2], [0, 0], [1, 1], False, [0, 0], 1, False, False, True, True)
+                                ~~~~~~~~~~~~~~~~~~~~~~~ <--- HERE
+    return input
+  File "code/__torch__/torch/nn/modules/padding/___torch_mangle_2949.py", line 8, in forward
+  def forward(self: __torch__.torch.nn.modules.padding.___torch_mangle_2949.ZeroPad2d,
+    x: Tensor) -> Tensor:
+    x0 = torch.pad(x, [0, 1, 0, 1], "constant", 0.)
+         ~~~~~~~~~ <--- HERE
+    return x0
+
+Traceback of TorchScript, original code (most recent call last):
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/padding.py(25): forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1488): _slow_forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1501): _call_impl
+/users/cezbar/.local/lib/python3.10/site-packages/efficientnet_pytorch/utils.py(274): forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1488): _slow_forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1501): _call_impl
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/container.py(217): forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1488): _slow_forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1501): _call_impl
+/users/cezbar/.local/lib/python3.10/site-packages/segmentation_models_pytorch/encoders/efficientnet.py(66): forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1488): _slow_forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1501): _call_impl
+/users/cezbar/.local/lib/python3.10/site-packages/segmentation_models_pytorch/base/model.py(29): forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1488): _slow_forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1501): _call_impl
+/users/cezbar/.local/lib/python3.10/site-packages/torch/jit/_trace.py(1056): trace_module
+/users/cezbar/.local/lib/python3.10/site-packages/torch/jit/_trace.py(794): trace
+<stdin>(1): <module>
+RuntimeError: CUDA out of memory. Tried to allocate 26.00 MiB. GPU 0 has a total capacity of 47.54 GiB of which 27.19 MiB is free. Process 1135374 has 270.00 MiB memory in use. Process 3222355 has 1.20 GiB memory in use. Process 3222283 has 1.21 GiB memory in use. Process 3222218 has 1.18 GiB memory in use. Process 3222339 has 1.17 GiB memory in use. Process 3222240 has 1.18 GiB memory in use. Process 3222295 has 1.21 GiB memory in use. Process 3222271 has 1.18 GiB memory in use. Process 3222286 has 1.21 GiB memory in use. Including non-PyTorch memory, this process has 1.02 GiB memory in use. Process 3222323 has 1.18 GiB memory in use. Process 3222226 has 1.18 GiB memory in use. Process 3222307 has 1.18 GiB memory in use. Process 3222352 has 1.12 GiB memory in use. Process 3222300 has 1.18 GiB memory in use. Process 3222263 has 1.18 GiB memory in use. Process 3222334 has 1.18 GiB memory in use. Process 3222311 has 1.20 GiB memory in use. Process 3222245 has 1.19 GiB memory in use. Process 3222203 has 1.18 GiB memory in use. Process 3222291 has 1.19 GiB memory in use. Process 3222316 has 1.17 GiB memory in use. Process 3222254 has 1.19 GiB memory in use. Process 3222279 has 1.18 GiB memory in use. Process 3222326 has 1.18 GiB memory in use. Process 3222234 has 1.20 GiB memory in use. Process 3222341 has 1.18 GiB memory in use. Process 3222221 has 1.26 GiB memory in use. Process 3222337 has 1.09 GiB memory in use. Process 3222231 has 1.18 GiB memory in use. Process 3222265 has 1.18 GiB memory in use. Process 3222305 has 1.19 GiB memory in use. Process 3222357 has 1.19 GiB memory in use. Process 3222346 has 1.19 GiB memory in use. Process 3222253 has 1.19 GiB memory in use. Process 3222273 has 1.16 GiB memory in use. Process 3222319 has 1.18 GiB memory in use. Process 3222215 has 1.19 GiB memory in use. Process 3222212 has 1.19 GiB memory in use. Process 3222243 has 1.18 GiB memory in use. Process 3222261 has 1.17 GiB memory in use. Of the allocated memory 117.19 MiB is allocated by PyTorch, and 10.81 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+2024-09-03 21:45:34,746 - INFO - > Load the Minicube 72 ...
+2024-09-03 21:45:34,842 - INFO - Resolution: 10
+2024-09-03 21:45:39,895 - ERROR - An error occurred for index 68: CUDA out of memory. Tried to allocate 2.00 MiB. GPU 0 has a total capacity of 47.54 GiB of which 5.19 MiB is free. Process 1135374 has 270.00 MiB memory in use. Process 3222355 has 1.20 GiB memory in use. Process 3222283 has 1.21 GiB memory in use. Process 3222218 has 1.18 GiB memory in use. Process 3222339 has 1.17 GiB memory in use. Process 3222240 has 1.18 GiB memory in use. Process 3222295 has 1.21 GiB memory in use. Process 3222271 has 1.18 GiB memory in use. Process 3222286 has 1.21 GiB memory in use. Including non-PyTorch memory, this process has 1.03 GiB memory in use. Process 3222323 has 1.18 GiB memory in use. Process 3222226 has 1.18 GiB memory in use. Process 3222307 has 1.18 GiB memory in use. Process 3222352 has 1.12 GiB memory in use. Process 3222300 has 1.18 GiB memory in use. Process 3222263 has 1.18 GiB memory in use. Process 3222334 has 1.18 GiB memory in use. Process 3222311 has 1.20 GiB memory in use. Process 3222245 has 1.19 GiB memory in use. Process 3222203 has 1.18 GiB memory in use. Process 3222291 has 1.19 GiB memory in use. Process 3222316 has 1.17 GiB memory in use. Process 3222254 has 1.20 GiB memory in use. Process 3222279 has 1.18 GiB memory in use. Process 3222326 has 1.18 GiB memory in use. Process 3222234 has 1.20 GiB memory in use. Process 3222341 has 1.18 GiB memory in use. Process 3222221 has 1.26 GiB memory in use. Process 3222337 has 1.09 GiB memory in use. Process 3222231 has 1.18 GiB memory in use. Process 3222265 has 1.18 GiB memory in use. Process 3222305 has 1.19 GiB memory in use. Process 3222357 has 1.19 GiB memory in use. Process 3222346 has 1.19 GiB memory in use. Process 3222253 has 1.19 GiB memory in use. Process 3222273 has 1.16 GiB memory in use. Process 3222319 has 1.18 GiB memory in use. Process 3222215 has 1.19 GiB memory in use. Process 3222212 has 1.19 GiB memory in use. Process 3222243 has 1.18 GiB memory in use. Process 3222261 has 1.17 GiB memory in use. Of the allocated memory 128.94 MiB is allocated by PyTorch, and 11.06 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+2024-09-03 21:45:39,898 - INFO - > Load the Minicube 73 ...
+2024-09-03 21:45:40,006 - INFO - Resolution: 10
+2024-09-03 21:45:45,931 - INFO - > Save the Minicube 72 ...
+2024-09-03 21:45:49,456 - INFO - > Save the Minicube 70 ...
+2024-09-03 21:45:55,052 - ERROR - An error occurred for index 70: The following operation failed in the TorchScript interpreter.
+Traceback of TorchScript, serialized code (most recent call last):
+  File "code/__torch__/segmentation_models_pytorch/decoders/unet/model/___torch_mangle_3371.py", line 14, in forward
+    decoder = self.decoder
+    encoder = self.encoder
+    _0, _1, _2, _3, _4, = (encoder).forward(x, )
+                           ~~~~~~~~~~~~~~~~ <--- HERE
+    _5 = (decoder).forward(_0, _1, _2, _3, _4, )
+    return (segmentation_head).forward(_5, )
+  File "code/__torch__/segmentation_models_pytorch/encoders/efficientnet/___torch_mangle_3297.py", line 67, in forward
+    _23 = (_bn0).forward((_conv_stem).forward(x, ), )
+    _24 = (_swish).forward(_23, )
+    _25 = (_2).forward((_1).forward((_0).forward(_24, ), ), )
+           ~~~~~~~~~~~ <--- HERE
+    _26 = (_4).forward((_3).forward(_25, ), )
+    _27 = (_7).forward((_6).forward((_5).forward(_26, ), ), )
+  File "code/__torch__/efficientnet_pytorch/model/___torch_mangle_2989.py", line 26, in forward
+    _bn0 = self._bn0
+    _expand_conv = self._expand_conv
+    _0 = (_expand_conv).forward(argument_1, )
+          ~~~~~~~~~~~~~~~~~~~~~ <--- HERE
+    _1 = (_swish).forward((_bn0).forward(_0, ), )
+    _2 = (_bn1).forward((_depthwise_conv).forward(_1, ), )
+  File "code/__torch__/efficientnet_pytorch/utils/___torch_mangle_2976.py", line 13, in forward
+    static_padding = self.static_padding
+    _0 = (static_padding).forward()
+    input = torch._convolution(argument_1, weight, None, [1, 1], [0, 0], [1, 1], False, [0, 0], 1, False, False, True, True)
+            ~~~~~~~~~~~~~~~~~~ <--- HERE
+    return input
+
+Traceback of TorchScript, original code (most recent call last):
+/users/cezbar/.local/lib/python3.10/site-packages/efficientnet_pytorch/utils.py(275): forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1488): _slow_forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1501): _call_impl
+/users/cezbar/.local/lib/python3.10/site-packages/efficientnet_pytorch/model.py(105): forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1488): _slow_forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1501): _call_impl
+/users/cezbar/.local/lib/python3.10/site-packages/segmentation_models_pytorch/encoders/efficientnet.py(73): forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1488): _slow_forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1501): _call_impl
+/users/cezbar/.local/lib/python3.10/site-packages/segmentation_models_pytorch/base/model.py(29): forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1488): _slow_forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1501): _call_impl
+/users/cezbar/.local/lib/python3.10/site-packages/torch/jit/_trace.py(1056): trace_module
+/users/cezbar/.local/lib/python3.10/site-packages/torch/jit/_trace.py(794): trace
+<stdin>(1): <module>
+RuntimeError: CUDA out of memory. Tried to allocate 50.00 MiB. GPU 0 has a total capacity of 47.54 GiB of which 45.19 MiB is free. Process 1135374 has 270.00 MiB memory in use. Process 3222355 has 1.20 GiB memory in use. Process 3222283 has 1.21 GiB memory in use. Process 3222218 has 1.18 GiB memory in use. Process 3222339 has 1.17 GiB memory in use. Process 3222240 has 1.18 GiB memory in use. Process 3222295 has 1.21 GiB memory in use. Process 3222271 has 1.18 GiB memory in use. Process 3222286 has 1.21 GiB memory in use. Including non-PyTorch memory, this process has 1.00 GiB memory in use. Process 3222323 has 1.18 GiB memory in use. Process 3222226 has 1.18 GiB memory in use. Process 3222307 has 1.18 GiB memory in use. Process 3222352 has 1.12 GiB memory in use. Process 3222300 has 1.18 GiB memory in use. Process 3222263 has 1.18 GiB memory in use. Process 3222334 has 1.18 GiB memory in use. Process 3222311 has 1.20 GiB memory in use. Process 3222245 has 1.19 GiB memory in use. Process 3222203 has 1.18 GiB memory in use. Process 3222291 has 1.19 GiB memory in use. Process 3222316 has 1.17 GiB memory in use. Process 3222254 has 1.20 GiB memory in use. Process 3222279 has 1.18 GiB memory in use. Process 3222326 has 1.18 GiB memory in use. Process 3222234 has 1.20 GiB memory in use. Process 3222341 has 1.18 GiB memory in use. Process 3222221 has 1.26 GiB memory in use. Process 3222337 has 1.06 GiB memory in use. Process 3222231 has 1.18 GiB memory in use. Process 3222265 has 1.18 GiB memory in use. Process 3222305 has 1.19 GiB memory in use. Process 3222357 has 1.19 GiB memory in use. Process 3222346 has 1.19 GiB memory in use. Process 3222253 has 1.20 GiB memory in use. Process 3222273 has 1.15 GiB memory in use. Process 3222319 has 1.18 GiB memory in use. Process 3222215 has 1.19 GiB memory in use. Process 3222212 has 1.19 GiB memory in use. Process 3222243 has 1.18 GiB memory in use. Process 3222261 has 1.17 GiB memory in use. Of the allocated memory 83.38 MiB is allocated by PyTorch, and 26.62 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+2024-09-03 21:45:55,053 - INFO - > Load the Minicube 74 ...
+2024-09-03 21:45:55,107 - INFO - Resolution: 10
+2024-09-03 21:46:00,730 - INFO - > Save the Minicube 74 ...
+2024-09-03 21:46:01,715 - ERROR - An error occurred for index 69: CUDA out of memory. Tried to allocate 26.00 MiB. GPU 0 has a total capacity of 47.54 GiB of which 7.19 MiB is free. Process 1135374 has 270.00 MiB memory in use. Process 3222355 has 1.20 GiB memory in use. Process 3222283 has 1.21 GiB memory in use. Process 3222218 has 1.18 GiB memory in use. Process 3222339 has 1.17 GiB memory in use. Process 3222240 has 1.18 GiB memory in use. Process 3222295 has 1.21 GiB memory in use. Process 3222271 has 1.18 GiB memory in use. Process 3222286 has 1.21 GiB memory in use. Process 3222210 has 1.02 GiB memory in use. Process 3222323 has 1.18 GiB memory in use. Process 3222226 has 1.18 GiB memory in use. Process 3222307 has 1.18 GiB memory in use. Process 3222352 has 1.12 GiB memory in use. Process 3222300 has 1.18 GiB memory in use. Process 3222263 has 1.18 GiB memory in use. Process 3222334 has 1.18 GiB memory in use. Process 3222311 has 1.20 GiB memory in use. Process 3222245 has 1.19 GiB memory in use. Process 3222203 has 1.18 GiB memory in use. Process 3222291 has 1.19 GiB memory in use. Process 3222316 has 1.17 GiB memory in use. Process 3222254 has 1.20 GiB memory in use. Process 3222279 has 1.18 GiB memory in use. Process 3222326 has 1.18 GiB memory in use. Process 3222234 has 1.20 GiB memory in use. Process 3222341 has 1.18 GiB memory in use. Process 3222221 has 1.26 GiB memory in use. Including non-PyTorch memory, this process has 1.08 GiB memory in use. Process 3222231 has 1.18 GiB memory in use. Process 3222265 has 1.18 GiB memory in use. Process 3222305 has 1.19 GiB memory in use. Process 3222357 has 1.19 GiB memory in use. Process 3222346 has 1.19 GiB memory in use. Process 3222253 has 1.20 GiB memory in use. Process 3222273 has 1.15 GiB memory in use. Process 3222319 has 1.18 GiB memory in use. Process 3222215 has 1.19 GiB memory in use. Process 3222212 has 1.19 GiB memory in use. Process 3222243 has 1.18 GiB memory in use. Process 3222261 has 1.17 GiB memory in use. Of the allocated memory 185.17 MiB is allocated by PyTorch, and 4.83 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+2024-09-03 21:46:01,721 - INFO - > Load the Minicube 75 ...
+2024-09-03 21:46:01,812 - INFO - Resolution: 10
+2024-09-03 21:46:07,102 - INFO - > Save the Minicube 73 ...
+2024-09-03 21:46:10,200 - INFO - > Save the Minicube 75 ...
+2024-09-03 21:46:12,673 - ERROR - An error occurred for index 72: The following operation failed in the TorchScript interpreter.
+Traceback of TorchScript, serialized code (most recent call last):
+  File "code/__torch__/segmentation_models_pytorch/decoders/unet/model/___torch_mangle_3371.py", line 14, in forward
+    decoder = self.decoder
+    encoder = self.encoder
+    _0, _1, _2, _3, _4, = (encoder).forward(x, )
+                           ~~~~~~~~~~~~~~~~ <--- HERE
+    _5 = (decoder).forward(_0, _1, _2, _3, _4, )
+    return (segmentation_head).forward(_5, )
+  File "code/__torch__/segmentation_models_pytorch/encoders/efficientnet/___torch_mangle_3297.py", line 65, in forward
+    _bn0 = self._bn0
+    _conv_stem = self._conv_stem
+    _23 = (_bn0).forward((_conv_stem).forward(x, ), )
+                          ~~~~~~~~~~~~~~~~~~~ <--- HERE
+    _24 = (_swish).forward(_23, )
+    _25 = (_2).forward((_1).forward((_0).forward(_24, ), ), )
+  File "code/__torch__/efficientnet_pytorch/utils/___torch_mangle_2950.py", line 12, in forward
+    weight = self.weight
+    static_padding = self.static_padding
+    input = torch._convolution((static_padding).forward(x, ), weight, None, [2, 2], [0, 0], [1, 1], False, [0, 0], 1, False, False, True, True)
+            ~~~~~~~~~~~~~~~~~~ <--- HERE
+    return input
+
+Traceback of TorchScript, original code (most recent call last):
+/users/cezbar/.local/lib/python3.10/site-packages/efficientnet_pytorch/utils.py(275): forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1488): _slow_forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1501): _call_impl
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/container.py(217): forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1488): _slow_forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1501): _call_impl
+/users/cezbar/.local/lib/python3.10/site-packages/segmentation_models_pytorch/encoders/efficientnet.py(66): forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1488): _slow_forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1501): _call_impl
+/users/cezbar/.local/lib/python3.10/site-packages/segmentation_models_pytorch/base/model.py(29): forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1488): _slow_forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1501): _call_impl
+/users/cezbar/.local/lib/python3.10/site-packages/torch/jit/_trace.py(1056): trace_module
+/users/cezbar/.local/lib/python3.10/site-packages/torch/jit/_trace.py(794): trace
+<stdin>(1): <module>
+RuntimeError: CUDA out of memory. Tried to allocate 18.00 MiB. GPU 0 has a total capacity of 47.54 GiB of which 19.19 MiB is free. Process 1135374 has 270.00 MiB memory in use. Process 3222355 has 1.20 GiB memory in use. Process 3222283 has 1.21 GiB memory in use. Process 3222218 has 1.18 GiB memory in use. Process 3222339 has 1.17 GiB memory in use. Process 3222240 has 1.20 GiB memory in use. Process 3222295 has 1.21 GiB memory in use. Process 3222271 has 1.18 GiB memory in use. Process 3222286 has 1.21 GiB memory in use. Process 3222210 has 1.18 GiB memory in use. Including non-PyTorch memory, this process has 1.03 GiB memory in use. Process 3222226 has 1.18 GiB memory in use. Process 3222307 has 1.18 GiB memory in use. Process 3222352 has 1.12 GiB memory in use. Process 3222300 has 1.18 GiB memory in use. Process 3222263 has 1.18 GiB memory in use. Process 3222334 has 1.18 GiB memory in use. Process 3222311 has 1.20 GiB memory in use. Process 3222245 has 1.20 GiB memory in use. Process 3222203 has 1.18 GiB memory in use. Process 3222291 has 1.20 GiB memory in use. Process 3222316 has 1.17 GiB memory in use. Process 3222254 has 1.20 GiB memory in use. Process 3222279 has 1.18 GiB memory in use. Process 3222326 has 1.18 GiB memory in use. Process 3222234 has 1.20 GiB memory in use. Process 3222341 has 1.18 GiB memory in use. Process 3222221 has 1.26 GiB memory in use. Process 3222337 has 1.08 GiB memory in use. Process 3222231 has 1.18 GiB memory in use. Process 3222265 has 1.18 GiB memory in use. Process 3222305 has 1.19 GiB memory in use. Process 3222357 has 1.19 GiB memory in use. Process 3222346 has 1.19 GiB memory in use. Process 3222253 has 1.20 GiB memory in use. Process 3222273 has 1.09 GiB memory in use. Process 3222319 has 1.18 GiB memory in use. Process 3222215 has 1.19 GiB memory in use. Process 3222212 has 1.19 GiB memory in use. Process 3222243 has 1.18 GiB memory in use. Process 3222261 has 1.17 GiB memory in use. Of the allocated memory 142.06 MiB is allocated by PyTorch, and 9.94 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+2024-09-03 21:46:12,680 - INFO - > Load the Minicube 76 ...
+2024-09-03 21:46:12,771 - INFO - Resolution: 10
+2024-09-03 21:46:19,434 - INFO - > Save the Minicube 76 ...
+2024-09-03 21:46:19,472 - ERROR - An error occurred for index 71: CUDA driver error: out of memory
+2024-09-03 21:46:19,474 - INFO - > Load the Minicube 77 ...
+2024-09-03 21:46:19,561 - INFO - Resolution: 10
+2024-09-03 21:46:23,375 - ERROR - An error occurred for index 74: CUDA out of memory. Tried to allocate 2.00 MiB. GPU 0 has a total capacity of 47.54 GiB of which 5.19 MiB is free. Process 1135374 has 270.00 MiB memory in use. Process 3222355 has 1.20 GiB memory in use. Process 3222283 has 1.21 GiB memory in use. Process 3222218 has 1.18 GiB memory in use. Process 3222339 has 1.17 GiB memory in use. Process 3222240 has 1.20 GiB memory in use. Process 3222295 has 1.21 GiB memory in use. Process 3222271 has 1.18 GiB memory in use. Process 3222286 has 1.21 GiB memory in use. Process 3222210 has 1.13 GiB memory in use. Including non-PyTorch memory, this process has 1.05 GiB memory in use. Process 3222226 has 1.18 GiB memory in use. Process 3222307 has 1.18 GiB memory in use. Process 3222352 has 1.12 GiB memory in use. Process 3222300 has 1.19 GiB memory in use. Process 3222263 has 1.18 GiB memory in use. Process 3222334 has 1.18 GiB memory in use. Process 3222311 has 1.20 GiB memory in use. Process 3222245 has 1.21 GiB memory in use. Process 3222203 has 1.18 GiB memory in use. Process 3222291 has 1.20 GiB memory in use. Process 3222316 has 1.17 GiB memory in use. Process 3222254 has 1.20 GiB memory in use. Process 3222279 has 1.18 GiB memory in use. Process 3222326 has 1.18 GiB memory in use. Process 3222234 has 1.20 GiB memory in use. Process 3222341 has 1.18 GiB memory in use. Process 3222221 has 1.26 GiB memory in use. Process 3222337 has 1.08 GiB memory in use. Process 3222231 has 1.18 GiB memory in use. Process 3222265 has 1.18 GiB memory in use. Process 3222305 has 1.19 GiB memory in use. Process 3222357 has 1.19 GiB memory in use. Process 3222346 has 1.19 GiB memory in use. Process 3222253 has 1.20 GiB memory in use. Process 3222273 has 1.09 GiB memory in use. Process 3222319 has 1.18 GiB memory in use. Process 3222215 has 1.19 GiB memory in use. Process 3222212 has 1.19 GiB memory in use. Process 3222243 has 1.18 GiB memory in use. Process 3222261 has 1.17 GiB memory in use. Of the allocated memory 153.26 MiB is allocated by PyTorch, and 18.74 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+2024-09-03 21:46:23,380 - INFO - > Load the Minicube 78 ...
+2024-09-03 21:46:23,474 - INFO - Resolution: 10
+2024-09-03 21:46:27,890 - INFO - > Save the Minicube 77 ...
+2024-09-03 21:46:31,966 - ERROR - An error occurred for index 73: The following operation failed in the TorchScript interpreter.
+Traceback of TorchScript, serialized code (most recent call last):
+  File "code/__torch__/segmentation_models_pytorch/decoders/unet/model/___torch_mangle_3371.py", line 14, in forward
+    decoder = self.decoder
+    encoder = self.encoder
+    _0, _1, _2, _3, _4, = (encoder).forward(x, )
+                           ~~~~~~~~~~~~~~~~ <--- HERE
+    _5 = (decoder).forward(_0, _1, _2, _3, _4, )
+    return (segmentation_head).forward(_5, )
+  File "code/__torch__/segmentation_models_pytorch/encoders/efficientnet/___torch_mangle_3297.py", line 67, in forward
+    _23 = (_bn0).forward((_conv_stem).forward(x, ), )
+    _24 = (_swish).forward(_23, )
+    _25 = (_2).forward((_1).forward((_0).forward(_24, ), ), )
+           ~~~~~~~~~~~ <--- HERE
+    _26 = (_4).forward((_3).forward(_25, ), )
+    _27 = (_7).forward((_6).forward((_5).forward(_26, ), ), )
+  File "code/__torch__/efficientnet_pytorch/model/___torch_mangle_2989.py", line 27, in forward
+    _expand_conv = self._expand_conv
+    _0 = (_expand_conv).forward(argument_1, )
+    _1 = (_swish).forward((_bn0).forward(_0, ), )
+                           ~~~~~~~~~~~~~ <--- HERE
+    _2 = (_bn1).forward((_depthwise_conv).forward(_1, ), )
+    _3 = (_swish).forward1(_2, )
+  File "code/__torch__/torch/nn/modules/batchnorm/___torch_mangle_2977.py", line 17, in forward
+    bias = self.bias
+    weight = self.weight
+    input = torch.batch_norm(argument_1, weight, bias, running_mean, running_var, False, 0.010000000000000009, 0.001, True)
+            ~~~~~~~~~~~~~~~~ <--- HERE
+    return input
+
+Traceback of TorchScript, original code (most recent call last):
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/functional.py(2450): batch_norm
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/batchnorm.py(171): forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1488): _slow_forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1501): _call_impl
+/users/cezbar/.local/lib/python3.10/site-packages/efficientnet_pytorch/model.py(106): forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1488): _slow_forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1501): _call_impl
+/users/cezbar/.local/lib/python3.10/site-packages/segmentation_models_pytorch/encoders/efficientnet.py(73): forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1488): _slow_forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1501): _call_impl
+/users/cezbar/.local/lib/python3.10/site-packages/segmentation_models_pytorch/base/model.py(29): forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1488): _slow_forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1501): _call_impl
+/users/cezbar/.local/lib/python3.10/site-packages/torch/jit/_trace.py(1056): trace_module
+/users/cezbar/.local/lib/python3.10/site-packages/torch/jit/_trace.py(794): trace
+<stdin>(1): <module>
+RuntimeError: CUDA out of memory. Tried to allocate 50.00 MiB. GPU 0 has a total capacity of 47.54 GiB of which 27.19 MiB is free. Process 1135374 has 270.00 MiB memory in use. Process 3222355 has 1.20 GiB memory in use. Process 3222283 has 1.21 GiB memory in use. Process 3222218 has 1.18 GiB memory in use. Process 3222339 has 1.17 GiB memory in use. Process 3222240 has 1.20 GiB memory in use. Process 3222295 has 1.21 GiB memory in use. Process 3222271 has 1.18 GiB memory in use. Process 3222286 has 1.21 GiB memory in use. Including non-PyTorch memory, this process has 1.12 GiB memory in use. Process 3222323 has 1.05 GiB memory in use. Process 3222226 has 1.18 GiB memory in use. Process 3222307 has 1.18 GiB memory in use. Process 3222352 has 1.12 GiB memory in use. Process 3222300 has 1.19 GiB memory in use. Process 3222263 has 1.18 GiB memory in use. Process 3222334 has 1.18 GiB memory in use. Process 3222311 has 1.20 GiB memory in use. Process 3222245 has 1.21 GiB memory in use. Process 3222203 has 1.18 GiB memory in use. Process 3222291 has 1.20 GiB memory in use. Process 3222316 has 1.17 GiB memory in use. Process 3222254 has 1.20 GiB memory in use. Process 3222279 has 1.17 GiB memory in use. Process 3222326 has 1.18 GiB memory in use. Process 3222234 has 1.20 GiB memory in use. Process 3222341 has 1.18 GiB memory in use. Process 3222221 has 1.26 GiB memory in use. Process 3222337 has 1.07 GiB memory in use. Process 3222231 has 1.18 GiB memory in use. Process 3222265 has 1.18 GiB memory in use. Process 3222305 has 1.19 GiB memory in use. Process 3222357 has 1.19 GiB memory in use. Process 3222346 has 1.19 GiB memory in use. Process 3222253 has 1.20 GiB memory in use. Process 3222273 has 1.11 GiB memory in use. Process 3222319 has 1.18 GiB memory in use. Process 3222215 has 1.19 GiB memory in use. Process 3222212 has 1.19 GiB memory in use. Process 3222243 has 1.18 GiB memory in use. Process 3222261 has 1.17 GiB memory in use. Of the allocated memory 184.18 MiB is allocated by PyTorch, and 37.82 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+2024-09-03 21:46:31,968 - INFO - > Load the Minicube 79 ...
+2024-09-03 21:46:32,070 - INFO - Resolution: 10
+2024-09-03 21:46:36,879 - INFO - > Save the Minicube 79 ...
+2024-09-03 21:46:39,204 - ERROR - An error occurred for index 76: CUDA driver error: out of memory
+2024-09-03 21:46:39,207 - INFO - > Load the Minicube 80 ...
+2024-09-03 21:46:39,300 - INFO - Resolution: 10
+2024-09-03 21:46:44,847 - ERROR - An error occurred for index 75: CUDA out of memory. Tried to allocate 26.00 MiB. GPU 0 has a total capacity of 47.54 GiB of which 21.19 MiB is free. Process 1135374 has 270.00 MiB memory in use. Process 3222355 has 1.20 GiB memory in use. Process 3222283 has 1.21 GiB memory in use. Process 3222218 has 1.18 GiB memory in use. Process 3222339 has 1.17 GiB memory in use. Process 3222240 has 1.20 GiB memory in use. Process 3222295 has 1.21 GiB memory in use. Process 3222271 has 1.18 GiB memory in use. Process 3222286 has 1.21 GiB memory in use. Process 3222210 has 1.12 GiB memory in use. Including non-PyTorch memory, this process has 1010.00 MiB memory in use. Process 3222226 has 1.18 GiB memory in use. Process 3222307 has 1.18 GiB memory in use. Process 3222352 has 1.12 GiB memory in use. Process 3222300 has 1.19 GiB memory in use. Process 3222263 has 1.18 GiB memory in use. Process 3222334 has 1.18 GiB memory in use. Process 3222311 has 1.20 GiB memory in use. Process 3222245 has 1.21 GiB memory in use. Process 3222203 has 1.18 GiB memory in use. Process 3222291 has 1.20 GiB memory in use. Process 3222316 has 1.19 GiB memory in use. Process 3222254 has 1.20 GiB memory in use. Process 3222279 has 1.22 GiB memory in use. Process 3222326 has 1.18 GiB memory in use. Process 3222234 has 1.20 GiB memory in use. Process 3222341 has 1.18 GiB memory in use. Process 3222221 has 1.26 GiB memory in use. Process 3222337 has 1.06 GiB memory in use. Process 3222231 has 1.18 GiB memory in use. Process 3222265 has 1.18 GiB memory in use. Process 3222305 has 1.19 GiB memory in use. Process 3222357 has 1.19 GiB memory in use. Process 3222346 has 1.19 GiB memory in use. Process 3222253 has 1.20 GiB memory in use. Process 3222273 has 1.11 GiB memory in use. Process 3222319 has 1.18 GiB memory in use. Process 3222215 has 1.19 GiB memory in use. Process 3222212 has 1.19 GiB memory in use. Process 3222243 has 1.18 GiB memory in use. Process 3222261 has 1.17 GiB memory in use. Of the allocated memory 92.39 MiB is allocated by PyTorch, and 9.61 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+2024-09-03 21:46:44,848 - INFO - > Load the Minicube 81 ...
+2024-09-03 21:46:44,933 - INFO - Resolution: 10
+2024-09-03 21:46:48,479 - ERROR - An error occurred for index 77: CUDA out of memory. Tried to allocate 2.00 MiB. GPU 0 has a total capacity of 47.54 GiB of which 5.19 MiB is free. Process 1135374 has 270.00 MiB memory in use. Process 3222355 has 1.20 GiB memory in use. Process 3222283 has 1.21 GiB memory in use. Process 3222218 has 1.18 GiB memory in use. Process 3222339 has 1.17 GiB memory in use. Process 3222240 has 1.20 GiB memory in use. Process 3222295 has 1.21 GiB memory in use. Process 3222271 has 1.18 GiB memory in use. Process 3222286 has 1.21 GiB memory in use. Process 3222210 has 1.08 GiB memory in use. Including non-PyTorch memory, this process has 1.01 GiB memory in use. Process 3222226 has 1.18 GiB memory in use. Process 3222307 has 1.18 GiB memory in use. Process 3222352 has 1.12 GiB memory in use. Process 3222300 has 1.19 GiB memory in use. Process 3222263 has 1.18 GiB memory in use. Process 3222334 has 1.18 GiB memory in use. Process 3222311 has 1.20 GiB memory in use. Process 3222245 has 1.21 GiB memory in use. Process 3222203 has 1.18 GiB memory in use. Process 3222291 has 1.20 GiB memory in use. Process 3222316 has 1.19 GiB memory in use. Process 3222254 has 1.20 GiB memory in use. Process 3222279 has 1.22 GiB memory in use. Process 3222326 has 1.18 GiB memory in use. Process 3222234 has 1.20 GiB memory in use. Process 3222341 has 1.18 GiB memory in use. Process 3222221 has 1.26 GiB memory in use. Process 3222337 has 1.09 GiB memory in use. Process 3222231 has 1.18 GiB memory in use. Process 3222265 has 1.18 GiB memory in use. Process 3222305 has 1.19 GiB memory in use. Process 3222357 has 1.19 GiB memory in use. Process 3222346 has 1.19 GiB memory in use. Process 3222253 has 1.20 GiB memory in use. Process 3222273 has 1.11 GiB memory in use. Process 3222319 has 1.18 GiB memory in use. Process 3222215 has 1.19 GiB memory in use. Process 3222212 has 1.19 GiB memory in use. Process 3222243 has 1.18 GiB memory in use. Process 3222261 has 1.17 GiB memory in use. Of the allocated memory 116.45 MiB is allocated by PyTorch, and 9.55 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+2024-09-03 21:46:48,480 - INFO - > Load the Minicube 82 ...
+2024-09-03 21:46:48,564 - INFO - Resolution: 10
+2024-09-03 21:46:53,943 - INFO - > Save the Minicube 81 ...
+2024-09-03 21:46:53,994 - INFO - > Save the Minicube 80 ...
+2024-09-03 21:46:55,781 - INFO - > Save the Minicube 78 ...
+2024-09-03 21:47:00,029 - ERROR - An error occurred for index 80: CUDA out of memory. Tried to allocate 26.00 MiB. GPU 0 has a total capacity of 47.54 GiB of which 9.19 MiB is free. Process 1135374 has 270.00 MiB memory in use. Process 3222355 has 1.20 GiB memory in use. Process 3222283 has 1.21 GiB memory in use. Process 3222218 has 1.18 GiB memory in use. Process 3222339 has 1.17 GiB memory in use. Process 3222240 has 1.20 GiB memory in use. Process 3222295 has 1.21 GiB memory in use. Process 3222271 has 1.18 GiB memory in use. Process 3222286 has 1.21 GiB memory in use. Process 3222210 has 1.08 GiB memory in use. Including non-PyTorch memory, this process has 1010.00 MiB memory in use. Process 3222226 has 1.18 GiB memory in use. Process 3222307 has 1.18 GiB memory in use. Process 3222352 has 1.12 GiB memory in use. Process 3222300 has 1.19 GiB memory in use. Process 3222263 has 1.18 GiB memory in use. Process 3222334 has 1.18 GiB memory in use. Process 3222311 has 1.20 GiB memory in use. Process 3222245 has 1.21 GiB memory in use. Process 3222203 has 1.18 GiB memory in use. Process 3222291 has 1.20 GiB memory in use. Process 3222316 has 1.19 GiB memory in use. Process 3222254 has 1.20 GiB memory in use. Process 3222279 has 1.22 GiB memory in use. Process 3222326 has 1.18 GiB memory in use. Process 3222234 has 1.20 GiB memory in use. Process 3222341 has 1.18 GiB memory in use. Process 3222221 has 1.26 GiB memory in use. Process 3222337 has 1.10 GiB memory in use. Process 3222231 has 1.18 GiB memory in use. Process 3222265 has 1.18 GiB memory in use. Process 3222305 has 1.19 GiB memory in use. Process 3222357 has 1.19 GiB memory in use. Process 3222346 has 1.19 GiB memory in use. Process 3222253 has 1.20 GiB memory in use. Process 3222273 has 1.11 GiB memory in use. Process 3222319 has 1.18 GiB memory in use. Process 3222215 has 1.19 GiB memory in use. Process 3222212 has 1.19 GiB memory in use. Process 3222243 has 1.18 GiB memory in use. Process 3222261 has 1.17 GiB memory in use. Of the allocated memory 92.39 MiB is allocated by PyTorch, and 9.61 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+2024-09-03 21:47:00,031 - INFO - > Load the Minicube 83 ...
+2024-09-03 21:47:00,126 - INFO - Resolution: 10
+2024-09-03 21:47:03,768 - ERROR - An error occurred for index 79: The following operation failed in the TorchScript interpreter.
+Traceback of TorchScript, serialized code (most recent call last):
+  File "code/__torch__/segmentation_models_pytorch/decoders/unet/model/___torch_mangle_3371.py", line 14, in forward
+    decoder = self.decoder
+    encoder = self.encoder
+    _0, _1, _2, _3, _4, = (encoder).forward(x, )
+                           ~~~~~~~~~~~~~~~~ <--- HERE
+    _5 = (decoder).forward(_0, _1, _2, _3, _4, )
+    return (segmentation_head).forward(_5, )
+  File "code/__torch__/segmentation_models_pytorch/encoders/efficientnet/___torch_mangle_3297.py", line 67, in forward
+    _23 = (_bn0).forward((_conv_stem).forward(x, ), )
+    _24 = (_swish).forward(_23, )
+    _25 = (_2).forward((_1).forward((_0).forward(_24, ), ), )
+           ~~~~~~~~~~~ <--- HERE
+    _26 = (_4).forward((_3).forward(_25, ), )
+    _27 = (_7).forward((_6).forward((_5).forward(_26, ), ), )
+  File "code/__torch__/efficientnet_pytorch/model/___torch_mangle_2989.py", line 26, in forward
+    _bn0 = self._bn0
+    _expand_conv = self._expand_conv
+    _0 = (_expand_conv).forward(argument_1, )
+          ~~~~~~~~~~~~~~~~~~~~~ <--- HERE
+    _1 = (_swish).forward((_bn0).forward(_0, ), )
+    _2 = (_bn1).forward((_depthwise_conv).forward(_1, ), )
+  File "code/__torch__/efficientnet_pytorch/utils/___torch_mangle_2976.py", line 13, in forward
+    static_padding = self.static_padding
+    _0 = (static_padding).forward()
+    input = torch._convolution(argument_1, weight, None, [1, 1], [0, 0], [1, 1], False, [0, 0], 1, False, False, True, True)
+            ~~~~~~~~~~~~~~~~~~ <--- HERE
+    return input
+
+Traceback of TorchScript, original code (most recent call last):
+/users/cezbar/.local/lib/python3.10/site-packages/efficientnet_pytorch/utils.py(275): forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1488): _slow_forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1501): _call_impl
+/users/cezbar/.local/lib/python3.10/site-packages/efficientnet_pytorch/model.py(105): forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1488): _slow_forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1501): _call_impl
+/users/cezbar/.local/lib/python3.10/site-packages/segmentation_models_pytorch/encoders/efficientnet.py(73): forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1488): _slow_forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1501): _call_impl
+/users/cezbar/.local/lib/python3.10/site-packages/segmentation_models_pytorch/base/model.py(29): forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1488): _slow_forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1501): _call_impl
+/users/cezbar/.local/lib/python3.10/site-packages/torch/jit/_trace.py(1056): trace_module
+/users/cezbar/.local/lib/python3.10/site-packages/torch/jit/_trace.py(794): trace
+<stdin>(1): <module>
+RuntimeError: CUDA out of memory. Tried to allocate 50.00 MiB. GPU 0 has a total capacity of 47.54 GiB of which 35.19 MiB is free. Process 1135374 has 270.00 MiB memory in use. Process 3222355 has 1.20 GiB memory in use. Process 3222283 has 1.21 GiB memory in use. Process 3222218 has 1.18 GiB memory in use. Process 3222339 has 1.17 GiB memory in use. Process 3222240 has 1.20 GiB memory in use. Process 3222295 has 1.21 GiB memory in use. Process 3222271 has 1.18 GiB memory in use. Process 3222286 has 1.21 GiB memory in use. Process 3222210 has 1.08 GiB memory in use. Process 3222323 has 1010.00 MiB memory in use. Process 3222226 has 1.18 GiB memory in use. Process 3222307 has 1.18 GiB memory in use. Process 3222352 has 1.12 GiB memory in use. Process 3222300 has 1.19 GiB memory in use. Process 3222263 has 1.18 GiB memory in use. Process 3222334 has 1.18 GiB memory in use. Process 3222311 has 1.20 GiB memory in use. Process 3222245 has 1.21 GiB memory in use. Process 3222203 has 1.18 GiB memory in use. Process 3222291 has 1.20 GiB memory in use. Process 3222316 has 1.19 GiB memory in use. Process 3222254 has 1.20 GiB memory in use. Process 3222279 has 1.22 GiB memory in use. Process 3222326 has 1.18 GiB memory in use. Process 3222234 has 1.20 GiB memory in use. Process 3222341 has 1.12 GiB memory in use. Process 3222221 has 1.26 GiB memory in use. Process 3222337 has 1.14 GiB memory in use. Process 3222231 has 1.18 GiB memory in use. Process 3222265 has 1.18 GiB memory in use. Process 3222305 has 1.19 GiB memory in use. Process 3222357 has 1.20 GiB memory in use. Process 3222346 has 1.19 GiB memory in use. Process 3222253 has 1.20 GiB memory in use. Including non-PyTorch memory, this process has 1.12 GiB memory in use. Process 3222319 has 1.13 GiB memory in use. Process 3222215 has 1.19 GiB memory in use. Process 3222212 has 1.21 GiB memory in use. Process 3222243 has 1.18 GiB memory in use. Process 3222261 has 1.17 GiB memory in use. Of the allocated memory 200.88 MiB is allocated by PyTorch, and 65.12 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+2024-09-03 21:47:03,792 - INFO - > Load the Minicube 84 ...
+2024-09-03 21:47:03,889 - INFO - Resolution: 10
+2024-09-03 21:47:03,905 - ERROR - An error occurred for index 81: CUDA out of memory. Tried to allocate 20.00 MiB. GPU 0 has a total capacity of 47.54 GiB of which 17.19 MiB is free. Process 1135374 has 270.00 MiB memory in use. Process 3222355 has 1.20 GiB memory in use. Process 3222283 has 1.21 GiB memory in use. Process 3222218 has 1.18 GiB memory in use. Process 3222339 has 1.17 GiB memory in use. Process 3222240 has 1.20 GiB memory in use. Process 3222295 has 1.21 GiB memory in use. Process 3222271 has 1.18 GiB memory in use. Process 3222286 has 1.21 GiB memory in use. Process 3222210 has 1.08 GiB memory in use. Including non-PyTorch memory, this process has 1.00 GiB memory in use. Process 3222226 has 1.18 GiB memory in use. Process 3222307 has 1.18 GiB memory in use. Process 3222352 has 1.12 GiB memory in use. Process 3222300 has 1.19 GiB memory in use. Process 3222263 has 1.18 GiB memory in use. Process 3222334 has 1.18 GiB memory in use. Process 3222311 has 1.20 GiB memory in use. Process 3222245 has 1.21 GiB memory in use. Process 3222203 has 1.18 GiB memory in use. Process 3222291 has 1.20 GiB memory in use. Process 3222316 has 1.19 GiB memory in use. Process 3222254 has 1.20 GiB memory in use. Process 3222279 has 1.22 GiB memory in use. Process 3222326 has 1.18 GiB memory in use. Process 3222234 has 1.20 GiB memory in use. Process 3222341 has 1.12 GiB memory in use. Process 3222221 has 1.26 GiB memory in use. Process 3222337 has 1.14 GiB memory in use. Process 3222231 has 1.18 GiB memory in use. Process 3222265 has 1.18 GiB memory in use. Process 3222305 has 1.19 GiB memory in use. Process 3222357 has 1.20 GiB memory in use. Process 3222346 has 1.19 GiB memory in use. Process 3222253 has 1.20 GiB memory in use. Process 3222273 has 1.12 GiB memory in use. Process 3222319 has 1.13 GiB memory in use. Process 3222215 has 1.19 GiB memory in use. Process 3222212 has 1.21 GiB memory in use. Process 3222243 has 1.18 GiB memory in use. Process 3222261 has 1.17 GiB memory in use. Of the allocated memory 117.90 MiB is allocated by PyTorch, and 2.10 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+2024-09-03 21:47:03,907 - INFO - > Load the Minicube 85 ...
+2024-09-03 21:47:03,990 - INFO - Resolution: 10
+2024-09-03 21:47:08,093 - INFO - > Save the Minicube 83 ...
+2024-09-03 21:47:10,278 - ERROR - An error occurred for index 78: The following operation failed in the TorchScript interpreter.
+Traceback of TorchScript, serialized code (most recent call last):
+  File "code/__torch__/segmentation_models_pytorch/decoders/unet/model/___torch_mangle_3371.py", line 14, in forward
+    decoder = self.decoder
+    encoder = self.encoder
+    _0, _1, _2, _3, _4, = (encoder).forward(x, )
+                           ~~~~~~~~~~~~~~~~ <--- HERE
+    _5 = (decoder).forward(_0, _1, _2, _3, _4, )
+    return (segmentation_head).forward(_5, )
+  File "code/__torch__/segmentation_models_pytorch/encoders/efficientnet/___torch_mangle_3297.py", line 67, in forward
+    _23 = (_bn0).forward((_conv_stem).forward(x, ), )
+    _24 = (_swish).forward(_23, )
+    _25 = (_2).forward((_1).forward((_0).forward(_24, ), ), )
+                                     ~~~~~~~~~~~ <--- HERE
+    _26 = (_4).forward((_3).forward(_25, ), )
+    _27 = (_7).forward((_6).forward((_5).forward(_26, ), ), )
+  File "code/__torch__/efficientnet_pytorch/model/___torch_mangle_2962.py", line 22, in forward
+    _bn1 = self._bn1
+    _depthwise_conv = self._depthwise_conv
+    _0 = (_depthwise_conv).forward(argument_1, )
+          ~~~~~~~~~~~~~~~~~~~~~~~~ <--- HERE
+    _1 = (_swish).forward((_bn1).forward(_0, ), )
+    x = torch.adaptive_avg_pool2d(_1, [1, 1])
+  File "code/__torch__/efficientnet_pytorch/utils/___torch_mangle_2953.py", line 13, in forward
+    static_padding = self.static_padding
+    _0 = (static_padding).forward(argument_1, )
+    input = torch._convolution(_0, weight, None, [1, 1], [0, 0], [1, 1], False, [0, 0], 32, False, False, True, True)
+            ~~~~~~~~~~~~~~~~~~ <--- HERE
+    return input
+
+Traceback of TorchScript, original code (most recent call last):
+/users/cezbar/.local/lib/python3.10/site-packages/efficientnet_pytorch/utils.py(275): forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1488): _slow_forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1501): _call_impl
+/users/cezbar/.local/lib/python3.10/site-packages/efficientnet_pytorch/model.py(109): forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1488): _slow_forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1501): _call_impl
+/users/cezbar/.local/lib/python3.10/site-packages/segmentation_models_pytorch/encoders/efficientnet.py(73): forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1488): _slow_forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1501): _call_impl
+/users/cezbar/.local/lib/python3.10/site-packages/segmentation_models_pytorch/base/model.py(29): forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1488): _slow_forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1501): _call_impl
+/users/cezbar/.local/lib/python3.10/site-packages/torch/jit/_trace.py(1056): trace_module
+/users/cezbar/.local/lib/python3.10/site-packages/torch/jit/_trace.py(794): trace
+<stdin>(1): <module>
+RuntimeError: CUDA out of memory. Tried to allocate 18.00 MiB. GPU 0 has a total capacity of 47.54 GiB of which 9.19 MiB is free. Process 1135374 has 270.00 MiB memory in use. Process 3222355 has 1.20 GiB memory in use. Process 3222283 has 1.21 GiB memory in use. Process 3222218 has 1.18 GiB memory in use. Process 3222339 has 1.17 GiB memory in use. Process 3222240 has 1.20 GiB memory in use. Process 3222295 has 1.21 GiB memory in use. Process 3222271 has 1.18 GiB memory in use. Process 3222286 has 1.21 GiB memory in use. Process 3222210 has 1.03 GiB memory in use. Including non-PyTorch memory, this process has 1.11 GiB memory in use. Process 3222226 has 1.18 GiB memory in use. Process 3222307 has 1.18 GiB memory in use. Process 3222352 has 1.12 GiB memory in use. Process 3222300 has 1.19 GiB memory in use. Process 3222263 has 1.18 GiB memory in use. Process 3222334 has 1.18 GiB memory in use. Process 3222311 has 1.20 GiB memory in use. Process 3222245 has 1.21 GiB memory in use. Process 3222203 has 1.18 GiB memory in use. Process 3222291 has 1.20 GiB memory in use. Process 3222316 has 1.19 GiB memory in use. Process 3222254 has 1.20 GiB memory in use. Process 3222279 has 1.22 GiB memory in use. Process 3222326 has 1.18 GiB memory in use. Process 3222234 has 1.21 GiB memory in use. Process 3222341 has 1.13 GiB memory in use. Process 3222221 has 1.26 GiB memory in use. Process 3222337 has 1.14 GiB memory in use. Process 3222231 has 1.18 GiB memory in use. Process 3222265 has 1.19 GiB memory in use. Process 3222305 has 1.19 GiB memory in use. Process 3222357 has 1.20 GiB memory in use. Process 3222346 has 1.19 GiB memory in use. Process 3222253 has 1.20 GiB memory in use. Process 3222273 has 1.12 GiB memory in use. Process 3222319 has 1.05 GiB memory in use. Process 3222215 has 1.19 GiB memory in use. Process 3222212 has 1.21 GiB memory in use. Process 3222243 has 1.18 GiB memory in use. Process 3222261 has 1.17 GiB memory in use. Of the allocated memory 212.60 MiB is allocated by PyTorch, and 19.40 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+2024-09-03 21:47:10,280 - INFO - > Load the Minicube 86 ...
+2024-09-03 21:47:10,334 - INFO - Resolution: 10
+2024-09-03 21:47:13,800 - INFO - > Save the Minicube 85 ...
+2024-09-03 21:47:13,854 - INFO - > Save the Minicube 84 ...
+2024-09-03 21:47:16,271 - INFO - > Save the Minicube 82 ...
+2024-09-03 21:47:17,991 - INFO - > Save the Minicube 86 ...
+2024-09-03 21:47:23,115 - ERROR - An error occurred for index 82: The following operation failed in the TorchScript interpreter.
+Traceback of TorchScript, serialized code (most recent call last):
+  File "code/__torch__/segmentation_models_pytorch/decoders/unet/model/___torch_mangle_3371.py", line 14, in forward
+    decoder = self.decoder
+    encoder = self.encoder
+    _0, _1, _2, _3, _4, = (encoder).forward(x, )
+                           ~~~~~~~~~~~~~~~~ <--- HERE
+    _5 = (decoder).forward(_0, _1, _2, _3, _4, )
+    return (segmentation_head).forward(_5, )
+  File "code/__torch__/segmentation_models_pytorch/encoders/efficientnet/___torch_mangle_3297.py", line 67, in forward
+    _23 = (_bn0).forward((_conv_stem).forward(x, ), )
+    _24 = (_swish).forward(_23, )
+    _25 = (_2).forward((_1).forward((_0).forward(_24, ), ), )
+           ~~~~~~~~~~~ <--- HERE
+    _26 = (_4).forward((_3).forward(_25, ), )
+    _27 = (_7).forward((_6).forward((_5).forward(_26, ), ), )
+  File "code/__torch__/efficientnet_pytorch/model/___torch_mangle_2989.py", line 26, in forward
+    _bn0 = self._bn0
+    _expand_conv = self._expand_conv
+    _0 = (_expand_conv).forward(argument_1, )
+          ~~~~~~~~~~~~~~~~~~~~~ <--- HERE
+    _1 = (_swish).forward((_bn0).forward(_0, ), )
+    _2 = (_bn1).forward((_depthwise_conv).forward(_1, ), )
+  File "code/__torch__/efficientnet_pytorch/utils/___torch_mangle_2976.py", line 13, in forward
+    static_padding = self.static_padding
+    _0 = (static_padding).forward()
+    input = torch._convolution(argument_1, weight, None, [1, 1], [0, 0], [1, 1], False, [0, 0], 1, False, False, True, True)
+            ~~~~~~~~~~~~~~~~~~ <--- HERE
+    return input
+
+Traceback of TorchScript, original code (most recent call last):
+/users/cezbar/.local/lib/python3.10/site-packages/efficientnet_pytorch/utils.py(275): forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1488): _slow_forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1501): _call_impl
+/users/cezbar/.local/lib/python3.10/site-packages/efficientnet_pytorch/model.py(105): forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1488): _slow_forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1501): _call_impl
+/users/cezbar/.local/lib/python3.10/site-packages/segmentation_models_pytorch/encoders/efficientnet.py(73): forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1488): _slow_forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1501): _call_impl
+/users/cezbar/.local/lib/python3.10/site-packages/segmentation_models_pytorch/base/model.py(29): forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1488): _slow_forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1501): _call_impl
+/users/cezbar/.local/lib/python3.10/site-packages/torch/jit/_trace.py(1056): trace_module
+/users/cezbar/.local/lib/python3.10/site-packages/torch/jit/_trace.py(794): trace
+<stdin>(1): <module>
+RuntimeError: CUDA out of memory. Tried to allocate 50.00 MiB. GPU 0 has a total capacity of 47.54 GiB of which 37.19 MiB is free. Process 1135374 has 270.00 MiB memory in use. Process 3222355 has 1.20 GiB memory in use. Process 3222283 has 1.21 GiB memory in use. Process 3222218 has 1.18 GiB memory in use. Process 3222339 has 1.19 GiB memory in use. Process 3222240 has 1.20 GiB memory in use. Process 3222295 has 1.21 GiB memory in use. Process 3222271 has 1.18 GiB memory in use. Process 3222286 has 1.22 GiB memory in use. Process 3222210 has 1.10 GiB memory in use. Process 3222323 has 1.11 GiB memory in use. Process 3222226 has 1.18 GiB memory in use. Process 3222307 has 1.18 GiB memory in use. Process 3222352 has 1.12 GiB memory in use. Process 3222300 has 1.19 GiB memory in use. Process 3222263 has 1.19 GiB memory in use. Process 3222334 has 1.18 GiB memory in use. Process 3222311 has 1.20 GiB memory in use. Process 3222245 has 1.21 GiB memory in use. Process 3222203 has 1010.00 MiB memory in use. Process 3222291 has 1.20 GiB memory in use. Process 3222316 has 1.19 GiB memory in use. Process 3222254 has 1.20 GiB memory in use. Process 3222279 has 1.22 GiB memory in use. Process 3222326 has 1.18 GiB memory in use. Process 3222234 has 1.20 GiB memory in use. Process 3222341 has 1.18 GiB memory in use. Process 3222221 has 1.26 GiB memory in use. Process 3222337 has 1.14 GiB memory in use. Process 3222231 has 1.18 GiB memory in use. Process 3222265 has 1.19 GiB memory in use. Process 3222305 has 1.19 GiB memory in use. Process 3222357 has 1.20 GiB memory in use. Process 3222346 has 1.19 GiB memory in use. Process 3222253 has 1.20 GiB memory in use. Including non-PyTorch memory, this process has 1.14 GiB memory in use. Process 3222319 has 1.05 GiB memory in use. Process 3222215 has 1.19 GiB memory in use. Process 3222212 has 1.21 GiB memory in use. Process 3222243 has 1.19 GiB memory in use. Process 3222261 has 1.17 GiB memory in use. Of the allocated memory 259.46 MiB is allocated by PyTorch, and 24.54 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+2024-09-03 21:47:23,115 - INFO - > Load the Minicube 87 ...
+2024-09-03 21:47:23,205 - INFO - Resolution: 10
+2024-09-03 21:47:26,394 - ERROR - An error occurred for index 83: CUDA driver error: out of memory
+2024-09-03 21:47:26,400 - INFO - > Load the Minicube 88 ...
+2024-09-03 21:47:26,483 - INFO - Resolution: 10
+2024-09-03 21:47:29,871 - INFO - > Save the Minicube 87 ...
+2024-09-03 21:47:29,960 - ERROR - An error occurred for index 84: CUDA driver error: out of memory
+2024-09-03 21:47:29,962 - INFO - > Load the Minicube 89 ...
+2024-09-03 21:47:30,020 - INFO - Resolution: 10
+2024-09-03 21:47:32,466 - ERROR - An error occurred for index 85: The following operation failed in the TorchScript interpreter.
+Traceback of TorchScript, serialized code (most recent call last):
+  File "code/__torch__/segmentation_models_pytorch/decoders/unet/model/___torch_mangle_3371.py", line 14, in forward
+    decoder = self.decoder
+    encoder = self.encoder
+    _0, _1, _2, _3, _4, = (encoder).forward(x, )
+                           ~~~~~~~~~~~~~~~~ <--- HERE
+    _5 = (decoder).forward(_0, _1, _2, _3, _4, )
+    return (segmentation_head).forward(_5, )
+  File "code/__torch__/segmentation_models_pytorch/encoders/efficientnet/___torch_mangle_3297.py", line 67, in forward
+    _23 = (_bn0).forward((_conv_stem).forward(x, ), )
+    _24 = (_swish).forward(_23, )
+    _25 = (_2).forward((_1).forward((_0).forward(_24, ), ), )
+           ~~~~~~~~~~~ <--- HERE
+    _26 = (_4).forward((_3).forward(_25, ), )
+    _27 = (_7).forward((_6).forward((_5).forward(_26, ), ), )
+  File "code/__torch__/efficientnet_pytorch/model/___torch_mangle_2989.py", line 26, in forward
+    _bn0 = self._bn0
+    _expand_conv = self._expand_conv
+    _0 = (_expand_conv).forward(argument_1, )
+          ~~~~~~~~~~~~~~~~~~~~~ <--- HERE
+    _1 = (_swish).forward((_bn0).forward(_0, ), )
+    _2 = (_bn1).forward((_depthwise_conv).forward(_1, ), )
+  File "code/__torch__/efficientnet_pytorch/utils/___torch_mangle_2976.py", line 13, in forward
+    static_padding = self.static_padding
+    _0 = (static_padding).forward()
+    input = torch._convolution(argument_1, weight, None, [1, 1], [0, 0], [1, 1], False, [0, 0], 1, False, False, True, True)
+            ~~~~~~~~~~~~~~~~~~ <--- HERE
+    return input
+
+Traceback of TorchScript, original code (most recent call last):
+/users/cezbar/.local/lib/python3.10/site-packages/efficientnet_pytorch/utils.py(275): forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1488): _slow_forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1501): _call_impl
+/users/cezbar/.local/lib/python3.10/site-packages/efficientnet_pytorch/model.py(105): forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1488): _slow_forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1501): _call_impl
+/users/cezbar/.local/lib/python3.10/site-packages/segmentation_models_pytorch/encoders/efficientnet.py(73): forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1488): _slow_forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1501): _call_impl
+/users/cezbar/.local/lib/python3.10/site-packages/segmentation_models_pytorch/base/model.py(29): forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1488): _slow_forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1501): _call_impl
+/users/cezbar/.local/lib/python3.10/site-packages/torch/jit/_trace.py(1056): trace_module
+/users/cezbar/.local/lib/python3.10/site-packages/torch/jit/_trace.py(794): trace
+<stdin>(1): <module>
+RuntimeError: CUDA out of memory. Tried to allocate 50.00 MiB. GPU 0 has a total capacity of 47.54 GiB of which 41.19 MiB is free. Process 1135374 has 270.00 MiB memory in use. Process 3222355 has 1.20 GiB memory in use. Process 3222283 has 1.21 GiB memory in use. Process 3222218 has 1.18 GiB memory in use. Process 3222339 has 1.07 GiB memory in use. Process 3222240 has 1.21 GiB memory in use. Process 3222295 has 1.21 GiB memory in use. Process 3222271 has 1.18 GiB memory in use. Process 3222286 has 1.22 GiB memory in use. Process 3222210 has 1.14 GiB memory in use. Process 3222323 has 1.11 GiB memory in use. Process 3222226 has 1.18 GiB memory in use. Process 3222307 has 1.18 GiB memory in use. Process 3222352 has 1.12 GiB memory in use. Process 3222300 has 1.19 GiB memory in use. Process 3222263 has 1.05 GiB memory in use. Process 3222334 has 1.20 GiB memory in use. Process 3222311 has 1.20 GiB memory in use. Process 3222245 has 1.21 GiB memory in use. Including non-PyTorch memory, this process has 1.17 GiB memory in use. Process 3222291 has 1.21 GiB memory in use. Process 3222316 has 1.19 GiB memory in use. Process 3222254 has 1.20 GiB memory in use. Process 3222279 has 1.22 GiB memory in use. Process 3222326 has 1.18 GiB memory in use. Process 3222234 has 1.20 GiB memory in use. Process 3222341 has 1.18 GiB memory in use. Process 3222221 has 1.26 GiB memory in use. Process 3222337 has 1.09 GiB memory in use. Process 3222231 has 1.18 GiB memory in use. Process 3222265 has 1.19 GiB memory in use. Process 3222305 has 1.19 GiB memory in use. Process 3222357 has 1.20 GiB memory in use. Process 3222346 has 1.19 GiB memory in use. Process 3222253 has 1.21 GiB memory in use. Process 3222273 has 1.14 GiB memory in use. Process 3222319 has 1.08 GiB memory in use. Process 3222215 has 1.19 GiB memory in use. Process 3222212 has 1.21 GiB memory in use. Process 3222243 has 1.19 GiB memory in use. Process 3222261 has 1.17 GiB memory in use. Of the allocated memory 259.46 MiB is allocated by PyTorch, and 34.54 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+2024-09-03 21:47:32,468 - INFO - > Load the Minicube 90 ...
+2024-09-03 21:47:32,527 - INFO - Resolution: 10
+2024-09-03 21:47:35,595 - ERROR - An error occurred for index 86: CUDA out of memory. Tried to allocate 20.00 MiB. GPU 0 has a total capacity of 47.54 GiB of which 7.19 MiB is free. Process 1135374 has 270.00 MiB memory in use. Process 3222355 has 1.20 GiB memory in use. Process 3222283 has 1.21 GiB memory in use. Process 3222218 has 1.18 GiB memory in use. Process 3222339 has 1.09 GiB memory in use. Process 3222240 has 1.21 GiB memory in use. Process 3222295 has 1.21 GiB memory in use. Process 3222271 has 1.18 GiB memory in use. Process 3222286 has 1.22 GiB memory in use. Process 3222210 has 1.14 GiB memory in use. Process 3222323 has 1.12 GiB memory in use. Process 3222226 has 1.18 GiB memory in use. Process 3222307 has 1.18 GiB memory in use. Process 3222352 has 1.14 GiB memory in use. Process 3222300 has 1.19 GiB memory in use. Process 3222263 has 1.07 GiB memory in use. Process 3222334 has 1.20 GiB memory in use. Process 3222311 has 1.20 GiB memory in use. Process 3222245 has 1.21 GiB memory in use. Process 3222203 has 1.18 GiB memory in use. Process 3222291 has 1.22 GiB memory in use. Process 3222316 has 1.19 GiB memory in use. Process 3222254 has 1.20 GiB memory in use. Process 3222279 has 1.22 GiB memory in use. Process 3222326 has 1.18 GiB memory in use. Process 3222234 has 1.20 GiB memory in use. Process 3222341 has 1.18 GiB memory in use. Process 3222221 has 1.26 GiB memory in use. Process 3222337 has 1.09 GiB memory in use. Process 3222231 has 1.18 GiB memory in use. Process 3222265 has 1.19 GiB memory in use. Process 3222305 has 1.19 GiB memory in use. Process 3222357 has 1.20 GiB memory in use. Process 3222346 has 1.19 GiB memory in use. Process 3222253 has 1.14 GiB memory in use. Process 3222273 has 1.12 GiB memory in use. Including non-PyTorch memory, this process has 1.10 GiB memory in use. Process 3222215 has 1.19 GiB memory in use. Process 3222212 has 1.21 GiB memory in use. Process 3222243 has 1.19 GiB memory in use. Process 3222261 has 1.17 GiB memory in use. Of the allocated memory 201.28 MiB is allocated by PyTorch, and 8.72 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+2024-09-03 21:47:35,600 - INFO - > Load the Minicube 91 ...
+2024-09-03 21:47:35,701 - INFO - Resolution: 10
+2024-09-03 21:47:39,593 - INFO - > Save the Minicube 88 ...
+2024-09-03 21:47:42,463 - INFO - > Save the Minicube 89 ...
+2024-09-03 21:47:42,576 - INFO - > Save the Minicube 90 ...
+2024-09-03 21:47:49,898 - INFO - > Save the Minicube 91 ...
+2024-09-03 21:47:51,087 - ERROR - An error occurred for index 87: The following operation failed in the TorchScript interpreter.
+Traceback of TorchScript, serialized code (most recent call last):
+  File "code/__torch__/segmentation_models_pytorch/decoders/unet/model/___torch_mangle_3371.py", line 14, in forward
+    decoder = self.decoder
+    encoder = self.encoder
+    _0, _1, _2, _3, _4, = (encoder).forward(x, )
+                           ~~~~~~~~~~~~~~~~ <--- HERE
+    _5 = (decoder).forward(_0, _1, _2, _3, _4, )
+    return (segmentation_head).forward(_5, )
+  File "code/__torch__/segmentation_models_pytorch/encoders/efficientnet/___torch_mangle_3297.py", line 67, in forward
+    _23 = (_bn0).forward((_conv_stem).forward(x, ), )
+    _24 = (_swish).forward(_23, )
+    _25 = (_2).forward((_1).forward((_0).forward(_24, ), ), )
+           ~~~~~~~~~~~ <--- HERE
+    _26 = (_4).forward((_3).forward(_25, ), )
+    _27 = (_7).forward((_6).forward((_5).forward(_26, ), ), )
+  File "code/__torch__/efficientnet_pytorch/model/___torch_mangle_2989.py", line 26, in forward
+    _bn0 = self._bn0
+    _expand_conv = self._expand_conv
+    _0 = (_expand_conv).forward(argument_1, )
+          ~~~~~~~~~~~~~~~~~~~~~ <--- HERE
+    _1 = (_swish).forward((_bn0).forward(_0, ), )
+    _2 = (_bn1).forward((_depthwise_conv).forward(_1, ), )
+  File "code/__torch__/efficientnet_pytorch/utils/___torch_mangle_2976.py", line 13, in forward
+    static_padding = self.static_padding
+    _0 = (static_padding).forward()
+    input = torch._convolution(argument_1, weight, None, [1, 1], [0, 0], [1, 1], False, [0, 0], 1, False, False, True, True)
+            ~~~~~~~~~~~~~~~~~~ <--- HERE
+    return input
+
+Traceback of TorchScript, original code (most recent call last):
+/users/cezbar/.local/lib/python3.10/site-packages/efficientnet_pytorch/utils.py(275): forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1488): _slow_forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1501): _call_impl
+/users/cezbar/.local/lib/python3.10/site-packages/efficientnet_pytorch/model.py(105): forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1488): _slow_forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1501): _call_impl
+/users/cezbar/.local/lib/python3.10/site-packages/segmentation_models_pytorch/encoders/efficientnet.py(73): forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1488): _slow_forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1501): _call_impl
+/users/cezbar/.local/lib/python3.10/site-packages/segmentation_models_pytorch/base/model.py(29): forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1488): _slow_forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1501): _call_impl
+/users/cezbar/.local/lib/python3.10/site-packages/torch/jit/_trace.py(1056): trace_module
+/users/cezbar/.local/lib/python3.10/site-packages/torch/jit/_trace.py(794): trace
+<stdin>(1): <module>
+RuntimeError: CUDA out of memory. Tried to allocate 50.00 MiB. GPU 0 has a total capacity of 47.54 GiB of which 33.19 MiB is free. Process 1135374 has 270.00 MiB memory in use. Process 3222355 has 1.20 GiB memory in use. Process 3222283 has 1.21 GiB memory in use. Process 3222218 has 1.18 GiB memory in use. Process 3222339 has 1.07 GiB memory in use. Process 3222240 has 1.21 GiB memory in use. Process 3222295 has 1.21 GiB memory in use. Process 3222271 has 1.18 GiB memory in use. Process 3222286 has 1.22 GiB memory in use. Process 3222210 has 1.16 GiB memory in use. Process 3222323 has 1.12 GiB memory in use. Process 3222226 has 1.18 GiB memory in use. Process 3222307 has 1.18 GiB memory in use. Process 3222352 has 1.14 GiB memory in use. Process 3222300 has 1.19 GiB memory in use. Process 3222263 has 1.07 GiB memory in use. Process 3222334 has 1.20 GiB memory in use. Process 3222311 has 1.20 GiB memory in use. Process 3222245 has 1.21 GiB memory in use. Process 3222203 has 1.16 GiB memory in use. Process 3222291 has 1.22 GiB memory in use. Process 3222316 has 1.19 GiB memory in use. Process 3222254 has 1.20 GiB memory in use. Process 3222279 has 1.22 GiB memory in use. Process 3222326 has 1.18 GiB memory in use. Process 3222234 has 1.20 GiB memory in use. Process 3222341 has 1.18 GiB memory in use. Process 3222221 has 1.26 GiB memory in use. Including non-PyTorch memory, this process has 1.12 GiB memory in use. Process 3222231 has 1.18 GiB memory in use. Process 3222265 has 1.19 GiB memory in use. Process 3222305 has 1.19 GiB memory in use. Process 3222357 has 1.20 GiB memory in use. Process 3222346 has 1.19 GiB memory in use. Process 3222253 has 1.14 GiB memory in use. Process 3222273 has 1.08 GiB memory in use. Process 3222319 has 1.10 GiB memory in use. Process 3222215 has 1.19 GiB memory in use. Process 3222212 has 1.21 GiB memory in use. Process 3222243 has 1.19 GiB memory in use. Process 3222261 has 1.17 GiB memory in use. Of the allocated memory 200.88 MiB is allocated by PyTorch, and 31.12 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+2024-09-03 21:47:51,092 - INFO - > Load the Minicube 92 ...
+2024-09-03 21:47:51,178 - INFO - Resolution: 10
+2024-09-03 21:47:57,157 - ERROR - An error occurred for index 90: The following operation failed in the TorchScript interpreter.
+Traceback of TorchScript, serialized code (most recent call last):
+  File "code/__torch__/segmentation_models_pytorch/decoders/unet/model/___torch_mangle_3371.py", line 14, in forward
+    decoder = self.decoder
+    encoder = self.encoder
+    _0, _1, _2, _3, _4, = (encoder).forward(x, )
+                           ~~~~~~~~~~~~~~~~ <--- HERE
+    _5 = (decoder).forward(_0, _1, _2, _3, _4, )
+    return (segmentation_head).forward(_5, )
+  File "code/__torch__/segmentation_models_pytorch/encoders/efficientnet/___torch_mangle_3297.py", line 65, in forward
+    _bn0 = self._bn0
+    _conv_stem = self._conv_stem
+    _23 = (_bn0).forward((_conv_stem).forward(x, ), )
+                          ~~~~~~~~~~~~~~~~~~~ <--- HERE
+    _24 = (_swish).forward(_23, )
+    _25 = (_2).forward((_1).forward((_0).forward(_24, ), ), )
+  File "code/__torch__/efficientnet_pytorch/utils/___torch_mangle_2950.py", line 12, in forward
+    weight = self.weight
+    static_padding = self.static_padding
+    input = torch._convolution((static_padding).forward(x, ), weight, None, [2, 2], [0, 0], [1, 1], False, [0, 0], 1, False, False, True, True)
+                                ~~~~~~~~~~~~~~~~~~~~~~~ <--- HERE
+    return input
+  File "code/__torch__/torch/nn/modules/padding/___torch_mangle_2949.py", line 8, in forward
+  def forward(self: __torch__.torch.nn.modules.padding.___torch_mangle_2949.ZeroPad2d,
+    x: Tensor) -> Tensor:
+    x0 = torch.pad(x, [0, 1, 0, 1], "constant", 0.)
+         ~~~~~~~~~ <--- HERE
+    return x0
+
+Traceback of TorchScript, original code (most recent call last):
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/padding.py(25): forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1488): _slow_forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1501): _call_impl
+/users/cezbar/.local/lib/python3.10/site-packages/efficientnet_pytorch/utils.py(274): forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1488): _slow_forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1501): _call_impl
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/container.py(217): forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1488): _slow_forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1501): _call_impl
+/users/cezbar/.local/lib/python3.10/site-packages/segmentation_models_pytorch/encoders/efficientnet.py(66): forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1488): _slow_forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1501): _call_impl
+/users/cezbar/.local/lib/python3.10/site-packages/segmentation_models_pytorch/base/model.py(29): forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1488): _slow_forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1501): _call_impl
+/users/cezbar/.local/lib/python3.10/site-packages/torch/jit/_trace.py(1056): trace_module
+/users/cezbar/.local/lib/python3.10/site-packages/torch/jit/_trace.py(794): trace
+<stdin>(1): <module>
+RuntimeError: CUDA out of memory. Tried to allocate 26.00 MiB. GPU 0 has a total capacity of 47.54 GiB of which 11.19 MiB is free. Process 1135374 has 270.00 MiB memory in use. Process 3222355 has 1.20 GiB memory in use. Process 3222283 has 1.21 GiB memory in use. Process 3222218 has 1.18 GiB memory in use. Process 3222339 has 1.07 GiB memory in use. Process 3222240 has 1.21 GiB memory in use. Process 3222295 has 1.21 GiB memory in use. Process 3222271 has 1.18 GiB memory in use. Process 3222286 has 1.22 GiB memory in use. Process 3222210 has 1.18 GiB memory in use. Process 3222323 has 1.12 GiB memory in use. Process 3222226 has 1.18 GiB memory in use. Process 3222307 has 1.19 GiB memory in use. Process 3222352 has 1.15 GiB memory in use. Process 3222300 has 1.19 GiB memory in use. Including non-PyTorch memory, this process has 1.01 GiB memory in use. Process 3222334 has 1.20 GiB memory in use. Process 3222311 has 1.20 GiB memory in use. Process 3222245 has 1.21 GiB memory in use. Process 3222203 has 1.16 GiB memory in use. Process 3222291 has 1.22 GiB memory in use. Process 3222316 has 1.19 GiB memory in use. Process 3222254 has 1.20 GiB memory in use. Process 3222279 has 1.22 GiB memory in use. Process 3222326 has 1.18 GiB memory in use. Process 3222234 has 1.20 GiB memory in use. Process 3222341 has 1.18 GiB memory in use. Process 3222221 has 1.26 GiB memory in use. Process 3222337 has 1.12 GiB memory in use. Process 3222231 has 1.18 GiB memory in use. Process 3222265 has 1.19 GiB memory in use. Process 3222305 has 1.19 GiB memory in use. Process 3222357 has 1.20 GiB memory in use. Process 3222346 has 1.19 GiB memory in use. Process 3222253 has 1.18 GiB memory in use. Process 3222273 has 1.11 GiB memory in use. Process 3222319 has 1.09 GiB memory in use. Process 3222215 has 1.19 GiB memory in use. Process 3222212 has 1.21 GiB memory in use. Process 3222243 has 1.19 GiB memory in use. Process 3222261 has 1.17 GiB memory in use. Of the allocated memory 117.19 MiB is allocated by PyTorch, and 10.81 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+2024-09-03 21:47:57,161 - INFO - > Load the Minicube 93 ...
+2024-09-03 21:47:57,249 - INFO - Resolution: 10
+2024-09-03 21:47:57,290 - ERROR - An error occurred for index 89: CUDA out of memory. Tried to allocate 26.00 MiB. GPU 0 has a total capacity of 47.54 GiB of which 9.19 MiB is free. Process 1135374 has 270.00 MiB memory in use. Process 3222355 has 1.20 GiB memory in use. Process 3222283 has 1.21 GiB memory in use. Process 3222218 has 1.18 GiB memory in use. Process 3222339 has 1.07 GiB memory in use. Process 3222240 has 1.21 GiB memory in use. Process 3222295 has 1.21 GiB memory in use. Process 3222271 has 1.18 GiB memory in use. Process 3222286 has 1.22 GiB memory in use. Process 3222210 has 1.18 GiB memory in use. Process 3222323 has 1.12 GiB memory in use. Process 3222226 has 1.18 GiB memory in use. Process 3222307 has 1.19 GiB memory in use. Process 3222352 has 1.15 GiB memory in use. Process 3222300 has 1.19 GiB memory in use. Process 3222263 has 1.01 GiB memory in use. Process 3222334 has 1.20 GiB memory in use. Process 3222311 has 1.20 GiB memory in use. Process 3222245 has 1.21 GiB memory in use. Process 3222203 has 1.16 GiB memory in use. Process 3222291 has 1.22 GiB memory in use. Process 3222316 has 1.19 GiB memory in use. Process 3222254 has 1.20 GiB memory in use. Process 3222279 has 1.22 GiB memory in use. Process 3222326 has 1.18 GiB memory in use. Process 3222234 has 1.20 GiB memory in use. Process 3222341 has 1.18 GiB memory in use. Process 3222221 has 1.26 GiB memory in use. Process 3222337 has 1.12 GiB memory in use. Process 3222231 has 1.18 GiB memory in use. Process 3222265 has 1.19 GiB memory in use. Process 3222305 has 1.19 GiB memory in use. Process 3222357 has 1.20 GiB memory in use. Process 3222346 has 1.19 GiB memory in use. Process 3222253 has 1.18 GiB memory in use. Including non-PyTorch memory, this process has 1.11 GiB memory in use. Process 3222319 has 1.09 GiB memory in use. Process 3222215 has 1.19 GiB memory in use. Process 3222212 has 1.21 GiB memory in use. Process 3222243 has 1.19 GiB memory in use. Process 3222261 has 1.17 GiB memory in use. Of the allocated memory 243.79 MiB is allocated by PyTorch, and 10.21 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+2024-09-03 21:47:57,298 - INFO - > Load the Minicube 94 ...
+2024-09-03 21:47:57,391 - INFO - Resolution: 10
+2024-09-03 21:48:00,520 - INFO - > Save the Minicube 92 ...
+2024-09-03 21:48:04,884 - ERROR - An error occurred for index 91: CUDA out of memory. Tried to allocate 2.00 MiB. GPU 0 has a total capacity of 47.54 GiB of which 5.19 MiB is free. Process 1135374 has 270.00 MiB memory in use. Process 3222355 has 1.20 GiB memory in use. Process 3222283 has 1.21 GiB memory in use. Process 3222218 has 1.18 GiB memory in use. Including non-PyTorch memory, this process has 1.05 GiB memory in use. Process 3222240 has 1.21 GiB memory in use. Process 3222295 has 1.21 GiB memory in use. Process 3222271 has 1.18 GiB memory in use. Process 3222286 has 1.22 GiB memory in use. Process 3222210 has 1.18 GiB memory in use. Process 3222323 has 1.12 GiB memory in use. Process 3222226 has 1.18 GiB memory in use. Process 3222307 has 1.19 GiB memory in use. Process 3222352 has 1.15 GiB memory in use. Process 3222300 has 1.19 GiB memory in use. Process 3222263 has 1.01 GiB memory in use. Process 3222334 has 1.20 GiB memory in use. Process 3222311 has 1.20 GiB memory in use. Process 3222245 has 1.21 GiB memory in use. Process 3222203 has 1.16 GiB memory in use. Process 3222291 has 1.22 GiB memory in use. Process 3222316 has 1.19 GiB memory in use. Process 3222254 has 1.20 GiB memory in use. Process 3222279 has 1.22 GiB memory in use. Process 3222326 has 1.19 GiB memory in use. Process 3222234 has 1.20 GiB memory in use. Process 3222341 has 1.18 GiB memory in use. Process 3222221 has 1.27 GiB memory in use. Process 3222337 has 1.12 GiB memory in use. Process 3222231 has 1.19 GiB memory in use. Process 3222265 has 1.19 GiB memory in use. Process 3222305 has 1.19 GiB memory in use. Process 3222357 has 1.20 GiB memory in use. Process 3222346 has 1.19 GiB memory in use. Process 3222253 has 1.18 GiB memory in use. Process 3222273 has 1.12 GiB memory in use. Process 3222319 has 1.08 GiB memory in use. Process 3222215 has 1.19 GiB memory in use. Process 3222212 has 1.21 GiB memory in use. Process 3222243 has 1.19 GiB memory in use. Process 3222261 has 1.17 GiB memory in use. Of the allocated memory 160.58 MiB is allocated by PyTorch, and 11.42 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+2024-09-03 21:48:04,890 - INFO - > Load the Minicube 95 ...
+2024-09-03 21:48:04,955 - INFO - Resolution: 10
+2024-09-03 21:48:08,644 - INFO - > Save the Minicube 93 ...
+2024-09-03 21:48:08,658 - ERROR - An error occurred for index 88: CUDA out of memory. Tried to allocate 2.00 MiB. GPU 0 has a total capacity of 47.54 GiB of which 5.19 MiB is free. Process 1135374 has 270.00 MiB memory in use. Process 3222355 has 1.20 GiB memory in use. Process 3222283 has 1.21 GiB memory in use. Process 3222218 has 1.18 GiB memory in use. Including non-PyTorch memory, this process has 1.05 GiB memory in use. Process 3222240 has 1.21 GiB memory in use. Process 3222295 has 1.21 GiB memory in use. Process 3222271 has 1.18 GiB memory in use. Process 3222286 has 1.22 GiB memory in use. Process 3222210 has 1.18 GiB memory in use. Process 3222323 has 1.12 GiB memory in use. Process 3222226 has 1.18 GiB memory in use. Process 3222307 has 1.19 GiB memory in use. Process 3222352 has 1.15 GiB memory in use. Process 3222300 has 1.19 GiB memory in use. Process 3222263 has 1.01 GiB memory in use. Process 3222334 has 1.20 GiB memory in use. Process 3222311 has 1.20 GiB memory in use. Process 3222245 has 1.21 GiB memory in use. Process 3222203 has 1.16 GiB memory in use. Process 3222291 has 1.22 GiB memory in use. Process 3222316 has 1.19 GiB memory in use. Process 3222254 has 1.20 GiB memory in use. Process 3222279 has 1.22 GiB memory in use. Process 3222326 has 1.19 GiB memory in use. Process 3222234 has 1.20 GiB memory in use. Process 3222341 has 1.18 GiB memory in use. Process 3222221 has 1.27 GiB memory in use. Process 3222337 has 1.12 GiB memory in use. Process 3222231 has 1.19 GiB memory in use. Process 3222265 has 1.19 GiB memory in use. Process 3222305 has 1.19 GiB memory in use. Process 3222357 has 1.20 GiB memory in use. Process 3222346 has 1.19 GiB memory in use. Process 3222253 has 1.18 GiB memory in use. Process 3222273 has 1.12 GiB memory in use. Process 3222319 has 1.08 GiB memory in use. Process 3222215 has 1.19 GiB memory in use. Process 3222212 has 1.21 GiB memory in use. Process 3222243 has 1.19 GiB memory in use. Process 3222261 has 1.17 GiB memory in use. Of the allocated memory 160.74 MiB is allocated by PyTorch, and 11.26 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+2024-09-03 21:48:08,665 - INFO - > Load the Minicube 96 ...
+2024-09-03 21:48:08,751 - INFO - Resolution: 10
+2024-09-03 21:48:11,265 - INFO - > Save the Minicube 94 ...
+2024-09-03 21:48:13,126 - ERROR - An error occurred for index 92: CUDA out of memory. Tried to allocate 20.00 MiB. GPU 0 has a total capacity of 47.54 GiB of which 19.19 MiB is free. Process 1135374 has 270.00 MiB memory in use. Process 3222355 has 1.20 GiB memory in use. Process 3222283 has 1.21 GiB memory in use. Process 3222218 has 1.18 GiB memory in use. Process 3222339 has 1.04 GiB memory in use. Process 3222240 has 1.21 GiB memory in use. Process 3222295 has 1.21 GiB memory in use. Process 3222271 has 1.18 GiB memory in use. Process 3222286 has 1.22 GiB memory in use. Process 3222210 has 1.18 GiB memory in use. Process 3222323 has 1.12 GiB memory in use. Process 3222226 has 1.19 GiB memory in use. Process 3222307 has 1.19 GiB memory in use. Process 3222352 has 1.15 GiB memory in use. Process 3222300 has 1.19 GiB memory in use. Process 3222263 has 1018.00 MiB memory in use. Process 3222334 has 1.20 GiB memory in use. Process 3222311 has 1.20 GiB memory in use. Process 3222245 has 1.21 GiB memory in use. Process 3222203 has 1.16 GiB memory in use. Process 3222291 has 1.22 GiB memory in use. Process 3222316 has 1.19 GiB memory in use. Process 3222254 has 1.20 GiB memory in use. Process 3222279 has 1.22 GiB memory in use. Process 3222326 has 1.19 GiB memory in use. Process 3222234 has 1.20 GiB memory in use. Process 3222341 has 1.18 GiB memory in use. Process 3222221 has 1.27 GiB memory in use. Process 3222337 has 1.12 GiB memory in use. Process 3222231 has 1.19 GiB memory in use. Process 3222265 has 1.19 GiB memory in use. Process 3222305 has 1.19 GiB memory in use. Process 3222357 has 1.20 GiB memory in use. Process 3222346 has 1.19 GiB memory in use. Process 3222253 has 1.18 GiB memory in use. Process 3222273 has 1.12 GiB memory in use. Including non-PyTorch memory, this process has 1.10 GiB memory in use. Process 3222215 has 1.19 GiB memory in use. Process 3222212 has 1.21 GiB memory in use. Process 3222243 has 1.19 GiB memory in use. Process 3222261 has 1.17 GiB memory in use. Of the allocated memory 201.09 MiB is allocated by PyTorch, and 6.91 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+2024-09-03 21:48:13,127 - INFO - > Load the Minicube 97 ...
+2024-09-03 21:48:13,215 - INFO - Resolution: 10
+2024-09-03 21:48:14,285 - INFO - > Save the Minicube 95 ...
+2024-09-03 21:48:15,332 - ERROR - An error occurred for index 93: CUDA out of memory. Tried to allocate 2.00 MiB. GPU 0 has a total capacity of 47.54 GiB of which 5.19 MiB is free. Process 1135374 has 270.00 MiB memory in use. Process 3222355 has 1.20 GiB memory in use. Process 3222283 has 1.21 GiB memory in use. Process 3222218 has 1.18 GiB memory in use. Process 3222339 has 1.04 GiB memory in use. Process 3222240 has 1.21 GiB memory in use. Process 3222295 has 1.21 GiB memory in use. Process 3222271 has 1.19 GiB memory in use. Process 3222286 has 1.22 GiB memory in use. Process 3222210 has 1.18 GiB memory in use. Process 3222323 has 1.12 GiB memory in use. Process 3222226 has 1.19 GiB memory in use. Process 3222307 has 1.19 GiB memory in use. Process 3222352 has 1.15 GiB memory in use. Process 3222300 has 1.19 GiB memory in use. Process 3222263 has 1018.00 MiB memory in use. Process 3222334 has 1.21 GiB memory in use. Process 3222311 has 1.20 GiB memory in use. Process 3222245 has 1.21 GiB memory in use. Process 3222203 has 1.16 GiB memory in use. Process 3222291 has 1.22 GiB memory in use. Process 3222316 has 1.20 GiB memory in use. Process 3222254 has 1.20 GiB memory in use. Process 3222279 has 1.22 GiB memory in use. Process 3222326 has 1.19 GiB memory in use. Process 3222234 has 1.20 GiB memory in use. Process 3222341 has 1.18 GiB memory in use. Process 3222221 has 1.27 GiB memory in use. Process 3222337 has 1.12 GiB memory in use. Process 3222231 has 1.19 GiB memory in use. Process 3222265 has 1.19 GiB memory in use. Process 3222305 has 1.19 GiB memory in use. Process 3222357 has 1.20 GiB memory in use. Process 3222346 has 1.19 GiB memory in use. Process 3222253 has 1.18 GiB memory in use. Process 3222273 has 1.12 GiB memory in use. Including non-PyTorch memory, this process has 1.10 GiB memory in use. Process 3222215 has 1.19 GiB memory in use. Process 3222212 has 1.21 GiB memory in use. Process 3222243 has 1.19 GiB memory in use. Process 3222261 has 1.17 GiB memory in use. Of the allocated memory 205.06 MiB is allocated by PyTorch, and 4.94 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+2024-09-03 21:48:15,344 - INFO - > Load the Minicube 98 ...
+2024-09-03 21:48:15,478 - INFO - Resolution: 10
+2024-09-03 21:48:20,935 - INFO - > Save the Minicube 97 ...
+2024-09-03 21:48:23,891 - INFO - > Save the Minicube 96 ...
+2024-09-03 21:48:25,806 - INFO - > Save the Minicube 98 ...
+2024-09-03 21:48:27,036 - ERROR - An error occurred for index 97: The following operation failed in the TorchScript interpreter.
+Traceback of TorchScript, serialized code (most recent call last):
+  File "code/__torch__/segmentation_models_pytorch/decoders/unet/model/___torch_mangle_3371.py", line 14, in forward
+    decoder = self.decoder
+    encoder = self.encoder
+    _0, _1, _2, _3, _4, = (encoder).forward(x, )
+                           ~~~~~~~~~~~~~~~~ <--- HERE
+    _5 = (decoder).forward(_0, _1, _2, _3, _4, )
+    return (segmentation_head).forward(_5, )
+  File "code/__torch__/segmentation_models_pytorch/encoders/efficientnet/___torch_mangle_3297.py", line 67, in forward
+    _23 = (_bn0).forward((_conv_stem).forward(x, ), )
+    _24 = (_swish).forward(_23, )
+    _25 = (_2).forward((_1).forward((_0).forward(_24, ), ), )
+           ~~~~~~~~~~~ <--- HERE
+    _26 = (_4).forward((_3).forward(_25, ), )
+    _27 = (_7).forward((_6).forward((_5).forward(_26, ), ), )
+  File "code/__torch__/efficientnet_pytorch/model/___torch_mangle_2989.py", line 27, in forward
+    _expand_conv = self._expand_conv
+    _0 = (_expand_conv).forward(argument_1, )
+    _1 = (_swish).forward((_bn0).forward(_0, ), )
+                           ~~~~~~~~~~~~~ <--- HERE
+    _2 = (_bn1).forward((_depthwise_conv).forward(_1, ), )
+    _3 = (_swish).forward1(_2, )
+  File "code/__torch__/torch/nn/modules/batchnorm/___torch_mangle_2977.py", line 17, in forward
+    bias = self.bias
+    weight = self.weight
+    input = torch.batch_norm(argument_1, weight, bias, running_mean, running_var, False, 0.010000000000000009, 0.001, True)
+            ~~~~~~~~~~~~~~~~ <--- HERE
+    return input
+
+Traceback of TorchScript, original code (most recent call last):
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/functional.py(2450): batch_norm
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/batchnorm.py(171): forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1488): _slow_forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1501): _call_impl
+/users/cezbar/.local/lib/python3.10/site-packages/efficientnet_pytorch/model.py(106): forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1488): _slow_forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1501): _call_impl
+/users/cezbar/.local/lib/python3.10/site-packages/segmentation_models_pytorch/encoders/efficientnet.py(73): forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1488): _slow_forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1501): _call_impl
+/users/cezbar/.local/lib/python3.10/site-packages/segmentation_models_pytorch/base/model.py(29): forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1488): _slow_forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1501): _call_impl
+/users/cezbar/.local/lib/python3.10/site-packages/torch/jit/_trace.py(1056): trace_module
+/users/cezbar/.local/lib/python3.10/site-packages/torch/jit/_trace.py(794): trace
+<stdin>(1): <module>
+RuntimeError: CUDA out of memory. Tried to allocate 50.00 MiB. GPU 0 has a total capacity of 47.54 GiB of which 49.19 MiB is free. Process 1135374 has 270.00 MiB memory in use. Process 3222355 has 1.20 GiB memory in use. Process 3222283 has 1.21 GiB memory in use. Process 3222218 has 1.18 GiB memory in use. Process 3222339 has 1.04 GiB memory in use. Process 3222240 has 1.21 GiB memory in use. Process 3222295 has 1.21 GiB memory in use. Process 3222271 has 1.19 GiB memory in use. Process 3222286 has 1.22 GiB memory in use. Process 3222210 has 1.18 GiB memory in use. Process 3222323 has 1.12 GiB memory in use. Process 3222226 has 1.19 GiB memory in use. Process 3222307 has 1.19 GiB memory in use. Process 3222352 has 1.15 GiB memory in use. Including non-PyTorch memory, this process has 1.09 GiB memory in use. Process 3222263 has 1.01 GiB memory in use. Process 3222334 has 1.21 GiB memory in use. Process 3222311 has 1.20 GiB memory in use. Process 3222245 has 1.21 GiB memory in use. Process 3222203 has 1.16 GiB memory in use. Process 3222291 has 1.22 GiB memory in use. Process 3222316 has 1.20 GiB memory in use. Process 3222254 has 1.20 GiB memory in use. Process 3222279 has 1.22 GiB memory in use. Process 3222326 has 1.19 GiB memory in use. Process 3222234 has 1.20 GiB memory in use. Process 3222341 has 1.18 GiB memory in use. Process 3222221 has 1.27 GiB memory in use. Process 3222337 has 1.12 GiB memory in use. Process 3222231 has 1.19 GiB memory in use. Process 3222265 has 1.19 GiB memory in use. Process 3222305 has 1.19 GiB memory in use. Process 3222357 has 1.20 GiB memory in use. Process 3222346 has 1.21 GiB memory in use. Process 3222253 has 1.18 GiB memory in use. Process 3222273 has 1.12 GiB memory in use. Process 3222319 has 1.12 GiB memory in use. Process 3222215 has 1.19 GiB memory in use. Process 3222212 has 1.21 GiB memory in use. Process 3222243 has 1.19 GiB memory in use. Process 3222261 has 1.17 GiB memory in use. Of the allocated memory 183.72 MiB is allocated by PyTorch, and 12.28 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+2024-09-03 21:48:27,038 - INFO - > Load the Minicube 99 ...
+2024-09-03 21:48:27,128 - INFO - Resolution: 10
+2024-09-03 21:48:32,020 - ERROR - An error occurred for index 96: CUDA out of memory. Tried to allocate 26.00 MiB. GPU 0 has a total capacity of 47.54 GiB of which 11.19 MiB is free. Process 1135374 has 270.00 MiB memory in use. Process 3222355 has 1.20 GiB memory in use. Process 3222283 has 1.21 GiB memory in use. Process 3222218 has 1.18 GiB memory in use. Process 3222339 has 1.04 GiB memory in use. Process 3222240 has 1.21 GiB memory in use. Process 3222295 has 1.23 GiB memory in use. Process 3222271 has 1.19 GiB memory in use. Process 3222286 has 1.22 GiB memory in use. Process 3222210 has 1.18 GiB memory in use. Process 3222323 has 1.12 GiB memory in use. Process 3222226 has 1.19 GiB memory in use. Process 3222307 has 1.19 GiB memory in use. Process 3222352 has 1.15 GiB memory in use. Including non-PyTorch memory, this process has 1.06 GiB memory in use. Process 3222263 has 1.05 GiB memory in use. Process 3222334 has 1.21 GiB memory in use. Process 3222311 has 1.20 GiB memory in use. Process 3222245 has 1.21 GiB memory in use. Process 3222203 has 1.16 GiB memory in use. Process 3222291 has 1.22 GiB memory in use. Process 3222316 has 1.20 GiB memory in use. Process 3222254 has 1.20 GiB memory in use. Process 3222279 has 1.22 GiB memory in use. Process 3222326 has 1.19 GiB memory in use. Process 3222234 has 1.20 GiB memory in use. Process 3222341 has 1.18 GiB memory in use. Process 3222221 has 1.27 GiB memory in use. Process 3222337 has 1.12 GiB memory in use. Process 3222231 has 1.19 GiB memory in use. Process 3222265 has 1.19 GiB memory in use. Process 3222305 has 1.19 GiB memory in use. Process 3222357 has 1.20 GiB memory in use. Process 3222346 has 1.21 GiB memory in use. Process 3222253 has 1.18 GiB memory in use. Process 3222273 has 1.12 GiB memory in use. Process 3222319 has 1.12 GiB memory in use. Process 3222215 has 1.19 GiB memory in use. Process 3222212 has 1.21 GiB memory in use. Process 3222243 has 1.19 GiB memory in use. Process 3222261 has 1.17 GiB memory in use. Of the allocated memory 151.28 MiB is allocated by PyTorch, and 16.72 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+2024-09-03 21:48:32,021 - INFO - > Load the Minicube 100 ...
+2024-09-03 21:48:32,122 - INFO - Resolution: 10
+2024-09-03 21:48:34,965 - ERROR - An error occurred for index 95: CUDA out of memory. Tried to allocate 2.00 MiB. GPU 0 has a total capacity of 47.54 GiB of which 5.19 MiB is free. Process 1135374 has 270.00 MiB memory in use. Process 3222355 has 1.20 GiB memory in use. Process 3222283 has 1.21 GiB memory in use. Process 3222218 has 1.18 GiB memory in use. Process 3222339 has 1006.00 MiB memory in use. Process 3222240 has 1.21 GiB memory in use. Process 3222295 has 1.28 GiB memory in use. Process 3222271 has 1.19 GiB memory in use. Process 3222286 has 1.22 GiB memory in use. Process 3222210 has 1.18 GiB memory in use. Process 3222323 has 1.12 GiB memory in use. Process 3222226 has 1.19 GiB memory in use. Process 3222307 has 1.19 GiB memory in use. Process 3222352 has 1.15 GiB memory in use. Including non-PyTorch memory, this process has 1.06 GiB memory in use. Process 3222263 has 1.05 GiB memory in use. Process 3222334 has 1.21 GiB memory in use. Process 3222311 has 1.20 GiB memory in use. Process 3222245 has 1.21 GiB memory in use. Process 3222203 has 1.16 GiB memory in use. Process 3222291 has 1.22 GiB memory in use. Process 3222316 has 1.20 GiB memory in use. Process 3222254 has 1.20 GiB memory in use. Process 3222279 has 1.22 GiB memory in use. Process 3222326 has 1.19 GiB memory in use. Process 3222234 has 1.20 GiB memory in use. Process 3222341 has 1.18 GiB memory in use. Process 3222221 has 1.27 GiB memory in use. Process 3222337 has 1.12 GiB memory in use. Process 3222231 has 1.19 GiB memory in use. Process 3222265 has 1.19 GiB memory in use. Process 3222305 has 1.19 GiB memory in use. Process 3222357 has 1.20 GiB memory in use. Process 3222346 has 1.21 GiB memory in use. Process 3222253 has 1.18 GiB memory in use. Process 3222273 has 1.12 GiB memory in use. Process 3222319 has 1.12 GiB memory in use. Process 3222215 has 1.19 GiB memory in use. Process 3222212 has 1.21 GiB memory in use. Process 3222243 has 1.19 GiB memory in use. Process 3222261 has 1.17 GiB memory in use. Of the allocated memory 154.89 MiB is allocated by PyTorch, and 15.11 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+2024-09-03 21:48:34,967 - INFO - > Load the Minicube 101 ...
+2024-09-03 21:48:35,054 - INFO - Resolution: 10
+2024-09-03 21:48:40,988 - ERROR - An error occurred for index 94: CUDA out of memory. Tried to allocate 26.00 MiB. GPU 0 has a total capacity of 47.54 GiB of which 9.19 MiB is free. Process 1135374 has 270.00 MiB memory in use. Process 3222355 has 1.20 GiB memory in use. Process 3222283 has 1.21 GiB memory in use. Process 3222218 has 1.18 GiB memory in use. Including non-PyTorch memory, this process has 1.02 GiB memory in use. Process 3222240 has 1.21 GiB memory in use. Process 3222295 has 1.28 GiB memory in use. Process 3222271 has 1.19 GiB memory in use. Process 3222286 has 1.22 GiB memory in use. Process 3222210 has 1.18 GiB memory in use. Process 3222323 has 1.12 GiB memory in use. Process 3222226 has 1.19 GiB memory in use. Process 3222307 has 1.19 GiB memory in use. Process 3222352 has 1.15 GiB memory in use. Process 3222300 has 1.06 GiB memory in use. Process 3222263 has 1.05 GiB memory in use. Process 3222334 has 1.21 GiB memory in use. Process 3222311 has 1.27 GiB memory in use. Process 3222245 has 1.21 GiB memory in use. Process 3222203 has 1.01 GiB memory in use. Process 3222291 has 1.22 GiB memory in use. Process 3222316 has 1.20 GiB memory in use. Process 3222254 has 1.20 GiB memory in use. Process 3222279 has 1.24 GiB memory in use. Process 3222326 has 1.19 GiB memory in use. Process 3222234 has 1.20 GiB memory in use. Process 3222341 has 1.18 GiB memory in use. Process 3222221 has 1.27 GiB memory in use. Process 3222337 has 1.12 GiB memory in use. Process 3222231 has 1.19 GiB memory in use. Process 3222265 has 1.19 GiB memory in use. Process 3222305 has 1.19 GiB memory in use. Process 3222357 has 1.20 GiB memory in use. Process 3222346 has 1.23 GiB memory in use. Process 3222253 has 1.18 GiB memory in use. Process 3222273 has 1.12 GiB memory in use. Process 3222319 has 1.11 GiB memory in use. Process 3222215 has 1.19 GiB memory in use. Process 3222212 has 1.21 GiB memory in use. Process 3222243 has 1.19 GiB memory in use. Process 3222261 has 1.18 GiB memory in use. Of the allocated memory 126.92 MiB is allocated by PyTorch, and 15.08 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+2024-09-03 21:48:40,994 - INFO - > Load the Minicube 102 ...
+2024-09-03 21:48:41,082 - INFO - Resolution: 10
+2024-09-03 21:48:44,853 - ERROR - An error occurred for index 98: CUDA out of memory. Tried to allocate 20.00 MiB. GPU 0 has a total capacity of 47.54 GiB of which 9.19 MiB is free. Process 1135374 has 270.00 MiB memory in use. Process 3222355 has 1.20 GiB memory in use. Process 3222283 has 1.21 GiB memory in use. Process 3222218 has 1.18 GiB memory in use. Including non-PyTorch memory, this process has 1.04 GiB memory in use. Process 3222240 has 1.21 GiB memory in use. Process 3222295 has 1.28 GiB memory in use. Process 3222271 has 1.19 GiB memory in use. Process 3222286 has 1.22 GiB memory in use. Process 3222210 has 1.18 GiB memory in use. Process 3222323 has 1.12 GiB memory in use. Process 3222226 has 1.19 GiB memory in use. Process 3222307 has 1.19 GiB memory in use. Process 3222352 has 1.15 GiB memory in use. Process 3222300 has 1.03 GiB memory in use. Process 3222263 has 1.05 GiB memory in use. Process 3222334 has 1.21 GiB memory in use. Process 3222311 has 1.27 GiB memory in use. Process 3222245 has 1.21 GiB memory in use. Process 3222203 has 1.01 GiB memory in use. Process 3222291 has 1.22 GiB memory in use. Process 3222316 has 1.20 GiB memory in use. Process 3222254 has 1.20 GiB memory in use. Process 3222279 has 1.24 GiB memory in use. Process 3222326 has 1.19 GiB memory in use. Process 3222234 has 1.20 GiB memory in use. Process 3222341 has 1.18 GiB memory in use. Process 3222221 has 1.27 GiB memory in use. Process 3222337 has 1.12 GiB memory in use. Process 3222231 has 1.19 GiB memory in use. Process 3222265 has 1.19 GiB memory in use. Process 3222305 has 1.19 GiB memory in use. Process 3222357 has 1.20 GiB memory in use. Process 3222346 has 1.23 GiB memory in use. Process 3222253 has 1.18 GiB memory in use. Process 3222273 has 1.12 GiB memory in use. Process 3222319 has 1.11 GiB memory in use. Process 3222215 has 1.19 GiB memory in use. Process 3222212 has 1.21 GiB memory in use. Process 3222243 has 1.19 GiB memory in use. Process 3222261 has 1.19 GiB memory in use. Of the allocated memory 155.92 MiB is allocated by PyTorch, and 4.08 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+2024-09-03 21:48:44,858 - INFO - > Load the Minicube 103 ...
+2024-09-03 21:48:44,970 - INFO - Resolution: 10
+2024-09-03 21:48:47,829 - INFO - > Save the Minicube 100 ...
+2024-09-03 21:48:51,218 - INFO - > Save the Minicube 99 ...
+2024-09-03 21:48:51,223 - INFO - > Save the Minicube 102 ...
+2024-09-03 21:48:53,897 - INFO - > Save the Minicube 101 ...
+2024-09-03 21:49:00,961 - ERROR - An error occurred for index 99: CUDA out of memory. Tried to allocate 26.00 MiB. GPU 0 has a total capacity of 47.54 GiB of which 17.19 MiB is free. Process 1135374 has 270.00 MiB memory in use. Process 3222355 has 1.20 GiB memory in use. Process 3222283 has 1.21 GiB memory in use. Process 3222218 has 1.18 GiB memory in use. Process 3222339 has 1.04 GiB memory in use. Process 3222240 has 1.21 GiB memory in use. Process 3222295 has 1.28 GiB memory in use. Process 3222271 has 1.19 GiB memory in use. Process 3222286 has 1.22 GiB memory in use. Process 3222210 has 1.18 GiB memory in use. Process 3222323 has 1.12 GiB memory in use. Process 3222226 has 1.19 GiB memory in use. Process 3222307 has 1.19 GiB memory in use. Process 3222352 has 1.15 GiB memory in use. Process 3222300 has 1.06 GiB memory in use. Process 3222263 has 1.05 GiB memory in use. Process 3222334 has 1.21 GiB memory in use. Process 3222311 has 1.27 GiB memory in use. Process 3222245 has 1.21 GiB memory in use. Process 3222203 has 1.07 GiB memory in use. Process 3222291 has 1.22 GiB memory in use. Process 3222316 has 1.20 GiB memory in use. Process 3222254 has 1.21 GiB memory in use. Process 3222279 has 1.24 GiB memory in use. Process 3222326 has 1.19 GiB memory in use. Process 3222234 has 1.20 GiB memory in use. Process 3222341 has 1.18 GiB memory in use. Process 3222221 has 1.27 GiB memory in use. Process 3222337 has 1.12 GiB memory in use. Process 3222231 has 1.19 GiB memory in use. Process 3222265 has 1.19 GiB memory in use. Process 3222305 has 1.20 GiB memory in use. Process 3222357 has 1.20 GiB memory in use. Including non-PyTorch memory, this process has 1.13 GiB memory in use. Process 3222253 has 1.18 GiB memory in use. Process 3222273 has 1.12 GiB memory in use. Process 3222319 has 1.09 GiB memory in use. Process 3222215 has 1.20 GiB memory in use. Process 3222212 has 1.21 GiB memory in use. Process 3222243 has 1.19 GiB memory in use. Process 3222261 has 1.19 GiB memory in use. Of the allocated memory 210.61 MiB is allocated by PyTorch, and 23.39 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+2024-09-03 21:49:00,965 - INFO - > Load the Minicube 104 ...
+2024-09-03 21:49:01,050 - INFO - Resolution: 10
+2024-09-03 21:49:02,594 - ERROR - An error occurred for index 101: CUDA out of memory. Tried to allocate 2.00 MiB. GPU 0 has a total capacity of 47.54 GiB of which 5.19 MiB is free. Process 1135374 has 270.00 MiB memory in use. Process 3222355 has 1.20 GiB memory in use. Process 3222283 has 1.21 GiB memory in use. Process 3222218 has 1.18 GiB memory in use. Process 3222339 has 1.04 GiB memory in use. Process 3222240 has 1.21 GiB memory in use. Process 3222295 has 1.28 GiB memory in use. Process 3222271 has 1.19 GiB memory in use. Process 3222286 has 1.22 GiB memory in use. Process 3222210 has 1.18 GiB memory in use. Process 3222323 has 1.12 GiB memory in use. Process 3222226 has 1.19 GiB memory in use. Process 3222307 has 1.19 GiB memory in use. Process 3222352 has 1.15 GiB memory in use. Including non-PyTorch memory, this process has 1.07 GiB memory in use. Process 3222263 has 1.05 GiB memory in use. Process 3222334 has 1.21 GiB memory in use. Process 3222311 has 1.27 GiB memory in use. Process 3222245 has 1.21 GiB memory in use. Process 3222203 has 1.07 GiB memory in use. Process 3222291 has 1.22 GiB memory in use. Process 3222316 has 1.20 GiB memory in use. Process 3222254 has 1.21 GiB memory in use. Process 3222279 has 1.24 GiB memory in use. Process 3222326 has 1.19 GiB memory in use. Process 3222234 has 1.20 GiB memory in use. Process 3222341 has 1.18 GiB memory in use. Process 3222221 has 1.27 GiB memory in use. Process 3222337 has 1.12 GiB memory in use. Process 3222231 has 1.19 GiB memory in use. Process 3222265 has 1.19 GiB memory in use. Process 3222305 has 1.20 GiB memory in use. Process 3222357 has 1.20 GiB memory in use. Process 3222346 has 1.13 GiB memory in use. Process 3222253 has 1.18 GiB memory in use. Process 3222273 has 1.12 GiB memory in use. Process 3222319 has 1.09 GiB memory in use. Process 3222215 has 1.20 GiB memory in use. Process 3222212 has 1.21 GiB memory in use. Process 3222243 has 1.19 GiB memory in use. Process 3222261 has 1.19 GiB memory in use. Of the allocated memory 160.77 MiB is allocated by PyTorch, and 19.23 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+2024-09-03 21:49:02,595 - INFO - > Load the Minicube 105 ...
+2024-09-03 21:49:02,669 - INFO - Resolution: 10
+2024-09-03 21:49:04,443 - ERROR - An error occurred for index 102: CUDA out of memory. Tried to allocate 26.00 MiB. GPU 0 has a total capacity of 47.54 GiB of which 13.19 MiB is free. Process 1135374 has 270.00 MiB memory in use. Process 3222355 has 1.20 GiB memory in use. Process 3222283 has 1.21 GiB memory in use. Process 3222218 has 1.18 GiB memory in use. Process 3222339 has 1.04 GiB memory in use. Process 3222240 has 1.21 GiB memory in use. Process 3222295 has 1.28 GiB memory in use. Process 3222271 has 1.19 GiB memory in use. Process 3222286 has 1.22 GiB memory in use. Process 3222210 has 1.18 GiB memory in use. Process 3222323 has 1.12 GiB memory in use. Process 3222226 has 1.19 GiB memory in use. Process 3222307 has 1.19 GiB memory in use. Process 3222352 has 1.15 GiB memory in use. Process 3222300 has 1.07 GiB memory in use. Process 3222263 has 1.05 GiB memory in use. Process 3222334 has 1.21 GiB memory in use. Process 3222311 has 1.27 GiB memory in use. Process 3222245 has 1.21 GiB memory in use. Process 3222203 has 1.07 GiB memory in use. Process 3222291 has 1.22 GiB memory in use. Process 3222316 has 1.20 GiB memory in use. Process 3222254 has 1.21 GiB memory in use. Process 3222279 has 1.24 GiB memory in use. Process 3222326 has 1.19 GiB memory in use. Process 3222234 has 1.20 GiB memory in use. Process 3222341 has 1.18 GiB memory in use. Process 3222221 has 1.27 GiB memory in use. Process 3222337 has 1.12 GiB memory in use. Process 3222231 has 1.19 GiB memory in use. Process 3222265 has 1.19 GiB memory in use. Process 3222305 has 1.20 GiB memory in use. Process 3222357 has 1.20 GiB memory in use. Process 3222346 has 1.15 GiB memory in use. Process 3222253 has 1.18 GiB memory in use. Process 3222273 has 1.12 GiB memory in use. Including non-PyTorch memory, this process has 1.06 GiB memory in use. Process 3222215 has 1.20 GiB memory in use. Process 3222212 has 1.21 GiB memory in use. Process 3222243 has 1.19 GiB memory in use. Process 3222261 has 1.19 GiB memory in use. Of the allocated memory 151.39 MiB is allocated by PyTorch, and 20.61 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+2024-09-03 21:49:04,459 - INFO - > Load the Minicube 106 ...
+2024-09-03 21:49:05,106 - INFO - Resolution: 10
+2024-09-03 21:49:07,998 - INFO - > Save the Minicube 103 ...
+2024-09-03 21:49:08,096 - INFO - > Save the Minicube 104 ...
+2024-09-03 21:49:11,487 - INFO - > Save the Minicube 105 ...
+2024-09-03 21:49:14,277 - INFO - > Save the Minicube 106 ...
+2024-09-03 21:49:20,805 - ERROR - An error occurred for index 100: The following operation failed in the TorchScript interpreter.
+Traceback of TorchScript, serialized code (most recent call last):
+  File "code/__torch__/segmentation_models_pytorch/decoders/unet/model/___torch_mangle_3371.py", line 14, in forward
+    decoder = self.decoder
+    encoder = self.encoder
+    _0, _1, _2, _3, _4, = (encoder).forward(x, )
+                           ~~~~~~~~~~~~~~~~ <--- HERE
+    _5 = (decoder).forward(_0, _1, _2, _3, _4, )
+    return (segmentation_head).forward(_5, )
+  File "code/__torch__/segmentation_models_pytorch/encoders/efficientnet/___torch_mangle_3297.py", line 65, in forward
+    _bn0 = self._bn0
+    _conv_stem = self._conv_stem
+    _23 = (_bn0).forward((_conv_stem).forward(x, ), )
+                          ~~~~~~~~~~~~~~~~~~~ <--- HERE
+    _24 = (_swish).forward(_23, )
+    _25 = (_2).forward((_1).forward((_0).forward(_24, ), ), )
+  File "code/__torch__/efficientnet_pytorch/utils/___torch_mangle_2950.py", line 12, in forward
+    weight = self.weight
+    static_padding = self.static_padding
+    input = torch._convolution((static_padding).forward(x, ), weight, None, [2, 2], [0, 0], [1, 1], False, [0, 0], 1, False, False, True, True)
+                                ~~~~~~~~~~~~~~~~~~~~~~~ <--- HERE
+    return input
+  File "code/__torch__/torch/nn/modules/padding/___torch_mangle_2949.py", line 8, in forward
+  def forward(self: __torch__.torch.nn.modules.padding.___torch_mangle_2949.ZeroPad2d,
+    x: Tensor) -> Tensor:
+    x0 = torch.pad(x, [0, 1, 0, 1], "constant", 0.)
+         ~~~~~~~~~ <--- HERE
+    return x0
+
+Traceback of TorchScript, original code (most recent call last):
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/padding.py(25): forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1488): _slow_forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1501): _call_impl
+/users/cezbar/.local/lib/python3.10/site-packages/efficientnet_pytorch/utils.py(274): forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1488): _slow_forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1501): _call_impl
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/container.py(217): forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1488): _slow_forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1501): _call_impl
+/users/cezbar/.local/lib/python3.10/site-packages/segmentation_models_pytorch/encoders/efficientnet.py(66): forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1488): _slow_forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1501): _call_impl
+/users/cezbar/.local/lib/python3.10/site-packages/segmentation_models_pytorch/base/model.py(29): forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1488): _slow_forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1501): _call_impl
+/users/cezbar/.local/lib/python3.10/site-packages/torch/jit/_trace.py(1056): trace_module
+/users/cezbar/.local/lib/python3.10/site-packages/torch/jit/_trace.py(794): trace
+<stdin>(1): <module>
+RuntimeError: CUDA out of memory. Tried to allocate 26.00 MiB. GPU 0 has a total capacity of 47.54 GiB of which 5.19 MiB is free. Process 1135374 has 270.00 MiB memory in use. Process 3222355 has 1.20 GiB memory in use. Process 3222283 has 1.21 GiB memory in use. Process 3222218 has 1.19 GiB memory in use. Including non-PyTorch memory, this process has 1.01 GiB memory in use. Process 3222240 has 1.21 GiB memory in use. Process 3222295 has 1.28 GiB memory in use. Process 3222271 has 1.19 GiB memory in use. Process 3222286 has 1.22 GiB memory in use. Process 3222210 has 1.18 GiB memory in use. Process 3222323 has 1.12 GiB memory in use. Process 3222226 has 1.19 GiB memory in use. Process 3222307 has 1.19 GiB memory in use. Process 3222352 has 1.15 GiB memory in use. Process 3222300 has 1.07 GiB memory in use. Process 3222263 has 1.04 GiB memory in use. Process 3222334 has 1.21 GiB memory in use. Process 3222311 has 1.27 GiB memory in use. Process 3222245 has 1.21 GiB memory in use. Process 3222203 has 1.09 GiB memory in use. Process 3222291 has 1.22 GiB memory in use. Process 3222316 has 1.20 GiB memory in use. Process 3222254 has 1.21 GiB memory in use. Process 3222279 has 1.24 GiB memory in use. Process 3222326 has 1.19 GiB memory in use. Process 3222234 has 1.20 GiB memory in use. Process 3222341 has 1.18 GiB memory in use. Process 3222221 has 1.27 GiB memory in use. Process 3222337 has 1.12 GiB memory in use. Process 3222231 has 1.19 GiB memory in use. Process 3222265 has 1.19 GiB memory in use. Process 3222305 has 1.20 GiB memory in use. Process 3222357 has 1.20 GiB memory in use. Process 3222346 has 1.15 GiB memory in use. Process 3222253 has 1.18 GiB memory in use. Process 3222273 has 1.12 GiB memory in use. Process 3222319 has 1.07 GiB memory in use. Process 3222215 has 1.20 GiB memory in use. Process 3222212 has 1.21 GiB memory in use. Process 3222243 has 1.19 GiB memory in use. Process 3222261 has 1.21 GiB memory in use. Of the allocated memory 117.19 MiB is allocated by PyTorch, and 10.81 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+2024-09-03 21:49:20,818 - INFO - > Load the Minicube 107 ...
+2024-09-03 21:49:20,910 - INFO - Resolution: 10
+2024-09-03 21:49:22,282 - ERROR - An error occurred for index 106: CUDA out of memory. Tried to allocate 2.00 MiB. GPU 0 has a total capacity of 47.54 GiB of which 5.19 MiB is free. Process 1135374 has 270.00 MiB memory in use. Process 3222355 has 1.20 GiB memory in use. Process 3222283 has 1.21 GiB memory in use. Process 3222218 has 1.19 GiB memory in use. Including non-PyTorch memory, this process has 1.01 GiB memory in use. Process 3222240 has 1.21 GiB memory in use. Process 3222295 has 1.28 GiB memory in use. Process 3222271 has 1.19 GiB memory in use. Process 3222286 has 1.22 GiB memory in use. Process 3222210 has 1.18 GiB memory in use. Process 3222323 has 1.12 GiB memory in use. Process 3222226 has 1.19 GiB memory in use. Process 3222307 has 1.19 GiB memory in use. Process 3222352 has 1.15 GiB memory in use. Process 3222300 has 1.07 GiB memory in use. Process 3222263 has 1.04 GiB memory in use. Process 3222334 has 1.21 GiB memory in use. Process 3222311 has 1.27 GiB memory in use. Process 3222245 has 1.21 GiB memory in use. Process 3222203 has 1.09 GiB memory in use. Process 3222291 has 1.22 GiB memory in use. Process 3222316 has 1.20 GiB memory in use. Process 3222254 has 1.21 GiB memory in use. Process 3222279 has 1.24 GiB memory in use. Process 3222326 has 1.19 GiB memory in use. Process 3222234 has 1.20 GiB memory in use. Process 3222341 has 1.18 GiB memory in use. Process 3222221 has 1.27 GiB memory in use. Process 3222337 has 1.12 GiB memory in use. Process 3222231 has 1.19 GiB memory in use. Process 3222265 has 1.19 GiB memory in use. Process 3222305 has 1.20 GiB memory in use. Process 3222357 has 1.20 GiB memory in use. Process 3222346 has 1.15 GiB memory in use. Process 3222253 has 1.18 GiB memory in use. Process 3222273 has 1.12 GiB memory in use. Process 3222319 has 1.07 GiB memory in use. Process 3222215 has 1.20 GiB memory in use. Process 3222212 has 1.21 GiB memory in use. Process 3222243 has 1.19 GiB memory in use. Process 3222261 has 1.21 GiB memory in use. Of the allocated memory 117.62 MiB is allocated by PyTorch, and 10.38 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+2024-09-03 21:49:22,283 - INFO - > Load the Minicube 108 ...
+2024-09-03 21:49:22,383 - INFO - Resolution: 10
+2024-09-03 21:49:24,262 - ERROR - An error occurred for index 105: The following operation failed in the TorchScript interpreter.
+Traceback of TorchScript, serialized code (most recent call last):
+  File "code/__torch__/segmentation_models_pytorch/decoders/unet/model/___torch_mangle_3371.py", line 14, in forward
+    decoder = self.decoder
+    encoder = self.encoder
+    _0, _1, _2, _3, _4, = (encoder).forward(x, )
+                           ~~~~~~~~~~~~~~~~ <--- HERE
+    _5 = (decoder).forward(_0, _1, _2, _3, _4, )
+    return (segmentation_head).forward(_5, )
+  File "code/__torch__/segmentation_models_pytorch/encoders/efficientnet/___torch_mangle_3297.py", line 65, in forward
+    _bn0 = self._bn0
+    _conv_stem = self._conv_stem
+    _23 = (_bn0).forward((_conv_stem).forward(x, ), )
+                          ~~~~~~~~~~~~~~~~~~~ <--- HERE
+    _24 = (_swish).forward(_23, )
+    _25 = (_2).forward((_1).forward((_0).forward(_24, ), ), )
+  File "code/__torch__/efficientnet_pytorch/utils/___torch_mangle_2950.py", line 12, in forward
+    weight = self.weight
+    static_padding = self.static_padding
+    input = torch._convolution((static_padding).forward(x, ), weight, None, [2, 2], [0, 0], [1, 1], False, [0, 0], 1, False, False, True, True)
+            ~~~~~~~~~~~~~~~~~~ <--- HERE
+    return input
+
+Traceback of TorchScript, original code (most recent call last):
+/users/cezbar/.local/lib/python3.10/site-packages/efficientnet_pytorch/utils.py(275): forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1488): _slow_forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1501): _call_impl
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/container.py(217): forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1488): _slow_forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1501): _call_impl
+/users/cezbar/.local/lib/python3.10/site-packages/segmentation_models_pytorch/encoders/efficientnet.py(66): forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1488): _slow_forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1501): _call_impl
+/users/cezbar/.local/lib/python3.10/site-packages/segmentation_models_pytorch/base/model.py(29): forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1488): _slow_forward
+/users/cezbar/.local/lib/python3.10/site-packages/torch/nn/modules/module.py(1501): _call_impl
+/users/cezbar/.local/lib/python3.10/site-packages/torch/jit/_trace.py(1056): trace_module
+/users/cezbar/.local/lib/python3.10/site-packages/torch/jit/_trace.py(794): trace
+<stdin>(1): <module>
+RuntimeError: CUDA out of memory. Tried to allocate 18.00 MiB. GPU 0 has a total capacity of 47.54 GiB of which 5.19 MiB is free. Process 1135374 has 270.00 MiB memory in use. Process 3222355 has 1.20 GiB memory in use. Process 3222283 has 1.21 GiB memory in use. Process 3222218 has 1.19 GiB memory in use. Process 3222339 has 1.01 GiB memory in use. Process 3222240 has 1.21 GiB memory in use. Process 3222295 has 1.28 GiB memory in use. Process 3222271 has 1.19 GiB memory in use. Process 3222286 has 1.22 GiB memory in use. Process 3222210 has 1.18 GiB memory in use. Process 3222323 has 1.12 GiB memory in use. Process 3222226 has 1.19 GiB memory in use. Process 3222307 has 1.19 GiB memory in use. Process 3222352 has 1.15 GiB memory in use. Process 3222300 has 1.07 GiB memory in use. Including non-PyTorch memory, this process has 1.04 GiB memory in use. Process 3222334 has 1.21 GiB memory in use. Process 3222311 has 1.27 GiB memory in use. Process 3222245 has 1.21 GiB memory in use. Process 3222203 has 1.09 GiB memory in use. Process 3222291 has 1.22 GiB memory in use. Process 3222316 has 1.20 GiB memory in use. Process 3222254 has 1.21 GiB memory in use. Process 3222279 has 1.24 GiB memory in use. Process 3222326 has 1.19 GiB memory in use. Process 3222234 has 1.20 GiB memory in use. Process 3222341 has 1.18 GiB memory in use. Process 3222221 has 1.27 GiB memory in use. Process 3222337 has 1.12 GiB memory in use. Process 3222231 has 1.19 GiB memory in use. Process 3222265 has 1.19 GiB memory in use. Process 3222305 has 1.20 GiB memory in use. Process 3222357 has 1.20 GiB memory in use. Process 3222346 has 1.15 GiB memory in use. Process 3222253 has 1.18 GiB memory in use. Process 3222273 has 1.12 GiB memory in use. Process 3222319 has 1.07 GiB memory in use. Process 3222215 has 1.20 GiB memory in use. Process 3222212 has 1.21 GiB memory in use. Process 3222243 has 1.19 GiB memory in use. Process 3222261 has 1.21 GiB memory in use. Of the allocated memory 142.39 MiB is allocated by PyTorch, and 9.61 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+2024-09-03 21:49:24,263 - INFO - > Load the Minicube 109 ...
+2024-09-03 21:49:24,360 - INFO - Resolution: 10
+2024-09-03 21:49:28,275 - INFO - > Save the Minicube 107 ...
+2024-09-03 21:49:30,774 - INFO - > Save the Minicube 108 ...
+2024-09-03 21:49:30,806 - ERROR - An error occurred for index 103: CUDA out of memory. Tried to allocate 26.00 MiB. GPU 0 has a total capacity of 47.54 GiB of which 5.19 MiB is free. Process 1135374 has 270.00 MiB memory in use. Process 3222355 has 1.05 GiB memory in use. Process 3222283 has 1.21 GiB memory in use. Process 3222218 has 1.19 GiB memory in use. Process 3222339 has 1.01 GiB memory in use. Process 3222240 has 1.21 GiB memory in use. Process 3222295 has 1.28 GiB memory in use. Process 3222271 has 1.20 GiB memory in use. Process 3222286 has 1.22 GiB memory in use. Process 3222210 has 1.18 GiB memory in use. Process 3222323 has 1.12 GiB memory in use. Process 3222226 has 1.19 GiB memory in use. Process 3222307 has 1.19 GiB memory in use. Process 3222352 has 1.15 GiB memory in use. Process 3222300 has 1.08 GiB memory in use. Process 3222263 has 1.24 GiB memory in use. Process 3222334 has 1.21 GiB memory in use. Process 3222311 has 1.27 GiB memory in use. Process 3222245 has 1.21 GiB memory in use. Process 3222203 has 1.06 GiB memory in use. Process 3222291 has 1.22 GiB memory in use. Process 3222316 has 1.20 GiB memory in use. Process 3222254 has 1.21 GiB memory in use. Process 3222279 has 1.25 GiB memory in use. Process 3222326 has 1.19 GiB memory in use. Process 3222234 has 1.20 GiB memory in use. Process 3222341 has 1.19 GiB memory in use. Process 3222221 has 1.27 GiB memory in use. Process 3222337 has 1.12 GiB memory in use. Process 3222231 has 1.19 GiB memory in use. Process 3222265 has 1.19 GiB memory in use. Process 3222305 has 1.20 GiB memory in use. Process 3222357 has 1.20 GiB memory in use. Process 3222346 has 1.15 GiB memory in use. Process 3222253 has 1.18 GiB memory in use. Process 3222273 has 1.13 GiB memory in use. Including non-PyTorch memory, this process has 1016.00 MiB memory in use. Process 3222215 has 1.20 GiB memory in use. Process 3222212 has 1.21 GiB memory in use. Process 3222243 has 1.19 GiB memory in use. Process 3222261 has 1.21 GiB memory in use. Of the allocated memory 92.39 MiB is allocated by PyTorch, and 9.61 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+2024-09-03 21:49:30,806 - INFO - > Load the Minicube 110 ...
+2024-09-03 21:49:30,864 - INFO - Resolution: 10
+2024-09-03 21:49:32,976 - ERROR - An error occurred for index 104: ('store-map-86c5cfe346113ff56f5c9279a6128864', 88, 0, 0, 0) cancelled for reason: scheduler-connection-lost.
+Client lost the connection to the scheduler. Please check your connection and re-run your work.
+2024-09-03 21:49:32,978 - INFO - > Load the Minicube 111 ...
+2024-09-03 21:49:33,079 - INFO - Resolution: 10
+2024-09-03 21:49:33,127 - ERROR - Error in load_sentle function for index 110: ConnectionPool closing.
+2024-09-03 21:49:33,131 - ERROR - An error occurred for index 110: ConnectionPool closing.
+2024-09-03 21:49:33,133 - INFO - > Load the Minicube 112 ...
+2024-09-03 21:49:33,231 - INFO - Resolution: 10
+2024-09-03 21:49:33,259 - ERROR - An error occurred for index 107: ('store-map-e0e63367b9c10bd5fe1e750093d3140c', 136, 1, 0, 0) cancelled for reason: scheduler-connection-lost.
+Client lost the connection to the scheduler. Please check your connection and re-run your work.
+2024-09-03 21:49:33,261 - INFO - > Load the Minicube 113 ...
+2024-09-03 21:49:33,361 - INFO - Resolution: 10
+2024-09-03 21:49:33,407 - ERROR - An error occurred for index 108: ('store-map-5b585e6d26f917634c14c1a575266a4a', 157, 1, 0, 0) cancelled for reason: unknown.
+2024-09-03 21:49:33,407 - INFO - > Load the Minicube 114 ...
+2024-09-03 21:49:33,486 - INFO - Resolution: 10
+2024-09-03 21:49:34,833 - INFO - > Save the Minicube 109 ...
+2024-09-03 21:49:34,876 - ERROR - Error in load_sentle function for index 111: Cluster failed to start: Scheduler failed to start.
+2024-09-03 21:49:34,876 - ERROR - An error occurred for index 111: Cluster failed to start: Scheduler failed to start.
+2024-09-03 21:49:34,878 - INFO - > Load the Minicube 115 ...
+2024-09-03 21:49:34,966 - INFO - Resolution: 10
+2024-09-03 21:49:34,967 - ERROR - Error in load_sentle function for index 113: Cluster failed to start: Scheduler failed to start.
+2024-09-03 21:49:34,967 - ERROR - An error occurred for index 113: Cluster failed to start: Scheduler failed to start.
+2024-09-03 21:49:34,968 - INFO - > Load the Minicube 116 ...
+2024-09-03 21:49:34,969 - ERROR - Error in load_sentle function for index 112: Cluster failed to start: Scheduler failed to start.
+2024-09-03 21:49:35,054 - ERROR - An error occurred for index 112: Cluster failed to start: Scheduler failed to start.
+2024-09-03 21:49:35,058 - INFO - Resolution: 10
+2024-09-03 21:49:35,058 - INFO - > Load the Minicube 117 ...
+2024-09-03 21:49:35,157 - INFO - Resolution: 10
+2024-09-03 21:49:39,322 - ERROR - Error in load_sentle function for index 116: Cluster failed to start: Scheduler failed to start.
+2024-09-03 21:49:39,357 - ERROR - An error occurred for index 116: Cluster failed to start: Scheduler failed to start.
+2024-09-03 21:49:39,357 - INFO - > Load the Minicube 118 ...
+2024-09-03 21:49:39,442 - INFO - Resolution: 10
+2024-09-03 21:49:49,569 - INFO - > Save the Minicube 117 ...
+2024-09-03 21:49:49,570 - INFO - > Save the Minicube 118 ...
+2024-09-03 21:49:49,640 - INFO - > Save the Minicube 115 ...
+2024-09-03 21:49:59,396 - INFO - > Save the Minicube 114 ...
+2024-09-03 22:07:59,299 - INFO - > Successfully saved the Minicube 117 at /net/projects/forexd/WP1/Data/S2_Cubes_IDS_R8//117_10_512_20152024_equi7_NA.zarr ...
+2024-09-03 22:07:59,305 - INFO - > Load the Minicube 119 ...
+2024-09-03 22:07:59,386 - INFO - Resolution: 10
+2024-09-03 22:08:04,653 - INFO - > Save the Minicube 119 ...
+2024-09-03 22:08:04,681 - INFO - > Successfully saved the Minicube 115 at /net/projects/forexd/WP1/Data/S2_Cubes_IDS_R8//115_10_512_20152024_equi7_NA.zarr ...
+2024-09-03 22:08:04,686 - INFO - > Load the Minicube 120 ...
+2024-09-03 22:08:04,762 - INFO - Resolution: 10
+2024-09-03 22:08:05,816 - INFO - > Successfully saved the Minicube 109 at /net/projects/forexd/WP1/Data/S2_Cubes_IDS_R8//109_10_512_20152024_equi7_NA.zarr ...
+2024-09-03 22:08:05,821 - INFO - > Load the Minicube 121 ...
+2024-09-03 22:08:06,031 - INFO - Resolution: 10
+2024-09-03 22:08:09,451 - INFO - > Successfully saved the Minicube 114 at /net/projects/forexd/WP1/Data/S2_Cubes_IDS_R8//114_10_512_20152024_equi7_NA.zarr ...
+2024-09-03 22:08:09,457 - INFO - > Load the Minicube 122 ...
+2024-09-03 22:08:09,540 - INFO - Resolution: 10
+2024-09-03 22:08:13,136 - INFO - > Save the Minicube 120 ...
+2024-09-03 22:08:14,981 - INFO - > Save the Minicube 121 ...
+2024-09-03 22:08:19,311 - INFO - > Successfully saved the Minicube 118 at /net/projects/forexd/WP1/Data/S2_Cubes_IDS_R8//118_10_512_20152024_equi7_NA.zarr ...
+2024-09-03 22:08:19,314 - INFO - > Load the Minicube 123 ...
+2024-09-03 22:08:19,366 - INFO - Resolution: 10
+2024-09-03 22:08:21,713 - INFO - > Save the Minicube 122 ...
+2024-09-03 22:08:28,690 - INFO - > Save the Minicube 123 ...
+2024-09-03 22:26:22,859 - INFO - > Successfully saved the Minicube 122 at /net/projects/forexd/WP1/Data/S2_Cubes_IDS_R8//122_10_512_20152024_equi7_NA.zarr ...
+2024-09-03 22:26:22,865 - INFO - > Load the Minicube 124 ...
+2024-09-03 22:26:22,958 - INFO - Resolution: 10
+2024-09-03 22:26:39,789 - INFO - > Successfully saved the Minicube 121 at /net/projects/forexd/WP1/Data/S2_Cubes_IDS_R8//121_10_512_20152024_equi7_NA.zarr ...
+2024-09-03 22:26:39,793 - INFO - > Load the Minicube 125 ...
+2024-09-03 22:26:39,864 - INFO - Resolution: 10
+2024-09-03 22:26:42,896 - INFO - > Successfully saved the Minicube 119 at /net/projects/forexd/WP1/Data/S2_Cubes_IDS_R8//119_10_512_20152024_equi7_NA.zarr ...
+2024-09-03 22:26:42,900 - INFO - > Load the Minicube 126 ...
+2024-09-03 22:26:42,980 - INFO - Resolution: 10
+2024-09-03 22:26:44,282 - INFO - > Successfully saved the Minicube 123 at /net/projects/forexd/WP1/Data/S2_Cubes_IDS_R8//123_10_512_20152024_equi7_NA.zarr ...
+2024-09-03 22:26:44,287 - INFO - > Load the Minicube 127 ...
+2024-09-03 22:26:44,375 - INFO - Resolution: 10
+2024-09-03 22:26:46,743 - INFO - > Save the Minicube 125 ...
+2024-09-03 22:26:47,006 - INFO - > Successfully saved the Minicube 120 at /net/projects/forexd/WP1/Data/S2_Cubes_IDS_R8//120_10_512_20152024_equi7_NA.zarr ...
+2024-09-03 22:26:47,012 - INFO - > Load the Minicube 128 ...
+2024-09-03 22:26:47,093 - INFO - Resolution: 10
+2024-09-03 22:26:50,417 - INFO - > Save the Minicube 126 ...
+2024-09-03 22:26:52,574 - INFO - > Save the Minicube 127 ...
+2024-09-03 22:27:17,364 - INFO - > Save the Minicube 128 ...
+2024-09-03 22:27:20,893 - INFO - > Save the Minicube 124 ...
+2024-09-04 09:56:40,354 - ERROR - An error occurred for index 124: Attempted to run task ('time-process_ptile-bf253f206eb84ccc605662af7d5d95f5-b6b7634e7c6ea23528d241b396e73c16', 151) on 4 different workers, but all those workers died while running it. The last worker that attempt to run the task was tcp://127.0.0.1:34897. Inspecting worker logs is often a good next step to diagnose what went wrong. For more information see https://distributed.dask.org/en/stable/killed.html.
+2024-09-04 09:56:40,364 - INFO - > Load the Minicube 129 ...
+2024-09-04 09:56:40,482 - INFO - Resolution: 10
+2024-09-04 09:56:42,229 - ERROR - An error occurred for index 128: Attempted to run task ('time-process_ptile-f6388e013fc94d1d27b6585d4b12e703-97c36ec842d1dc1f15424fc16215e728', 266) on 4 different workers, but all those workers died while running it. The last worker that attempt to run the task was tcp://127.0.0.1:35061. Inspecting worker logs is often a good next step to diagnose what went wrong. For more information see https://distributed.dask.org/en/stable/killed.html.
+2024-09-04 09:56:42,229 - INFO - > Load the Minicube 130 ...
+2024-09-04 09:56:42,230 - ERROR - An error occurred for index 127: Attempted to run task ('time-process_ptile-fddfa088de52b1607693ed71d38ed59e-515fd62d158a20be25f5de26fffd6798', 41) on 4 different workers, but all those workers died while running it. The last worker that attempt to run the task was tcp://127.0.0.1:35061. Inspecting worker logs is often a good next step to diagnose what went wrong. For more information see https://distributed.dask.org/en/stable/killed.html.
+2024-09-04 09:56:42,330 - INFO - > Load the Minicube 131 ...
+2024-09-04 09:56:42,422 - INFO - Resolution: 10
+2024-09-04 09:56:42,428 - INFO - Resolution: 10
+2024-09-04 09:56:44,337 - ERROR - An error occurred for index 125: Attempted to run task ('time-process_ptile-007b54fd183f6cad815810f53d14c6e1-fa867c5ea3e1b1b8250d75d9e447fcc7', 195) on 4 different workers, but all those workers died while running it. The last worker that attempt to run the task was tcp://127.0.0.1:43879. Inspecting worker logs is often a good next step to diagnose what went wrong. For more information see https://distributed.dask.org/en/stable/killed.html.
+2024-09-04 09:56:44,339 - INFO - > Load the Minicube 132 ...
+2024-09-04 09:56:45,698 - INFO - Resolution: 10
+2024-09-04 09:56:45,705 - ERROR - An error occurred for index 126: Attempted to run task ('time-process_ptile-93a69f374a9f894cb3710a431e6409bd-7594cb299453c605576fdef4a036e991', 30) on 4 different workers, but all those workers died while running it. The last worker that attempt to run the task was tcp://127.0.0.1:40139. Inspecting worker logs is often a good next step to diagnose what went wrong. For more information see https://distributed.dask.org/en/stable/killed.html.
+2024-09-04 09:56:45,712 - INFO - > Load the Minicube 133 ...
+2024-09-04 09:56:45,841 - INFO - Resolution: 10
+2024-09-04 09:56:55,727 - INFO - > Save the Minicube 132 ...
+2024-09-04 09:56:58,656 - INFO - > Save the Minicube 133 ...
+2024-09-04 09:57:02,331 - INFO - > Save the Minicube 131 ...
+2024-09-04 09:57:14,976 - INFO - > Save the Minicube 130 ...
+2024-09-04 09:57:36,175 - INFO - > Save the Minicube 129 ...
+2024-09-04 10:01:53,159 - ERROR - An error occurred for index 131: ('store-map-cc847681890601502938e1903f1148ae', 209, 0, 0, 0) cancelled for reason: unknown.
+2024-09-04 10:01:53,160 - INFO - > Load the Minicube 134 ...
+2024-09-04 10:01:53,161 - ERROR - An error occurred for index 129: ('store-map-8fb47ac8d6e108b144d37a96cea0fb44', 72, 1, 0, 0) cancelled for reason: unknown.
+2024-09-04 10:01:53,246 - INFO - > Load the Minicube 135 ...
+2024-09-04 10:01:53,334 - INFO - Resolution: 10
+2024-09-04 10:01:53,347 - INFO - Resolution: 10
+2024-09-04 10:01:53,354 - ERROR - An error occurred for index 132: ('store-map-3f0996ca5f6863f7aabfa336902786a6', 62, 1, 0, 0) cancelled for reason: unknown.
+2024-09-04 10:01:53,355 - INFO - > Load the Minicube 136 ...
+2024-09-04 10:01:53,414 - INFO - Resolution: 10
+2024-09-04 10:01:53,421 - ERROR - An error occurred for index 133: ('store-map-ba3a36c03d162eb82bec60e72979c7ca', 36, 0, 0, 0) cancelled for reason: unknown.
+2024-09-04 10:01:53,422 - INFO - > Load the Minicube 137 ...
+2024-09-04 10:01:53,424 - ERROR - An error occurred for index 130: ('store-map-13dbee29c2c38018cc874eeeec94f221', 94, 1, 0, 0) cancelled for reason: unknown.
+2024-09-04 10:01:53,506 - INFO - Resolution: 10
+2024-09-04 10:01:53,507 - INFO - > Load the Minicube 138 ...
+2024-09-04 10:01:53,602 - INFO - Resolution: 10
