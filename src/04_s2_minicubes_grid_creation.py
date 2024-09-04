@@ -175,9 +175,11 @@ def main():
 
     # Paths to input datasets
     TCC_path_2017 = "/Net/Groups/BGI/work_2/ForExD/WP1/Data/nlcd_tcc_CONUS_2017_v2021-4/wp1_nlcd_tcc_conus_2017_v2021_4_20m_4326_cropped_region_08.tif"
-    refdm_path = "/Net/Groups/BGI/scratch/fmueller/ForExD-WP1-P1/results/radar_enhanced_forest_disturbance_mapping.shp"
+    #refdm_path = "/Net/Groups/BGI/scratch/fmueller/ForExD-WP1-P1/results/radar_enhanced_forest_disturbance_mapping.shp"
+    refdm_path = '/Net/Groups/BGI/scratch/fmueller/ForExD-WP1-P1/results/overlapping_results/radar_enhanced_forest_disturbance_mapping_overlap.shp'
     ids_path = "/Net/Groups/BGI/scratch/fmueller/ForExD-WP1-P1/results/region8_dca_filtered_ids_usda_polygons.csv"
-    output_file_path = "/Net/Groups/BGI/scratch/fmueller/ForExD-WP1-P1/results/convex_hulls_refdm.shp"
+    output_file_path = "/Net/Groups/BGI/scratch/fmueller/ForExD-WP1-P1/results/overlapping_results/convex_hulls_refdm.shp"
+    #output_file_path = "/Net/Groups/BGI/scratch/fmueller/ForExD-WP1-P1/results/convex_hulls_refdm.shp"
     intersected_output_path = "/Net/Groups/BGI/scratch/fmueller/ForExD-WP1-P1/results/minicubes_grid.shp"
 
     # Step 2: Get the rough boundary of Region 8
