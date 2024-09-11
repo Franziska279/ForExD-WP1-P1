@@ -14,7 +14,7 @@ logging.basicConfig(
     format='%(asctime)s - %(levelname)s - %(message)s',
     handlers=[
         logging.StreamHandler(),  # Logs to the console
-        logging.FileHandler('sentinel_processing_2.log')  # Logs to a file
+        logging.FileHandler('sentinel_processing_3.log')  # Logs to a file
     ]
 )
 logger = logging.getLogger()
@@ -44,12 +44,13 @@ def load_sentle(grid_path, idx, res):
             target_resolution=res,
             S2_mask_snow=True,
             S2_cloud_classification=True,
-            S2_cloud_classification_device="cuda",
+            S2_cloud_classification_device="cpu",
             S1_assets=["vv", "vh"],
             S2_apply_snow_mask=True,
             S2_apply_cloud_mask=True,
             time_composite_freq="7d",
-            num_workers=5,
+            # NOTE clemens: this can be set to 40
+            num_workers=7,
         )
         return da
     except Exception as e:
@@ -78,6 +79,10 @@ def main():
         env_path = Path('/net/projects/forexd/WP1/02_ImprovedLabels/Scripts/ForExD-WP1-P1/environment/.env')
         load_dotenv(dotenv_path=env_path)
 
+        # NOTE clemens
+        # if below does not work, try to set the CUDA_VISIBLE_DEVICES through the terminal before running the script
+        # with `export CUDA_VISIBLE_DEVICES=2`
+        
         # Set CUDA environment
         os.environ["CUDA_VISIBLE_DEVICES"] = "2"
         logger.info(f"> Available CUDA devices: {torch.cuda.device_count()}")
@@ -86,16 +91,23 @@ def main():
         res = 10
         # Path to grid_file
         grid_path = f"{os.getenv('EQUI7_GRIDS')}/grid_equi7_{res}_512.shp"
-        # intersected_gdf_equi7 = gpd.read_file(grid_path)
-        start_idx = 0
-        end_idx = 10# len(intersected_gdf_equi7) - 1  # This is up to 3997  so i just tried with a shorter range for testing
+        #intersected_gdf_equi7 = gpd.read_file(grid_path)
+        start_idx = 100
+        end_idx = 150 #len(intersected_gdf_equi7) - 1  # This is up to 3997  so i just tried with a shorter range for testing
 
-        # Use ThreadPoolExecutor with a limit of 5 concurrent workers
-        with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
-            futures = [executor.submit(process_and_save, grid_path, idx, res) for idx in range(start_idx, end_idx + 1)]
-            # Wait for all futures to complete
-            for future in concurrent.futures.as_completed(futures):
-                pass  # You can handle results if needed
+       
+        # NOTE clemens
+        # do a simple for-loop here, the sentle process function is already parallelized
+        for idx in range(start_idx, end_idx + 1):
+            process_and_save(grid_path, idx, res)
+
+        # # Use ThreadPoolExecutor with a limit of 5 concurrent workers
+        # with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
+        #     futures = [executor.submit(process_and_save, grid_path, idx, res) for idx in range(start_idx, end_idx + 1)]
+        #     # Wait for all futures to complete
+        #     for future in concurrent.futures.as_completed(futures):
+        #         pass  # You can handle results if needed
+
 
     except Exception as e:
         logger.error(f"An error occurred in the main execution: {e}")
