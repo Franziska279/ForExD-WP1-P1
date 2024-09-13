@@ -443,13 +443,11 @@ def calculate_area_in_km2(gdf):
     return gdf
 
 
-def plot_regions_disturbances(disturbance_gdf, filepath, output_file, custom_colors, region_nr= "08"):
+def plot_regions_disturbances(disturbance_gdf, filepath, output_file, custom_colors, region_nr):
 
     usa = gpd.read_file(filepath)
     country = usa[usa.REGION == region_nr]
-    region = country.explode()[0:1]
-
-    # Example data for region 8
+    
     region = country.explode()[0:1]  # Adjust this line as needed to select region 8
     
     # Create a figure and axis
@@ -461,9 +459,13 @@ def plot_regions_disturbances(disturbance_gdf, filepath, output_file, custom_col
     # Plot the boundaries of intersected geometries with custom colors
     for dca_id, color in custom_colors.items():
         subset = disturbance_gdf[disturbance_gdf['DCA_ID'] == dca_id]
-        subset.boundary.plot(ax=ax, color=color, linewidth=0.5, linestyle='-', zorder=2)
-        # Add color box handle for DCA_ID
-        handles.append(Patch(color=color, label=format_label_count(dca_id,len(subset))))
+        subset = subset[subset.is_valid]
+         # Check if subset is not empty
+        if not subset.empty:
+            # Plot directly without using .boundary
+            subset.plot(ax=ax, edgecolor=color, linewidth=0.5, linestyle='-', zorder=2)
+            # Add handle for legend
+            handles.append(Patch(color=color, label=format_label_count(dca_id, len(subset))))
 
     # Plot the boundary of the selected region
     region.boundary.plot(ax=ax, color='black', linewidth=0.5, linestyle='--', zorder=3) 
@@ -483,13 +485,13 @@ def plot_regions_disturbances(disturbance_gdf, filepath, output_file, custom_col
     ax.set_aspect('equal')
 
     # Add the legend with all handles
-    ax.legend(handles=handles, loc='upper left', fontsize=14)
+    ax.legend(handles=handles, loc='best', fontsize=14)
 
-    # Optional: Add a legend if needed
-    #ax.legend([f'Intersected Geometries ({len(disturbance_gdf)} events)', 'Region 8 Boundary'], loc='upper left', fontsize=14)
     if output_file:
         plt.savefig(output_file, dpi=300, bbox_inches='tight')  
     plt.show()
+
+
 
 
 def main():
@@ -502,22 +504,30 @@ def main():
     env_path = Path('/net/projects/forexd/WP1/02_ImprovedLabels/Scripts/ForExD-WP1-P1/environment/.env')
     load_dotenv(dotenv_path=env_path)
 
+    region = os.getenv('REGION')
+    print(f"Working on USDA Region {region} ...")
+    region_id=str(region).zfill(2)
+
     # Define file paths using environment variables
-    region_8_shape_path = f"{os.getenv('REGION_SHAPE')}S_USA.AdministrativeRegion.shp"
-    ids_region_8_file_path = f"{os.getenv('IDS_REGION8')}CONUS_Region8_dissolved.csv"
-    file_output_path = f"{os.getenv('RESULTS')}/region8_dca_filtered_ids_usda_polygons.shp"
-    figure_output_path = f"{os.getenv('FIGURES')}/p1_f1_disturbances_region_08.png"
+    region_shape_path = f"{os.getenv('REGION_SHAPE')}S_USA.AdministrativeRegion.shp"
+    ids_region_file_path = f"{os.getenv('IDS_REGIONS')}CONUS_Region{region}_dissolved.csv"
+    file_output_path = f"{os.getenv('RESULTS')}/region{region_id}_dca_filtered_ids_usda_polygons.shp"
+    figure_output_path = f"{os.getenv('FIGURES')}/p1_f1_disturbances_region_{region_id}.png"
+
 
     # Retrieve and parse custom color settings from environment variables
     custom_colors_json = os.getenv('COLORS')
     custom_colors = parse_custom_colors(custom_colors_json)
 
     
-    print("Step 1: Loading CSV file...")
-    gdf = load_data(ids_region_8_file_path)
+    print(f"Step 1: Loading CSV file for Region {region_id}...")
+    gdf = load_data(ids_region_file_path)
 
     print("Step 2: Processing and cleaning disturbance data...")
+
     merged_gdf = process_and_merge_disturbances(gdf)
+    print("Step 2.5: Filter out years befor 2010...")
+    merged_gdf = merged_gdf[(merged_gdf['SURVEY_YEAR'] > 2009)]
 
     print("Step 3: Removing temporal and spatial overlaps...")
     gdf_no_overlap = remove_overlapping_entries(merged_gdf, year_range=5)
@@ -577,22 +587,20 @@ def main():
     data = gdf_area.rename(columns=column_renames)
 
 
-    # Step 12: Plot the final results
-    print("Step 12: Plotting the final results...")
-    plot_regions_disturbances(
-        data, 
-        region_8_shape_path, 
-        output_file= figure_output_path, 
-        custom_colors=custom_colors
-    )
-
-    # Step 13: Save the final GeoDataFrame to a shapefile
-    print(f"Step 13: Saving results to: {file_output_path} ...")
+    # Step 12: Save the final GeoDataFrame to a shapefile
+    print(f"Step 12: Saving results to: {file_output_path} ...")
     data.to_file(file_output_path, index=False)
     print(f"Results successfully saved to: {file_output_path}")
 
-    
-
+    # Step 13: Plot the final results
+    print("Step 13: Plotting the final results...")
+    plot_regions_disturbances(
+        data, 
+        region_shape_path, 
+        output_file= figure_output_path, 
+        custom_colors=custom_colors,
+        region_nr= region_id
+    )
 
 
 if __name__ == "__main__":
