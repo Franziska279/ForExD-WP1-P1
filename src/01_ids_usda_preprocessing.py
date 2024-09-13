@@ -504,6 +504,7 @@ def main():
     env_path = Path('/net/projects/forexd/WP1/02_ImprovedLabels/Scripts/ForExD-WP1-P1/environment/.env')
     load_dotenv(dotenv_path=env_path)
 
+    TARGET_CRS = os.getenv('EQUI7_NA_EPSG')
     region = os.getenv('REGION')
     print(f"Working on USDA Region {region} ...")
     region_id=str(region).zfill(2)
