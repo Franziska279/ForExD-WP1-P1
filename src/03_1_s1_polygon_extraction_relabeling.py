@@ -40,7 +40,7 @@ def extract_filename_part(filename):
     extracted_part = '_'.join(parts[0:10])
     return extracted_part
 
-def preprocess_dataset(input_file, filename):
+def preprocess_dataset(input_file, filename, target_crs):
 
     # Step 1: Load dataset with filename
     print("Step  1: Load data from:", filename)
@@ -54,6 +54,7 @@ def preprocess_dataset(input_file, filename):
     print("Step 2: Define the Coordinate Reference Systems (CRS)")
     crs_azimuthal_equidistant = "+proj=aeqd +lat_0=52 +lon_0=-97.5 +x_0=8264722.17686 +y_0=4867518.35323 +datum=WGS84 +units=m +no_defs"
     crs_wgs84 = 'GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],AUTHORITY["EPSG","6326"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4326"]]'
+    #crs_equi7 = target_crs
 
 
     # Step 3: Define the variables to drop
@@ -100,14 +101,18 @@ def preprocess_dataset(input_file, filename):
     print("Step 10: Reproject the dataset to the WGS 84 projection (EPSG:4326)")
     dataset_wgs84 = dataset.rio.reproject(crs_wgs84)
 
+    # # Step 10: Reproject the dataset to the WGS 84 projection (EPSG:27705)
+    # print("Step 10: Reproject the dataset to the projection (EPSG:27705)")
+    # dataset_wgs84 = dataset.rio.reproject(crs_equi7)
+
     return dataset_wgs84
 
 
-def apply_tcc_mask(dataset):
+def apply_tcc_mask(dataset, TCC_path_2017):
 
     # Step 1: Define the path to the TIF file
-    print("Step 1: Defining the path to the TIF file...")
-    TCC_path_2017 = "/Net/Groups/BGI/work_2/ForExD/WP1/Data/nlcd_tcc_CONUS_2017_v2021-4/wp1_nlcd_tcc_conus_2017_v2021_4_20m_4326_cropped_region_08.tif"
+    print("Step 1: Get the TIF file...")
+    #TCC_path_2017 = "/Net/Groups/BGI/work_2/ForExD/WP1/Data/nlcd_tcc_CONUS_2017_v2021-4/wp1_nlcd_tcc_conus_2017_v2021_4_20m_4326_cropped_region_08.tif"
 
     # Step 2: Open the entire TIF file
     print("Step 2: Opening the entire TIF file...")
@@ -203,23 +208,23 @@ def process_nc_file(masked_mc, filename):
     polygons_gdf['S1_TILE'] = tile_name
 
     # Step 12: Append the GeoDataFrame to the result GeoDataFrame
-    print("Step 12: Appending the current GeoDataFrame to the results...")
-    all_polygons_gdf = all_polygons_gdf.append(polygons_gdf, ignore_index=True)
+    print("Step 12: Concatenating the current GeoDataFrame to the results...")
+    all_polygons_gdf = pd.concat([all_polygons_gdf, polygons_gdf], ignore_index=True)
     print("     Polygon extraction and GeoDataFrame update completed.")
 
     return all_polygons_gdf
 
 
-def process_and_filter_polygons(ids_usda_path, polygons_gdf, s1_year, filter_years, filename):
+def process_and_filter_polygons(ids_usda_path, polygons_gdf, s1_year, filter_years, filename, target_crs, output_folder):
     # Step 1: Load the ids_usda file
     print("Step 1: Loading the ids_usda file...")
-    ids_usda = pd.read_csv(ids_usda_path)
+    ids_usda_gdf = gpd.read_file(ids_usda_path)
     # Step 2: Convert the WKT geometries to Shapely geometries
     print("     Converting WKT geometries...")
-    ids_usda['geometry'] = ids_usda['geometry'].apply(wkt.loads)
+    #ids_usda['geometry'] = ids_usda['geometry'].apply(wkt.loads)
     # Step 3: Convert the DataFrame to a GeoDataFrame
     print("     Converting DataFrame to GeoDataFrame...")
-    ids_usda_gdf = gpd.GeoDataFrame(ids_usda, geometry='geometry')
+    #ids_usda_gdf = gpd.GeoDataFrame(ids_usda, geometry='geometry')
 
     # Step 2: Add a buffer of 500m around the ids_usda geometries
     print("Step 2: Adding a 500m buffer around the ids_usda geometries...")
@@ -227,45 +232,45 @@ def process_and_filter_polygons(ids_usda_path, polygons_gdf, s1_year, filter_yea
     
     # Step 3: Filter elements from ids_usda within a +-1 year buffer of s1_year
     print(f"Step 3: Filtering ids_usda for elements within a +-1 year buffer of {s1_year}...")
-    ids_usda_filtered = ids_usda_gdf[(ids_usda_gdf['SURVEY_YEAR'] >= s1_year - filter_years) & (ids_usda_gdf['SURVEY_YEAR'] <= s1_year + filter_years)]
+    ids_usda_filtered = ids_usda_gdf[(ids_usda_gdf['SURVEY_Y'] >= s1_year - filter_years) & (ids_usda_gdf['SURVEY_Y'] <= s1_year + filter_years)]
     print(f"Filtered down from {len(ids_usda_gdf)} to {len(ids_usda_filtered)} entries within the 2 year buffer.")
 
     # Step 4: Spatially join polygons_gdf and ids_usda_filtered
     print("Step 4: Performing spatial join to find intersecting polygons...")
     intersecting_polygons_gdf = gpd.sjoin(polygons_gdf, ids_usda_filtered, predicate='intersects')
-    intersecting_polygons_gdf = intersecting_polygons_gdf.rename(columns={'index_right': 'S1CD_INDEX', 'index_usda': 'USDA_INDEX'})
+    intersecting_polygons_gdf = intersecting_polygons_gdf.rename(columns={'index_right': 'S1CD_INDEX'})
     print(f"Found {len(intersecting_polygons_gdf)}/{len(polygons_gdf)} intersecting polygons.")
 
-    # Step 5: Rename columns to be less than or equal to 10 characters
-    print("Step 5: Renaming columns to be less than or equal to 10 characters...")
-    rename_mapping = {
-        'SURVEY_YEAR': 'SURV_YEAR',
-        'REGION_ID': 'REG_ID',
-        'DAMAGE_TYPE': 'DAM_TYPE',
-        'DAMAGE_TYPE_CODE': 'DAM_TYPE_CD',
-        'DCA_CODE': 'DCA_CD',
-        'DA_Code_USDA': 'DA_CD_USDA',
-        'PERCENT_AFFECTED': 'PCT_AFFECT',
-        'S1CD_INDEX': 'S1CD_IDX',
-        'USDA_INDEX': 'USDA_IDX'
-    }
-    intersecting_polygons_gdf = intersecting_polygons_gdf.rename(columns=rename_mapping)
+    # # Step 5: Rename columns to be less than or equal to 10 characters
+    # print("Step 5: Renaming columns to be less than or equal to 10 characters...")
+    # rename_mapping = {
+    #     'SURVEY_YEAR': 'SURV_YEAR',
+    #     'REGION_ID': 'REG_ID',
+    #     'DAMAGE_TYPE': 'DAM_TYPE',
+    #     'DAMAGE_TYPE_CODE': 'DAM_TYPE_CD',
+    #     'DCA_CODE': 'DCA_CD',
+    #     'DA_Code_USDA': 'DA_CD_USDA',
+    #     'PERCENT_AFFECTED': 'PCT_AFFECT',
+    #     'S1CD_INDEX': 'S1CD_IDX',
+    #     'USDA_INDEX': 'USDA_IDX'
+    # }
+    #intersecting_polygons_gdf = intersecting_polygons_gdf.rename(columns=rename_mapping)
 
     # Step 6: Aggregating geometries based on their shared USDA_IDX
-    print("Step 6: Aggregating geometries based on their shared USDA_IDX ...")
-    merged_gdf = intersecting_polygons_gdf.dissolve(by='USDA_IDX')
+    print("Step 6: Aggregating geometries based on their shared IDX_D ...")
+    merged_gdf = intersecting_polygons_gdf.dissolve(by='IDX_D')
     merged_gdf.reset_index(inplace=True)
     print(f"Total number of remaining rows: {len(merged_gdf)}/{len(intersecting_polygons_gdf)}")
 
     # Set the coordinate reference system (CRS) if it's not already set
     merged_gdf.set_crs(epsg=4326, inplace=True)
-    target_crs = 'EPSG:4326'
+    #target_crs = 'EPSG:4326'
     merged_gdf = merged_gdf.to_crs(target_crs)
    
 
     # Step 7: Save the intersecting polygons as a shapefile or CSV
     print("Step 7: Saving the intersecting polygons as a shapefile...")
-    output_folder = "/Net/Groups/BGI/scratch/fmueller/ForExD-WP1-P1/results/03_s1cd_polygons/"
+    #output_folder = "/Net/Groups/BGI/scratch/fmueller/ForExD-WP1-P1/results/03_s1cd_polygons/"
     os.makedirs(output_folder, exist_ok=True)
     
     # Define the output file paths
@@ -277,7 +282,7 @@ def process_and_filter_polygons(ids_usda_path, polygons_gdf, s1_year, filter_yea
     print(f"Intersecting polygons saved as shapefile: {shapefile_path}")
 
 
-def main(input_path, ids_usda_path):
+def main(input_path, ids_usda_path, TCC_path_2017, target_crs, output_dir):
     
     """
     Main function to orchestrate the processing steps.
@@ -293,13 +298,13 @@ def main(input_path, ids_usda_path):
     
 
     print("Starting the preprocessing of the S1 Change detected raster file...")
-    preprocessed_dataset = preprocess_dataset(input_path, filename)
+    preprocessed_dataset = preprocess_dataset(input_path, filename, target_crs)
     print("Sarting the masking with the TreeCanopyCover CONUS 2017...")
-    masked_dataset = apply_tcc_mask(preprocessed_dataset)
+    masked_dataset = apply_tcc_mask(preprocessed_dataset, TCC_path_2017)
     print("Starting the polygon extraction process...")
     polygons_gdf = process_nc_file( masked_dataset, filename)
     print("Starting the filtering process...")
-    process_and_filter_polygons(ids_usda_path, polygons_gdf, s1_year, 1, filename)
+    process_and_filter_polygons(ids_usda_path, polygons_gdf, s1_year, 1, filename, target_crs, output_dir)
     print("\nPreprocessing, masking, extracting polygons, filtering  and aggregating completed.")
 
 
@@ -308,10 +313,13 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Process S1 Change detection data and filter polygons.")
     parser.add_argument('input_path', type=str, help="Path to the input NetCDF file.")
     parser.add_argument('ids_usda_path', type=str, help="Path to the CSV file containing USDA polygons.")
+    parser.add_argument('tcc_path', type=str, help="Path to the TCC file for the correct region.")
+    parser.add_argument('target_crs', type=str, help="Correct CRS.")
+    parser.add_argument('output_dir', type=str, help="Output directory")
 
     args = parser.parse_args()
 
-    main(args.input_path, args.ids_usda_path)
+    main(args.input_path, args.ids_usda_path, args.tcc_path, args.target_crs, args.output_dir)
 
     # input_path = "/Net/Groups/BGI/work_2/ForExD/WP1/Data/s1_change_detection_northamerica/EQUI7_NA020M_E084N024T3_rqatrend_VH_A_thresh_3.0_year_2016_cluster_compressed.nc"
     # ids_usda_path = "/Net/Groups/BGI/scratch/fmueller/ForExD-WP1-P1/results/region8_dca_filtered_ids_usda_polygons.csv"
