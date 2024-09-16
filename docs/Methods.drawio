@@ -40,7 +40,7 @@
         <mxCell id="cMhSBE7CcazUu6v5OgZS-16" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;strokeWidth=4;fontSize=20;verticalAlign=middle;" parent="1" source="8HRfM3-ieV_3cMd-JcUc-74" target="cMhSBE7CcazUu6v5OgZS-6" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="8HRfM3-ieV_3cMd-JcUc-74" value="&lt;h1 dir=&quot;auto&quot; class=&quot;heading-element&quot; tabindex=&quot;-1&quot; style=&quot;font-size: 20px;&quot;&gt;Sentle &lt;br&gt;&lt;/h1&gt;" style="shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;align=left;spacingLeft=9;rounded=0;glass=0;shadow=0;strokeWidth=4;fontSize=20;verticalAlign=middle;" parent="1" vertex="1">
+        <mxCell id="8HRfM3-ieV_3cMd-JcUc-74" value="&lt;h1 dir=&quot;auto&quot; class=&quot;heading-element&quot; tabindex=&quot;-1&quot; style=&quot;font-size: 20px;&quot;&gt;Sentle &lt;br&gt;&lt;/h1&gt;" style="shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;align=left;spacingLeft=9;rounded=0;glass=0;shadow=0;strokeWidth=1;fontSize=20;verticalAlign=middle;" parent="1" vertex="1">
           <mxGeometry x="680" y="358.75" width="160" height="42.5" as="geometry" />
         </mxCell>
         <mxCell id="8HRfM3-ieV_3cMd-JcUc-75" value="" style="shape=image;html=1;verticalAlign=middle;verticalLabelPosition=bottom;labelBackgroundColor=#ffffff;imageAspect=0;aspect=fixed;image=https://cdn4.iconfinder.com/data/icons/social-media-and-logos-12/32/Logo_Github-128.png;align=left;strokeWidth=4;fontSize=20;" parent="1" vertex="1">
@@ -103,6 +103,9 @@
           <mxGeometry x="160" y="9.629999999999999" width="300" height="90" as="geometry" />
         </mxCell>
         <mxCell id="2pnkpHbHynpvCczC1lKE-18" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=4;fontSize=20;verticalAlign=middle;" edge="1" parent="1" source="cMhSBE7CcazUu6v5OgZS-6" target="8HRfM3-ieV_3cMd-JcUc-69">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="2pnkpHbHynpvCczC1lKE-32" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="cMhSBE7CcazUu6v5OgZS-6" target="8HRfM3-ieV_3cMd-JcUc-75">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="cMhSBE7CcazUu6v5OgZS-6" value="&lt;div style=&quot;font-size: 20px;&quot;&gt;&lt;font style=&quot;font-size: 20px;&quot;&gt;Downloading &amp;amp; Preprocessing&lt;font style=&quot;font-size: 20px;&quot;&gt; Minicubes &lt;/font&gt;&lt;/font&gt;&lt;b style=&quot;font-size: 20px;&quot;&gt;&lt;font style=&quot;font-size: 20px;&quot;&gt;&lt;font style=&quot;font-size: 20px;&quot;&gt;&lt;br style=&quot;font-size: 20px;&quot;&gt;&lt;/font&gt;&lt;/font&gt;&lt;/b&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;strokeWidth=4;fontSize=20;verticalAlign=middle;" parent="1" vertex="1">
