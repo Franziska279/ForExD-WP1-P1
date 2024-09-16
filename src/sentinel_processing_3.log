@@ -1,0 +1,22 @@
+2024-09-05 10:44:32,988 - INFO - > Available CUDA devices: 1
+2024-09-05 10:44:32,988 - INFO - > Load the Minicube 100 ...
+2024-09-05 10:44:33,123 - INFO - Resolution: 10
+2024-09-05 10:44:45,013 - INFO - > Save the Minicube 100 ...
+2024-09-05 10:57:45,665 - ERROR - Task exception was never retrieved
+future: <Task finished name='Task-14664' coro=<Client._gather.<locals>.wait() done, defined at /net/home/fmueller/.conda/envs/emp/lib/python3.12/site-packages/distributed/client.py:2382> exception=AllExit()>
+Traceback (most recent call last):
+  File "/net/home/fmueller/.conda/envs/emp/lib/python3.12/site-packages/distributed/client.py", line 2391, in wait
+    raise AllExit()
+distributed.client.AllExit
+2024-09-05 10:57:45,667 - ERROR - Task exception was never retrieved
+future: <Task finished name='Task-14316' coro=<Client._gather.<locals>.wait() done, defined at /net/home/fmueller/.conda/envs/emp/lib/python3.12/site-packages/distributed/client.py:2382> exception=AllExit()>
+Traceback (most recent call last):
+  File "/net/home/fmueller/.conda/envs/emp/lib/python3.12/site-packages/distributed/client.py", line 2391, in wait
+    raise AllExit()
+distributed.client.AllExit
+2024-09-05 10:57:45,679 - ERROR - Task exception was never retrieved
+future: <Task finished name='Task-14715' coro=<Client._gather.<locals>.wait() done, defined at /net/home/fmueller/.conda/envs/emp/lib/python3.12/site-packages/distributed/client.py:2382> exception=AllExit()>
+Traceback (most recent call last):
+  File "/net/home/fmueller/.conda/envs/emp/lib/python3.12/site-packages/distributed/client.py", line 2391, in wait
+    raise AllExit()
+distributed.client.AllExit
