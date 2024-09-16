@@ -120,6 +120,10 @@ def process_and_merge_disturbances(gdf, max_iterations=10):
     """
     print(f"  Initial number of records: {len(gdf)}")  
 
+    # Keep rows where 'PERCENT_AFFECTED' contains 'Severe' or is NaN
+    gdf = gdf[gdf['PERCENT_AFFECTED'].isna() | gdf['PERCENT_AFFECTED'].str.contains("Severe", case=False, na=False)]
+    print(f"Number of records after filtering 'PERCENT_AFFECTED' for 'Severe' or keeping NaN: {len(gdf)}")
+
     # Step 1: Drop unnecessary columns that are not relevant for merging and filtering
     columns_to_drop = [
         'PERCENT_AFFECTED', 'HOST', 'HOST_CODE', 'DCA_CODE', 
@@ -525,8 +529,8 @@ def main():
     gdf = load_data(ids_region_file_path)
 
     print("Step 2: Processing and cleaning disturbance data...")
-
     merged_gdf = process_and_merge_disturbances(gdf)
+
     print("Step 2.5: Filter out years befor 2010...")
     merged_gdf = merged_gdf[(merged_gdf['SURVEY_YEAR'] > 2009)]
 
@@ -553,13 +557,13 @@ def main():
     # Step 8: Filter disturbance data
     print("Step 8: Filtering disturbances between 2016 and 2020...")
     excluded_dca_types = ['other', 'multi_damage', 'other_abiotic', 'other_biotic']
-    filtered_df_cleaned, filtering_summary = filter_disturbance_data(enriched_df, excluded_dca_types)
+    filtered_df_cleaned, filtering_summary = filter_disturbance_data(enriched_df, excluded_dca_types, start_year=2015, end_year=2020)
     print(filtering_summary)
 
     # Step 9: Generate new index_usda values
     print("Step 9: Generating new index_usda values...")
     filtered_df_cleaned['IDX_D'] = filtered_df_cleaned.apply(
-        lambda row: f"{row['DCA_ID']}_{row['SURVEY_YEAR']}_{row.name}", axis=1
+        lambda row: f"{row['REGION_ID']}_{row['DCA_ID']}_{row['SURVEY_YEAR']}_{row.name}", axis=1
     )
 
     # Step 10: Calculate area in km²
