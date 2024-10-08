@@ -20,60 +20,163 @@ Functions:
 - plot_figure_1_2: Plot the TCC map with disturbance types and save the figure.
 - main: Main function to orchestrate loading data, creating the TCC map, and plotting the results.
 """
-
-import sys
-import os
-sys.path.insert(1, '../Tools/')
-import argparse 
-from shapely.geometry import box
-import numpy as np
-import geopandas as gpd
 import matplotlib.pyplot as plt
 import pandas as pd
+import geopandas as gpd
 import seaborn as sns
+import numpy as np
+from matplotlib.gridspec import GridSpec
+from matplotlib import gridspec
+from matplotlib.ticker import MaxNLocator, FuncFormatter
+from matplotlib import cm
+import matplotlib as mpl
+import matplotlib.dates as mdates
+import matplotlib.ticker as ticker
 import xarray as xr
+from shapely.geometry import mapping, shape, MultiPolygon, box, Point
+from affine import Affine
+import rasterio
+from shapely import wkt
 import matplotlib.colors as mcolors
 import matplotlib.patches as mpatches
 import os
-import xarray as xr
-import rioxarray
-from shapely.geometry import Polygon
-from matplotlib.colors import LinearSegmentedColormap
-import matplotlib.pyplot as plt
-from shapely import wkt
-from matplotlib.gridspec import GridSpec
-from shapely import wkt
+import warnings
 import seaborn as sns
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FormatStrFormatter
-import matplotlib.patches as mpatches  # Import for custom legend
-from shapely.geometry import Point
-import seaborn as sns
-import matplotlib.pyplot as plt
-from matplotlib.ticker import FormatStrFormatter
-import matplotlib.patches as mpatches  # Import for custom legend
-import os
-import pandas as pd
 import numpy as np
 
-# Function to adjust the color brightness
-def adjust_color_brightness(color, amount=0.5):
-    c = mcolors.ColorConverter().to_rgb(color)
-    return mcolors.to_hex([min(1, max(0, c[i] * amount)) for i in range(3)])
+import seaborn as sns
+import matplotlib.pyplot as plt
+from matplotlib.ticker import FormatStrFormatter
+import matplotlib.patches as mpatches  # Import for custom legend
+from dotenv import load_dotenv
+import os
+from pathlib import Path
+import json
+from tqdm import tqdm  # Import tqdm for the progress bar
+import numpy as np
+from shapely.geometry import Polygon
+from matplotlib.colors import LinearSegmentedColormap
+import rioxarray
+import matplotlib.pyplot as plt
+import seaborn as sns
+import matplotlib.colors as mcolors
+import pandas as pd
 
 
 
-custom_colors = {
-    'wind': '#1f77b4',      # tab:blue
-    'fire': '#d62728',      # tab:red
-    'defoliators': '#BF40BF',  # tab:green
-    'drought': '#FFBA08', # tab:yellow
-    'bark_beetle': '#714709'  # tab:brown
-}
+# Set font sizes for various components
+plt.rcParams.update({
+    'font.size': 14,           # Global font size
+    'axes.titlesize': 18,      # Title font size
+    'axes.labelsize': 16,      # X and Y label font size
+    'xtick.labelsize': 14,     # X tick label font size
+    'ytick.labelsize': 14,     # Y tick label font size
+})
+
 
 def format_label(label):
+    """
+    Format a label by capitalizing each word and replacing underscores with spaces.
+
+    Parameters:
+    label (str): The input label with underscores.
+
+    Returns:
+    str: The formatted label with each word capitalized and underscores replaced by spaces.
+    """
     return ' '.join(word.capitalize() for word in label.split('_'))
 
+
+def format_label_count(dca_id, count):
+    """
+    Format the label to include the count of events.
+
+    Parameters:
+    dca_id (str): The DCA_ID to be formatted.
+    count (int): The count of events to be included in the label.
+
+    Returns:
+    str: The formatted label including the count of events in parentheses.
+    """
+    return f'{dca_id.replace("_", " ").title()} ({count})'
+
+def calculate_s1cd_outline(s1cd_folder, save_path):
+
+    results = []
+    # Iterate over files in the directory with a progress bar
+    for file_name in tqdm(os.listdir(s1cd_folder), desc="Processing S1 Tiles"):
+        file_path = os.path.join(s1cd_folder, file_name)
+        
+        # Skip non-file entries (e.g., directories)
+        if not os.path.isfile(file_path):
+            continue
+
+        # Check for NetCDF files based on file extension
+        if not file_name.endswith('.nc'):
+            continue
+
+        # Load the NetCDF file with xarray
+        try:
+            ds = xr.open_dataset(file_path)
+
+            # Try to extract x_bnds and y_bnds, or fall back to x and y if they don't exist
+            if 'x_bnds' in ds and 'y_bnds' in ds:
+                x_bnds = ds['x_bnds'].values
+                y_bnds = ds['y_bnds'].values
+
+                # Get the min/max x and y bounds
+                x_min = np.min(x_bnds)
+                x_max = np.max(x_bnds)
+                y_min = np.min(y_bnds)
+                y_max = np.max(y_bnds)
+
+            elif 'x' in ds and 'y' in ds:
+                x_vals = ds['x'].values
+                y_vals = ds['y'].values
+
+                # Use min and max of x and y as bounds
+                x_min = np.min(x_vals)
+                x_max = np.max(x_vals)
+                y_min = np.min(y_vals)
+                y_max = np.max(y_vals)
+
+            else:
+                raise ValueError(f"No 'x_bnds' or 'x' found in file {file_name}")
+
+            # Create a polygon from the bounding box
+            bounding_box = Polygon([
+                (x_min, y_min),  # Bottom-left
+                (x_max, y_min),  # Bottom-right
+                (x_max, y_max),  # Top-right
+                (x_min, y_max),  # Top-left
+                (x_min, y_min)   # Close the polygon
+            ])
+
+            # Append the filename and bounding box to results
+            results.append({
+                'filename': file_name,
+                'geometry': bounding_box
+            })
+
+            print(f"Processed file: {file_name}")
+
+        except Exception as e:
+            print(f"Error reading file {file_name}: {e}")
+            continue
+
+    # Create a DataFrame from the results
+    results_df = pd.DataFrame(results)
+
+    # Convert DataFrame to GeoDataFrame with the original CRS (assumed EQUI7 here)
+    results_gdf = gpd.GeoDataFrame(results_df, geometry='geometry', crs='EPSG:27705')  
+    
+    # Reproject to EPSG:4326 (WGS 84)
+    results_gdf = results_gdf.to_crs(epsg=4326)
+    results_gdf.to_file(save_path) # Replace with the correct CRS if different
+
+    return results_gdf
 
 def get_mainland(gdf_path):
     """
@@ -109,51 +212,64 @@ def get_mainland(gdf_path):
     return usa_mainland
 
 
-def get_region_8(path):
-    """
-    Extracts the first part of REGION 08 from the given GeoDataFrame.
+def get_region_shape(path, region_id):
     
-    Parameters:
-        path (str): Path to the input GeoDataFrame file.
-    
-    Returns:
-        GeoDataFrame: GeoDataFrame with the first part of REGION 08.
-    """
     usa = gpd.read_file(path)
-    region_8 = usa[usa['REGION'] == '08']
-    # Explode the geometries and reset the index to get the first part
-    region_8_exploded = region_8.explode(index_parts=True).reset_index(drop=True)
-    return region_8_exploded.iloc[[0]]
+    country = usa[usa.REGION == region_id]
+    
+    region = country.explode()[0:1] 
 
-def load_dissolved_refdm_dataset(refdm_path):
+    return region
+    
+
+import geopandas as gpd
+import pandas as pd
+
+def load_dissolved_refdm(refdm_path):
     """
-    Load and process the REFDM dataset by dissolving it based on the USDA_IDX column.
+    Load and process a GeoDataFrame from the given path. The processing includes converting
+    necessary columns to numeric, dissolving geometries by ID_E and S1_YEAR, calculating 
+    the duration for each ID_E, and returning the processed DataFrame.
 
     Parameters:
-        refdm_path (str): Path to the REFDM shapefile.
-    
+    refdm_path (str): Path to the GeoDataFrame file.
+
     Returns:
-        GeoDataFrame: Processed REFDM GeoDataFrame with unique events.
+    GeoDataFrame: Processed GeoDataFrame with a 'Duration' column indicating the number 
+                  of unique years for each ID_E.
     """
-    # Load the shapefile using geopandas
-    refdm_dataset = gpd.read_file(refdm_path)
-
-    # Dissolve the dataset by the USDA_IDX column
-    refdm_dissolved = refdm_dataset.dissolve(by='USDA_IDX')
-    print(f"Size of unique refdm_dataset events: {len(refdm_dissolved)}")
-
-    # Reset the index
-    refdm_dissolved.reset_index(inplace=True)
+    # Load the GeoDataFrame
+    refdm = gpd.read_file(refdm_path)
     
-    return refdm_dataset, refdm_dissolved
+
+    print("CRS:", refdm.crs)
+    print(f"Size of refdm_dataset: {len(refdm)}")
+
+    # Convert columns to numeric, if not already
+    refdm['SURVEY_Y'] = pd.to_numeric(refdm['SURVEY_Y'], errors='coerce')
+    refdm['S1_YEAR'] = pd.to_numeric(refdm['S1_YEAR'], errors='coerce')
+    
+    # Dissolve geometries by ID_E and S1_YEAR
+    dissolved_refdm = refdm.dissolve(by=['ID_E', 'S1_YEAR']).reset_index()
+    
+    # Group by ID_E and aggregate unique years
+    unique_years_per_id = dissolved_refdm.groupby('ID_E')['S1_YEAR'].unique().reset_index()
+    
+    # Calculate the duration (number of unique years) for each ID_E
+    unique_years_per_id['Duration'] = unique_years_per_id['S1_YEAR'].apply(len)
+    
+    # Merge the calculated duration with the main DataFrame
+    dissolved_df = dissolved_refdm.merge(unique_years_per_id[['ID_E', 'Duration']], on='ID_E')
+    
+    # Dissolve geometries again by ID_E to ensure aggregation and reset index
+    dissolved_df = dissolved_df.dissolve(by=['ID_E']).reset_index()
+    print(f"Size of unique refdm_dataset events: {len(dissolved_df)}")
+    return dissolved_df
 
 
 def load_ids_dataset(path):
-    df = pd.read_csv(path)
-    df['geometry'] = df['geometry'].apply(wkt.loads)
-    gdf = gpd.GeoDataFrame(df, geometry='geometry')
-    gdf_ids = gdf.rename(columns={'index_usda': 'USDA_IDX'})
-    gdf_ids['centroid_shift_m'] = 0
+    gdf_ids = gpd.read_file(path)
+    #gdf_ids = gdf.rename(columns={'index_usda': 'USDA_IDX'})
     return gdf_ids
 
 
@@ -172,12 +288,12 @@ def load_tcc_dataset(tcc_nc_path):
     return tcc_dataset
 
 
-def create_downsampled_tcc_map(forest_map_path, area_path, forest_map_downsampled_path, forest_map_downsampled_path_final):
+def create_downsampled_tcc_map(forest_map_path, area_path, region_id, forest_map_downsampled_path, forest_map_downsampled_path_final):
 
     try:
         print("Step 1: Get Region 8 geometry ...")
         # Get Region 8 geometry
-        r8_geometry = get_region_8(area_path)
+        r8_geometry = get_region_shape(area_path, region_id)
         r8_union = r8_geometry.unary_union
 
         print("Step 2: Load the forest map TIFF file ...")
@@ -276,14 +392,41 @@ def plot_disturbance_types(ax, refdm_dissolved, custom_colors):
     for disturbance, color in custom_colors.items():
         # Plot with white edge first
         refdm_dissolved[refdm_dissolved['DCA_ID'] == disturbance].plot(
-            ax=ax, linewidth=2.5, color=color, edgecolor='white'
+            ax=ax, linewidth=3.5, color=color, edgecolor='white'
         )
         # Then plot with actual color and thinner edge
         refdm_dissolved[refdm_dissolved['DCA_ID'] == disturbance].plot(
-            ax=ax, linewidth=1.5, color=color, edgecolor=color
+            ax=ax, linewidth=2.5, color=color, edgecolor=color
         )
 
-def plot_figure_1(cropped_forest, usa_mainland, r8, refdm_dissolved, custom_colors, save_dir):
+def parse_custom_colors(colors_json):
+    """
+    Parse a JSON string to extract custom color mappings.
+
+    Parameters:
+    colors_json (str): A JSON string containing color mappings where keys are color names
+                       and values are color codes.
+
+    Returns:
+    dict: A dictionary containing color mappings extracted from the JSON string. 
+          Returns an empty dictionary if the input JSON string is empty or None.
+    """
+    # Check if the JSON string is provided
+    if colors_json:
+        try:
+            # Attempt to parse the JSON string into a Python dictionary
+            custom_colors = json.loads(colors_json)
+        except json.JSONDecodeError:
+            # Handle JSON decoding errors (e.g., invalid JSON format)
+            print("Error: Invalid JSON format.")
+            custom_colors = {}
+    else:
+        # Default to an empty dictionary if the JSON string is empty or None
+        custom_colors = {}
+
+    return custom_colors
+
+def plot_figure_1(cropped_forest, usa_mainland, r8, data, s1cd, custom_colors, save_figure_path):
     """
     Plot the TCC map with disturbance types and save the figure.
     """
@@ -296,7 +439,7 @@ def plot_figure_1(cropped_forest, usa_mainland, r8, refdm_dissolved, custom_colo
     fig, ax = plt.subplots(1, 1, figsize=(14, 10))
     
     # Plot the entire USA in grey in the upper left corner
-    sub_ax = fig.add_axes([0.005, 0.70, 0.25, 0.25])  # [left, bottom, width, height]
+    sub_ax = fig.add_axes([-0.05, 0.75, 0.25, 0.25])  # [left, bottom, width, height]
     plot_mainland_map(sub_ax, usa_mainland)
     
     # Create a custom colormap
@@ -305,45 +448,32 @@ def plot_figure_1(cropped_forest, usa_mainland, r8, refdm_dissolved, custom_colo
     # Plot the TCC map within Region 8 boundaries
     plot_tcc_map(ax, cropped_forest, custom_cmap)
     
-    # Plot the region outline
-    r8.boundary.plot(ax=ax, linewidth=1, color='black')
+    # Plot the region outline with grids
+    r8.boundary.plot(ax=ax, linewidth=2, color='#297045')
+    
+    # Plot S1CD boundaries with grid lines
+    s1cd.boundary.plot(ax=ax, linewidth=2, color='#150442')
+    # Add gridlines for s1cd
+    s1cd.boundary.plot(ax=ax, linestyle='--', color='#150442', linewidth=0.5)
     
     # Plot disturbance types
-    plot_disturbance_types(ax, refdm_dissolved, custom_colors)
+    plot_disturbance_types(ax, data, custom_colors)
     
     # Customize the plot
     ax.axis('off')  # Remove axis and frame
-    
+    ax.set_title(' ')
+    # Create legend for disturbance types
     legend_patches = [mpatches.Patch(color=color, label=format_label(disturbance)) for disturbance, color in custom_colors.items()]
     ax.legend(handles=legend_patches, fontsize=18, title="Disturbance Type", title_fontsize=20, loc='center left', facecolor='white', framealpha=1)
+    
+    # Add a label indicating the grid lines for s1cd
+    ax.text(0.80, 0.45, 'S1CD Grids', transform=ax.transAxes, fontsize=20, color='#150442', bbox=dict(facecolor='white', alpha=1, edgecolor='#150442'))
 
     
-    plt.savefig(save_dir, bbox_inches='tight')
+    plt.savefig(save_figure_path, bbox_inches='tight')
     plt.show()
 
-
-def create_study_area_map(area_path, ids, tcc_map_region_8, path):
-    """
-    Function to orchestrate loading data, creating the TCC map, and plotting the study area map.
-    """
-
-    print("Load the USA Mainland and Region 8 Shape ...")
-    mainland = get_mainland(area_path)
-    region_8 = get_region_8(area_path)
-
-
-    # Uncomment the following line to create the downsampled TCC map
-    # create_downsampled_tcc_map(forest_map_path, area_path, forest_map_downsampled_path, tcc_map_region_8)
-    
-    print("Load the TCC Region 8 Map ...")
-    tcc_dataset = load_tcc_dataset(tcc_map_region_8)
-    
-    print("Plot Study area figure ...")
-    plot_figure_1(tcc_dataset, mainland, region_8, ids, custom_colors, save_dir=path)
-
-
-
-def plot_radar_reduction_potential(refdm_gdf, ids_gdf, path):
+def plot_radar_reduction_potential(refdm_gdf, ids_gdf, save_path):
     # Define font sizes and bar parameters
     title_fontsize = 34
     legend_title_fontsize = 30
@@ -414,14 +544,14 @@ def plot_radar_reduction_potential(refdm_gdf, ids_gdf, path):
         ax2.text(bar_positions[i] + bar_offset, reduction_percentage - 2, f'{reduction_percentage:.2f}%', ha='center', va='top', color='black', fontsize=annotation_fontsize)
 
     # Set labels and title for the second subplot
-    ax2.set_xlabel('Disturbance Type', fontsize=label_fontsize)  # Increase font size for xlabel
-    ax2.set_ylim(0, -75)
+    ax2.set_xlabel('Disturbance Type', fontsize= label_fontsize)  # Increase font size for xlabel
+    ax2.set_ylim(0, -110)
     ax2.invert_yaxis()
     ax2.set_ylabel('Reduction \nPercentage (%)', fontsize=label_fontsize, labelpad=20)  # Increase font size for ylabel and add padding
 
     # Set y-axis ticks to only show 4 ticks
-    ax2.set_yticks([0, -20, -40, -60])
-    ax2.set_yticklabels(['0', '-20', '-40', '-60'])
+    ax2.set_yticks([0, -20, -40, -60 , -80, -100])
+    ax2.set_yticklabels(['0', '-20', '-40', '-60', '-80', '-100'])
 
     plt.xticks([pos + bar_offset for pos in bar_positions], dca_labels, fontsize=tick_fontsize, ha='right')  # Adjust the rotation and alignment
 
@@ -433,37 +563,114 @@ def plot_radar_reduction_potential(refdm_gdf, ids_gdf, path):
     plt.yticks(fontsize=tick_fontsize)
     plt.tight_layout()  # Ensures labels, titles, and legends do not overlap
     
-    plt.savefig(path, bbox_inches='tight')
+    plt.savefig(save_path , bbox_inches='tight')
+
+    plt.show()
+
+def plot_disturbance_duration(refdm_dissolved, save_path):
+
+    # Count how often each duration occurs for each DCA_ID
+    duration_counts = refdm_dissolved.groupby(['DCA_ID', 'Duration']).size().reset_index(name='Count')
+
+    # Pivot the table for easy plotting
+    pivot_table = duration_counts.pivot(index='DCA_ID', columns='Duration', values='Count').fillna(0)
+    
+    # Create a custom colormap: Light to dark
+    colors = ['#F9A87B', '#DB754D', '#BD411E']
+    cmap = mcolors.ListedColormap(colors)
+
+    # Plot the grouped bar plot
+    fig, ax = plt.subplots(figsize=(12, 5))  # Adjusted size: wider and shorter
+
+    # Plot the pivot table with the custom colormap
+    pivot_table.plot(kind='bar', ax=ax, cmap=cmap, width=0.8, edgecolor='None')
+
+    # Add labels to each bar with a buffer
+    for p in ax.patches:
+        height = p.get_height()
+        ax.annotate(
+            format(height, '.0f'),
+            (p.get_x() + p.get_width() / 2., height),
+            ha='center',
+            va='bottom',
+            xytext=(0, 4),  # 4 points vertical offset
+            textcoords='offset points'
+        )
+
+    # Set the y-axis limit to 500
+    # Set the y-axis limit to the next multiple of 100 above the max count
+    max_count = pivot_table.values.max()
+    ax.set_ylim(0, np.ceil(max_count / 100) * 100)
+
+    # Format x-axis labels
+    ax.set_xticklabels([format_label(label.get_text()) for label in ax.get_xticklabels()])
+
+    # Add legend with white background
+    handles = [plt.Line2D([0], [0], color=cmap(i/2), lw=8) for i in range(len(colors))]
+    labels = ['1 Year', '2 Years', '3 Years']
+    ax.legend(handles, labels, title='Duration', title_fontsize='16', fontsize='14', facecolor='white')
+
+    # Set labels and title with additional buffer
+    ax.set_xlabel('Disturbance Type', labelpad=15)
+    ax.set_ylabel('Amount of Events', labelpad=15)
+    ax.set_title('Duration of Disturbances as Detected by Sentinel-1 Change Detection', fontsize='20', pad=15)
+
+    # Adjust grid line appearance
+    ax.grid(True, linestyle='-', color='lightgray', alpha=0.4, linewidth=0.7)
+
+    # Set font sizes for various components
+    plt.rcParams.update({
+        'font.size': 14,           # Global font size
+        'axes.titlesize': 18,      # Title font size
+        'axes.labelsize': 16,      # X and Y label font size
+        'xtick.labelsize': 14,     # X tick label font size
+        'ytick.labelsize': 14,     # Y tick label font size
+    })
+
+    plt.xticks(rotation=0)
+    plt.tight_layout()
+
+    # Save the figure with a specific DPI to fit an A4 page
+    plt.savefig(save_path, dpi=300, bbox_inches='tight')
+
+    plt.show()
 
 
 def calculate_area_and_centroid_meters(gdf):
-    """Calculate area in square meters and square kilometers for a GeoDataFrame."""
+    """Calculate area in square meters, square kilometers, and convex hull area for a GeoDataFrame."""
     # Set the coordinate reference system (CRS) for the GeoDataFrame to WGS84
     gdf.crs = 'EPSG:4326'
     
-    # Calculate the area in degrees (not used for final calculation, but keeping it here if needed for other purposes)
-    #gdf['area_degrees'] = gdf.geometry.area
-    
     # Define the target projection system (e.g., UTM Zone 18N)
-    target_crs = 'EPSG:32618'
+    target_crs = 'EPSG:27705'
     
     # Reproject the GeoDataFrame to the target projection system
     gdf_projected = gdf.to_crs(target_crs)
     
-    # Calculate the area in square meters
+    # Calculate the area of the geometry in square meters
     gdf_projected['area_meters'] = gdf_projected.geometry.area
+    gdf_projected['square_km'] = gdf_projected['area_meters'] / 1e6
+    # Calculate the convex hull of each geometry
+    gdf_projected['convex_hull'] = gdf_projected.geometry.convex_hull
+    
+    # Calculate the area of the convex hull in square meters
+    gdf_projected['area_convex_meters'] = gdf_projected['convex_hull'].area
+    
+    # Convert the area to square kilometers
+    gdf_projected['area_convex_km'] = gdf_projected['area_convex_meters'] / 1e6
+    
+    # Calculate the centroid of the geometry in projected coordinates (meters)
     gdf_projected['centroid_meters'] = gdf_projected.geometry.centroid
     
-    # Assign the calculated area back to the original GeoDataFrame
+    # Assign the calculated fields back to the original GeoDataFrame (which is still in WGS84)
     gdf['area_meters'] = gdf_projected['area_meters']
-    # Convert square meters to square kilometers
-    gdf['square_km'] = gdf['area_meters'] / 1e6
-    
+    gdf['square_km'] = gdf_projected['square_km']
+    gdf['area_convex_meters'] = gdf_projected['area_convex_meters']
+    gdf['area_convex_km'] = gdf_projected['area_convex_km']
     gdf['centroid_meters'] = gdf_projected['centroid_meters']
     
-    # Return the GeoDataFrame with the new area columns
+    # Return the GeoDataFrame with the new area and convex hull columns
     return gdf
-
 
 def calculate_size_shift_difference(ids_gdf, refdm_gdf_dissolved):
     """
@@ -485,14 +692,19 @@ def calculate_size_shift_difference(ids_gdf, refdm_gdf_dissolved):
     usda_idx_list = []
     centroid_shift_list = []
     size_difference_list = []
+    size_difference_list_ref = []
+
+    convex_size_difference_list = []
+    convex_size_difference_list_ref = []
+
 
     # Iterate through unique USDA_IDX values in ids_gdf
-    unique_usda_idx = ids['USDA_IDX'].unique()
+    unique_usda_idx = ids['ID_E'].unique()
 
     for usda_idx in unique_usda_idx:
-        # Get the corresponding rows in both GeoDataFrames for the current USDA_IDX
-        ids_row = ids[ids['USDA_IDX'] == usda_idx]
-        refdm_row = refdm[refdm['USDA_IDX'] == usda_idx]
+        # Get the corresponding rows in both GeoDataFrames for the current ID_E
+        ids_row = ids[ids['ID_E'] == usda_idx]
+        refdm_row = refdm[refdm['ID_E'] == usda_idx]
         
         # Check if both rows exist (they should exist if data is correctly structured)
         if not ids_row.empty and not refdm_row.empty:
@@ -500,23 +712,36 @@ def calculate_size_shift_difference(ids_gdf, refdm_gdf_dissolved):
             centroid_shift = ids_row.iloc[0]['centroid_meters'].distance(refdm_row.iloc[0]['centroid_meters'])
             
             # Calculate the size difference between areas of the two polygons
-            size_difference = refdm_row.iloc[0]['square_km'] - ids_row.iloc[0]['square_km']
+            size_difference = ids_row.iloc[0]['square_km'] - refdm_row.iloc[0]['square_km']
+
+            size_difference_redfm = refdm_row.iloc[0]['square_km'] - ids_row.iloc[0]['square_km']
+
+            # Calculate the size difference between areas of the two polygons
+            convex_size_difference = ids_row.iloc[0]['area_convex_km'] - refdm_row.iloc[0]['area_convex_km']
+
+            convex_size_difference_redfm = refdm_row.iloc[0]['area_convex_km'] - ids_row.iloc[0]['area_convex_km']
             
             # Append the results to the lists
             usda_idx_list.append(usda_idx)
             centroid_shift_list.append(centroid_shift)
             size_difference_list.append(size_difference)
+            size_difference_list_ref.append(size_difference_redfm)
+            convex_size_difference_list.append(convex_size_difference)
+            convex_size_difference_list_ref.append(convex_size_difference_redfm)
 
     # Create a DataFrame from the results
     results_df = pd.DataFrame({
-        'USDA_IDX': usda_idx_list,
+        'ID_E': usda_idx_list,
         'centroid_shift_m': centroid_shift_list,
-        'size_difference_km2': size_difference_list
+        'size_difference_km2': size_difference_list,
+        'size_difference_ref_km2': size_difference_list_ref
+        # 'convex_size_difference_km2': convex_size_difference_list,
+        # 'convex_size_difference_ref_km2': convex_size_difference_list_ref
     })
 
-    ids_gdf = ids_gdf.drop(columns=['centroid_shift_m'])
+    #ids_gdf = ids_gdf.drop(columns=['centroid_shift_m'])
     # Merge with original gdf to get geometry
-    result_gdf = ids_gdf.merge(results_df, on='USDA_IDX')
+    result_gdf = ids_gdf.merge(results_df, on='ID_E')
 
     # Convert to GeoDataFrame with original geometry and CRS
     result_gdf = gpd.GeoDataFrame(result_gdf, geometry='geometry', crs=ids_gdf.crs)
@@ -524,11 +749,13 @@ def calculate_size_shift_difference(ids_gdf, refdm_gdf_dissolved):
     return result_gdf
 
 
-def plot_combined_areasize_shift_per_disturbances(refdm, ids, path):
-    # Define the order of the categories
-    category_order = ['bark_beetle','drought', 'wind', 'defoliators', 'fire']
+def plot_combined_areasize_shift_per_disturbances(refdm, ids, custom_colors, path):
+   
+    # Determine the unique DCA_ID values from the filtered dataframe
+    unique_dca_ids = refdm['DCA_ID'].unique()
 
-
+    # Sort the categories based on the custom order (ensure dynamic behavior for unique DCA_IDs in the filtered data)
+    category_order = sorted(unique_dca_ids, key=lambda x: custom_colors.get(x, x))  # keeps custom order first if defined
     # Get the default colors from 'tab10' palette for the rest of the disturbance types
     default_palette = sns.color_palette('tab10', n_colors=10)
     default_colors = [color for color in default_palette if color not in custom_colors.values()]
@@ -539,177 +766,46 @@ def plot_combined_areasize_shift_per_disturbances(refdm, ids, path):
     # Set Seaborn style
     sns.set(style="whitegrid")
 
-    # Create a grid with 5 rows and 4 columns for the plots
-    fig, axs = plt.subplots(5, 4, figsize=(35, 40), gridspec_kw={'width_ratios': [4, 0.005, 3, 0.5]})
-
+    # Determine the number of rows dynamically based on the number of unique DCA_IDs
+    n_categories = len(category_order)
+    n_cols = 4  # keeping the columns as 4, but can also be parameterized
+    
+    fig, axs = plt.subplots(n_categories, n_cols, figsize=(35, 40), gridspec_kw={'width_ratios': [3, 0.05, 2, 0.5]})
+    
     # Define font sizes
-    fontsize_supertitle = 50
-    fontsize_legend = 44
-    fontsize_title = 44
-    fontsize_label = 44
-    fontsize_tick = 35
-    padding_label = 40
-    padding_title = 35
+    fontsize_supertitle = 44
+    fontsize_legend = 36
+    fontsize_title = 36
+    fontsize_label = 32  # Reduced slightly for clarity
+    fontsize_tick = 28
+    padding_label = 25  # Slightly smaller padding
+    padding_title = 30
 
     for i, category in enumerate(category_order):
         
         # Create combined data for violin plots
         combined_data = pd.concat([
-            ids[ids['DCA_ID'] == category][['DCA_ID', 'area_km2', 'centroid_shift_m']].assign(Source='IDS'),
-            refdm[refdm['DCA_ID'] == category][['DCA_ID', 'area_km2', 'centroid_shift_m']].assign(Source='REFDM')
+            ids[ids['DCA_ID'] == category][['DCA_ID', 'area_km2']].assign(Source='IDS'),
+            refdm[refdm['DCA_ID'] == category][['DCA_ID', 'area_km2']].assign(Source='REFDM')
         ])
 
-        # Violin plot for size differences (GDF and IDS)
+        # Violin plot for size differences (refdm and IDS)
         ax = axs[i, 0]
 
         # Filter data for the current category (REFDM and IDS)
         data_refdm = combined_data[(combined_data['Source'] == 'REFDM') & (combined_data['DCA_ID'] == category)]
         data_ids = combined_data[(combined_data['Source'] == 'IDS') & (combined_data['DCA_ID'] == category)]
-
-        median_ids = data_ids['area_km2'].median()
-        median_refdm = data_refdm['area_km2'].median()
         
-
-        # Define colors for IDS and REFDM
-        color_refdm = adjust_color_brightness(custom_palette[category], amount=0.4)
-        color_ids = adjust_color_brightness(custom_palette[category], amount=0.8)  # Slightly darker
-
-        # Plot KDE for IDS
-        sns.kdeplot(
-            data=combined_data[combined_data['Source'] == 'IDS']['area_km2'],
-            ax=ax,
-            color=color_ids,
-            linestyle='-',
-            linewidth=5,
-            label='IDS'
-        )
-
-        # Plot KDE for REFDM
-        sns.kdeplot(
-            data=combined_data[combined_data['Source'] == 'REFDM']['area_km2'],
-            ax=ax,
-            color=color_refdm,
-            linestyle='-',
-            linewidth=5,
-            label='REFDM'
-        )
-
-        ax.axvline(x=median_ids, color=color_ids, linestyle='--', linewidth=5, label='IDS Median')
-        ax.axvline(x=median_refdm, color=color_refdm, linestyle='--', linewidth=5, label='REFDM Median')
-
-        ax.legend(fontsize=fontsize_tick)
-        ax.set_ylim(0)
-        ax.set_xlim(0)
-
-        ax.tick_params(axis='x', labelsize=fontsize_tick)
-        ax.tick_params(axis='y', labelsize=fontsize_tick)
-
-        if i == len(category_order) - 1:  # Only set x-label for the bottom row
-            ax.set_xlabel('km²', fontsize=fontsize_label, labelpad=padding_label)  # Set x-axis label
-        else:
-            ax.set_xlabel('', labelpad=padding_label)
-
-        if i == 2:  # Only set y-label for the first column
-            ax.set_ylabel('Density', fontsize=fontsize_label, labelpad=padding_label)
-        else:
-            ax.set_ylabel(' ', fontsize=fontsize_label, labelpad=padding_label)
+        # Calculate the 0th and 100th percentiles for the x-axis limits
+        lower_percentile = np.percentile(combined_data['area_km2'], 0)
+        upper_percentile = np.percentile(combined_data['area_km2'], 100)
         
-        if i == 0:  # Only set y-label for the first column
-            ax.set_title('Size of disturbance area', fontsize=fontsize_title, pad=padding_title)
+        # Add median lines in the same hue as corresponding KDE lines
+        median_refdm = np.median(data_refdm['area_km2'])
+        median_ids = np.median(data_ids['area_km2'])
 
-       
-        # Distribution plot for centroid shifts
-        ax = axs[i, 2]
-        sns.histplot(
-            data=refdm[refdm['DCA_ID'] == category],
-            x='centroid_shift_m',
-            kde=True,
-            line_kws={'linewidth': 5},  # Adjust the line width of the KDE curve
-            color=custom_palette[category],
-            ax=ax
-        )
-        ax.tick_params(axis='x', labelsize=fontsize_tick)
-        ax.tick_params(axis='y', labelsize=fontsize_tick)
-
-        ax.set_ylim(0)
-        ax.set_xlim(0, 1600)
-
-        if i == 2:  # Only set y-label for the first column
-            ax.set_ylabel('Amount of Events', fontsize=fontsize_label, labelpad=padding_label)
-        else:
-            ax.set_ylabel(' ', fontsize=fontsize_label, labelpad=padding_label)
-        
-        if i == len(category_order) - 1:  # Only set x-label for the bottom row
-            ax.set_xlabel('m', fontsize=fontsize_label, labelpad=padding_label)  # Set x-axis label
-        else:
-            ax.set_xlabel('')
-
-        if i == 0:  # Only set y-label for the first column
-            ax.set_title('Shift of Disturbance Location', fontsize=fontsize_title, pad=padding_title)
-        
-        # Custom legend in fourth column
-        ax = axs[i, 3]
-        ax.legend(handles=[mpatches.Patch(color=custom_palette[category], label=format_label(category))], loc='center', fontsize=fontsize_legend)
-        ax.axis('off')
-
-        axs[i, 1].axis('off')
-
-    # Adjust the layout to place shared labels
-    plt.tight_layout(rect=[0.05, 0.05, 1, 0.95])
-
-    plt.savefig(path, bbox_inches='tight')
-
-
-
-
-def plot_combined_areasize_shift_per_disturbances_quantiles(refdm, ids, path):
-    # Define the order of the categories
-    category_order = ['bark_beetle','drought', 'wind', 'defoliators', 'fire']
-
-
-    # Get the default colors from 'tab10' palette for the rest of the disturbance types
-    default_palette = sns.color_palette('tab10', n_colors=10)
-    default_colors = [color for color in default_palette if color not in custom_colors.values()]
-
-    # Combine the custom colors with the default colors
-    custom_palette = {label: custom_colors.get(label, default_colors.pop(0)) for label in category_order}
-
-    # Set Seaborn style
-    sns.set(style="whitegrid")
-
-    # Create a grid with 5 rows and 4 columns for the plots
-    fig, axs = plt.subplots(5, 4, figsize=(35, 40), gridspec_kw={'width_ratios': [4, 0.005, 3, 0.5]})
-
-    # Define font sizes
-    fontsize_supertitle = 50
-    fontsize_legend = 44
-    fontsize_title = 44
-    fontsize_label = 44
-    fontsize_tick = 35
-    padding_label = 40
-    padding_title = 35
-
-    for i, category in enumerate(category_order):
-        
-        # Create combined data for violin plots
-        combined_data = pd.concat([
-            ids[ids['DCA_ID'] == category][['DCA_ID', 'area_km2', 'centroid_shift_m']].assign(Source='IDS'),
-            refdm[refdm['DCA_ID'] == category][['DCA_ID', 'area_km2', 'centroid_shift_m']].assign(Source='REFDM')
-        ])
-
-        # Violin plot for size differences (GDF and IDS)
-        ax = axs[i, 0]
-
-        # Filter data for the current category (REFDM and IDS)
-        data_refdm = combined_data[(combined_data['Source'] == 'REFDM') & (combined_data['DCA_ID'] == category)]
-        data_ids = combined_data[(combined_data['Source'] == 'IDS') & (combined_data['DCA_ID'] == category)]
-
-        median_ids = data_ids['area_km2'].median()
-        median_refdm = data_refdm['area_km2'].median()
-       
-        # Calculate the 10th and 90th percentiles for the x-axis limits
-        lower_percentile = np.percentile(combined_data['area_km2'], 2)
-        upper_percentile = np.percentile(combined_data['area_km2'], 98)
+        # Black line at x=0 for reference
+        ax.axvline(x=0, color='black', linestyle='-', linewidth=2)
 
         # Plot KDE plot for IDS
         sns.kdeplot(
@@ -717,81 +813,80 @@ def plot_combined_areasize_shift_per_disturbances_quantiles(refdm, ids, path):
             color=custom_palette[category],
             ax=ax,
             common_norm=True,
-            linewidth=5,  # Adjust line width
+            linewidth=4,  # Adjust line width
             label='IDS',
-            alpha=0.8,  # Adjust transparency for IDS plot
+            alpha=0.5,  # Adjust transparency for IDS plot
             linestyle='--',  # Dashed line style for IDS
         )
 
-        ax.axvline(x=median_ids, color=custom_palette[category], linestyle='--', linewidth=5, alpha=0.8, label='IDS Median')
-
+        ax.axvline(x=median_ids, color=custom_palette[category], linestyle='--', linewidth=3, alpha=0.5, label='IDS Median', marker='o', markersize=10)
+        
         # Plot KDE plot for REFDM
         sns.kdeplot(
             data=data_refdm['area_km2'],
             color=custom_palette[category],
             ax=ax,
             common_norm=True,
-            linewidth=5,  # Adjust line width
+            linewidth=4,  # Adjust line width
             label='REFDM',
-            alpha=0.4,  # Adjust transparency for REFDM plot
+            alpha=1,  # Adjust transparency for REFDM plot
             linestyle='-',  # Solid line style for REFDM
         )
 
-        ax.axvline(x=median_refdm, color=custom_palette[category], linestyle='-', linewidth=5, alpha=0.4, label='REFDM Median')
-        ax.legend(fontsize=fontsize_tick)
+        # Unified median lines for IDS and REFDM with markers
+        ax.axvline(x=median_refdm, color=custom_palette[category], linestyle='-', linewidth=3, alpha=1, label='REFDM Median', marker='s', markersize=10)
 
-        # Ensure y-axis starts from 0 and ends at 1
-        ax.set_ylim(0)
-        ax.set_xlim(lower_percentile, upper_percentile)  # Set x-axis limit based on percentiles
-        ax.tick_params(axis='x', labelsize=fontsize_tick)
-        ax.tick_params(axis='y', labelsize=fontsize_tick)
+    
+        # Set axis limits and labels
+        ax.set_xlim(-1, 15)  # Adjust as necessary for your data
+        ax.set_ylim(0)  # Ensure y-axis starts from 0
 
+        # Customize axis labels
         ax.tick_params(axis='x', labelsize=fontsize_tick)
         ax.tick_params(axis='y', labelsize=fontsize_tick)
 
         if i == len(category_order) - 1:  # Only set x-label for the bottom row
-            ax.set_xlabel('km²', fontsize=fontsize_label, labelpad=padding_label)  # Set x-axis label
+            ax.set_xlabel('Disturbance Area (km²)', fontsize=fontsize_label, labelpad=padding_label)
         else:
             ax.set_xlabel('', labelpad=padding_label)
 
-        if i == 2:  # Only set y-label for the first column
+        if i == 2:  # Only set y-label for the third row
             ax.set_ylabel('Density', fontsize=fontsize_label, labelpad=padding_label)
         else:
             ax.set_ylabel(' ', fontsize=fontsize_label, labelpad=padding_label)
         
-        if i == 0:  # Only set y-label for the first column
+        if i == 0:  # Only set title for the first column
             ax.set_title('Size of disturbance area', fontsize=fontsize_title, pad=padding_title)
 
-       
+        ax.legend(fontsize=fontsize_tick)
+
+
         # Distribution plot for centroid shifts
         ax = axs[i, 2]
         sns.histplot(
             data=refdm[refdm['DCA_ID'] == category],
             x='centroid_shift_m',
             kde=True,
-            line_kws={'linewidth': 5},  # Adjust the line width of the KDE curve
+            line_kws={'linewidth': 4},  # Adjust the line width of the KDE curve
             color=custom_palette[category],
             ax=ax
         )
         ax.tick_params(axis='x', labelsize=fontsize_tick)
         ax.tick_params(axis='y', labelsize=fontsize_tick)
-
-        ax.set_ylim(0)
-        ax.set_xlim(0, 1600)
-
-        if i == 2:  # Only set y-label for the first column
-            ax.set_ylabel('Amount of Events', fontsize=fontsize_label, labelpad=padding_label)
+        ax.set_xlim(0,2600)
+        if i == 2:  # Only set y-label for the third row
+            ax.set_ylabel('Event Count', fontsize=fontsize_label, labelpad=padding_label)
         else:
             ax.set_ylabel(' ', fontsize=fontsize_label, labelpad=padding_label)
         
         if i == len(category_order) - 1:  # Only set x-label for the bottom row
-            ax.set_xlabel('m', fontsize=fontsize_label, labelpad=padding_label)  # Set x-axis label
+            ax.set_xlabel('Centroid Shift (m)', fontsize=fontsize_label, labelpad=padding_label)  # Set x-axis label
         else:
             ax.set_xlabel('')
 
         if i == 0:  # Only set y-label for the first column
-            ax.set_title('Shift of Disturbance Location', fontsize=fontsize_title, pad=padding_title)
-        
+            ax.set_title('Shift of disturbance location', fontsize=fontsize_title, pad=padding_title)
+
         # Custom legend in fourth column
         ax = axs[i, 3]
         ax.legend(handles=[mpatches.Patch(color=custom_palette[category], label=format_label(category))], loc='center', fontsize=fontsize_legend)
@@ -805,7 +900,158 @@ def plot_combined_areasize_shift_per_disturbances_quantiles(refdm, ids, path):
     plt.savefig(path, bbox_inches='tight')
 
 
-def plot_size_shift_comparison_errorbars(gdf, path):
+
+
+def plot_combined_areasize_shift_per_disturbances_quantiles(refdm, ids, custom_colors, path):
+
+    # Determine the unique DCA_ID values from the filtered dataframe
+    unique_dca_ids = refdm['DCA_ID'].unique()
+
+    # Sort the categories based on the custom order (ensure dynamic behavior for unique DCA_IDs in the filtered data)
+    category_order = sorted(unique_dca_ids, key=lambda x: custom_colors.get(x, x))  # keeps custom order first if defined
+    # Get the default colors from 'tab10' palette for the rest of the disturbance types
+    default_palette = sns.color_palette('tab10', n_colors=10)
+    default_colors = [color for color in default_palette if color not in custom_colors.values()]
+
+    # Combine the custom colors with the default colors
+    custom_palette = {label: custom_colors.get(label, default_colors.pop(0)) for label in category_order}
+
+    # Set Seaborn style
+    sns.set(style="whitegrid")
+
+    # Determine the number of rows dynamically based on the number of unique DCA_IDs
+    n_categories = len(category_order)
+    n_cols = 4  # keeping the columns as 4, but can also be parameterized
+    
+    fig, axs = plt.subplots(n_categories, n_cols, figsize=(35, 40), gridspec_kw={'width_ratios': [3, 0.05, 2, 0.5]})
+    
+    # Define font sizes
+    fontsize_supertitle = 44
+    fontsize_legend = 36
+    fontsize_title = 36
+    fontsize_label = 32  # Reduced slightly for clarity
+    fontsize_tick = 28
+    padding_label = 25  # Slightly smaller padding
+    padding_title = 30
+
+    for i, category in enumerate(category_order):
+        
+        # Create combined data for violin plots
+        combined_data = pd.concat([
+            ids[ids['DCA_ID'] == category][['DCA_ID', 'area_km2']].assign(Source='IDS'),
+            refdm[refdm['DCA_ID'] == category][['DCA_ID', 'area_km2']].assign(Source='REFDM')
+        ])
+
+        # Violin plot for size differences (refdm and IDS)
+        ax = axs[i, 0]
+
+        # Filter data for the current category (REFDM and IDS)
+        data_refdm = combined_data[(combined_data['Source'] == 'REFDM') & (combined_data['DCA_ID'] == category)]
+        data_ids = combined_data[(combined_data['Source'] == 'IDS') & (combined_data['DCA_ID'] == category)]
+        
+        # Calculate the 0th and 100th percentiles for the x-axis limits
+        lower_percentile = np.percentile(combined_data['area_km2'], 2)
+        upper_percentile = np.percentile(combined_data['area_km2'], 98)
+        
+        # Add median lines in the same hue as corresponding KDE lines
+        median_refdm = np.median(data_refdm['area_km2'])
+        median_ids = np.median(data_ids['area_km2'])
+
+        # Black line at x=0 for reference
+        ax.axvline(x=0, color='black', linestyle='-', linewidth=2)
+
+        # Plot KDE plot for IDS
+        sns.kdeplot(
+            data=data_ids['area_km2'],
+            color=custom_palette[category],
+            ax=ax,
+            common_norm=True,
+            linewidth=4,  # Adjust line width
+            label='IDS',
+            alpha=0.5,  # Adjust transparency for IDS plot
+            linestyle='--',  # Dashed line style for IDS
+        )
+
+        ax.axvline(x=median_ids, color=custom_palette[category], linestyle='--', linewidth=3, alpha=0.5, label='IDS Median', marker='o', markersize=10)
+        
+        # Plot KDE plot for REFDM
+        sns.kdeplot(
+            data=data_refdm['area_km2'],
+            color=custom_palette[category],
+            ax=ax,
+            common_norm=True,
+            linewidth=4,  # Adjust line width
+            label='REFDM',
+            alpha=1,  # Adjust transparency for REFDM plot
+            linestyle='-',  # Solid line style for REFDM
+        )
+
+        # Unified median lines for IDS and REFDM with markers
+        ax.axvline(x=median_refdm, color=custom_palette[category], linestyle='-', linewidth=3, alpha=1, label='REFDM Median', marker='s', markersize=10)
+
+    
+        # Set axis limits and labels
+        ax.set_xlim(lower_percentile, upper_percentile)  # Adjust as necessary for your data
+        ax.set_ylim(0)  # Ensure y-axis starts from 0
+
+        # Customize axis labels
+        ax.tick_params(axis='x', labelsize=fontsize_tick)
+        ax.tick_params(axis='y', labelsize=fontsize_tick)
+
+        if i == len(category_order) - 1:  # Only set x-label for the bottom row
+            ax.set_xlabel('Disturbance Area (km²)', fontsize=fontsize_label, labelpad=padding_label)
+        else:
+            ax.set_xlabel('', labelpad=padding_label)
+
+        if i == 2:  # Only set y-label for the third row
+            ax.set_ylabel('Density', fontsize=fontsize_label, labelpad=padding_label)
+        else:
+            ax.set_ylabel(' ', fontsize=fontsize_label, labelpad=padding_label)
+        
+        if i == 0:  # Only set title for the first column
+            ax.set_title('Size of disturbance area', fontsize=fontsize_title, pad=padding_title)
+
+        ax.legend(fontsize=fontsize_tick)
+
+        # Distribution plot for centroid shifts
+        ax = axs[i, 2]
+        sns.histplot(
+            data=refdm[refdm['DCA_ID'] == category],
+            x='centroid_shift_m',
+            kde=True,
+            line_kws={'linewidth': 4},  # Adjust the line width of the KDE curve
+            color=custom_palette[category],
+            ax=ax
+        )
+        ax.tick_params(axis='x', labelsize=fontsize_tick)
+        ax.tick_params(axis='y', labelsize=fontsize_tick)
+        ax.set_xlim(0,2600)
+        if i == 2:  # Only set y-label for the third row
+            ax.set_ylabel('Event Count', fontsize=fontsize_label, labelpad=padding_label)
+        else:
+            ax.set_ylabel(' ', fontsize=fontsize_label, labelpad=padding_label)
+        
+        if i == len(category_order) - 1:  # Only set x-label for the bottom row
+            ax.set_xlabel('Centroid Shift (m)', fontsize=fontsize_label, labelpad=padding_label)  # Set x-axis label
+        else:
+            ax.set_xlabel('')
+
+        if i == 0:  # Only set y-label for the first column
+            ax.set_title('Shift of disturbance location', fontsize=fontsize_title, pad=padding_title)
+
+        # Custom legend in fourth column
+        ax = axs[i, 3]
+        ax.legend(handles=[mpatches.Patch(color=custom_palette[category], label=format_label(category))], loc='center', fontsize=fontsize_legend)
+        ax.axis('off')
+
+        axs[i, 1].axis('off')
+
+    # Adjust the layout to place shared labels
+    plt.tight_layout(rect=[0.05, 0.05, 1, 0.95])
+
+    plt.savefig(path, bbox_inches='tight')
+
+def plot_size_shift_comparison_errorbars(gdf, custom_colors, save_path):
 
     # Get the default colors from 'tab10' palette for the rest of the disturbance types
     default_palette = sns.color_palette('tab10', n_colors=10)
@@ -817,7 +1063,7 @@ def plot_size_shift_comparison_errorbars(gdf, path):
     # Calculate medians and quantiles for each disturbance type
     grouped = gdf.groupby('DCA_ID').agg({
         'centroid_shift_m': ['median', lambda x: np.percentile(x, 25), lambda x: np.percentile(x, 75)],
-        'size_difference_km2': ['median', lambda x: np.percentile(x, 25), lambda x: np.percentile(x, 75)]
+        'size_difference_ref_km2': ['median', lambda x: np.percentile(x, 25), lambda x: np.percentile(x, 75)]
     }).reset_index()
 
     # Flatten the column names after aggregation
@@ -826,7 +1072,7 @@ def plot_size_shift_comparison_errorbars(gdf, path):
     # Set Seaborn style
     sns.set(style="whitegrid")
 
-    plt.figure(figsize=(14,10))
+    plt.figure(figsize=(10,6))
 
     # Show quadrant lines
     plt.axhline(0, color='black', linewidth=2.5, linestyle='--')
@@ -839,7 +1085,7 @@ def plot_size_shift_comparison_errorbars(gdf, path):
             row['centroid_shift_median'],
             row['size_diff_median'],
             color=custom_colors.get(row['DCA_ID'], 'grey'),
-            s=500,  # Larger scatter points
+            s=300,  # Larger scatter points
             edgecolor='w',
             alpha=0.7,
             label=row['DCA_ID']
@@ -853,8 +1099,8 @@ def plot_size_shift_comparison_errorbars(gdf, path):
             color=custom_colors.get(row['DCA_ID'], 'grey'),
             alpha=0.8,
             capsize=10,  # Larger error bar caps
-            capthick=5.5,
-            linewidth=5.5  # Thicker error bar lines
+            capthick=3.5,
+            linewidth=3.5  # Thicker error bar lines
         )
 
     # Customize the plot
@@ -865,14 +1111,9 @@ def plot_size_shift_comparison_errorbars(gdf, path):
     plt.title('Area and Position Changes per Disturbance Types', fontsize=26, pad=20)
 
     # Set legend
-    # Get current legend handles and labels
     handles, labels = plt.gca().get_legend_handles_labels()
-    # Create a dictionary with formatted labels
     by_label = dict(zip(labels, handles))
-    # Format the labels
-    formatted_labels = [format_label(label) for label in by_label.keys()]
-    # Create the legend with formatted labels
-    legend = plt.legend(by_label.values(), formatted_labels, title='Disturbance Types', bbox_to_anchor=(1.05, 1), loc='upper left', fontsize=16)
+    legend = plt.legend(by_label.values(), by_label.keys(), title='Disturbance Types', bbox_to_anchor=(1.05, 1), loc='upper left', fontsize=16)
     legend.set_title('Disturbance Types', prop={'size': 18})  # Set legend title size
 
     # Set decimal tick labels
@@ -884,62 +1125,8 @@ def plot_size_shift_comparison_errorbars(gdf, path):
     plt.yticks(fontsize=18)
 
     plt.tight_layout()
-    plt.savefig(path, bbox_inches='tight')
-
-
-def plot_length_of_disturbance_events(refdm_dataset, path):
-
-    dca_ids = refdm_dataset['DCA_ID'].unique()
-
-    # Define the width of each bar
-    bar_width = 0.8
-
-    # Create subplots for each DCA_ID with increased height
-    fig, axs = plt.subplots(1, len(dca_ids), figsize=(20, 6), sharex=True)
-
-    # Iterate over each DCA_ID
-    for i, dca_id in enumerate(dca_ids):
-        # Filter refdm_dataset for the current DCA_ID
-        dca_data = refdm_dataset[refdm_dataset['DCA_ID'] == dca_id]
-        
-        # Group the data by USDA_IDX and count occurrences
-        usda_idx_counts = dca_data.groupby('USDA_IDX').size()
-        
-        # Count occurrences of USDA_IDX with 1, 2, or 3 instances
-        usda_idx_1_instance = sum(usda_idx_counts == 1)
-        usda_idx_2_instances = sum(usda_idx_counts == 2)
-        usda_idx_3_instances = sum(usda_idx_counts == 3)
-        
-        # Calculate the x positions for the bars
-        x = np.arange(3)
-        
-        # Get the base color for the current DCA_ID
-        color = custom_colors.get(dca_id, '#000000')
-        
-        # Plot the bars for each year without offset
-        bars = axs[i].bar(x, [usda_idx_1_instance, usda_idx_2_instances, usda_idx_3_instances], width=bar_width, color=color)
-        
-        # Set plot title with larger font size
-        axs[i].set_title(f'{format_label(dca_id)}', fontsize=20)
-
-        # Set y-axis label only for the first subplot
-        if i == 0:
-            axs[i].set_ylabel('Number of Events', fontsize=20)
-        
-        # Set x-axis tick labels and rotation
-        axs[i].set_xticks(x)
-        axs[i].tick_params(axis='x', labelsize=18, rotation=0)
-        axs[i].tick_params(axis='y', labelsize=18)
-
-        # Set x-tick labels
-        axs[i].set_xticklabels(['1', '2', '3'], fontdict={'fontsize': 18})
-
-    # Set common x-axis label with larger font size
-    fig.text(0.5, -0.05, 'Number of Appearances (years)', ha='center', fontsize=20)
-    fig.tight_layout()
-
-    plt.savefig(path, bbox_inches='tight')
-
+   
+    plt.savefig(save_path, bbox_inches='tight')
 
 
 def main():
@@ -947,50 +1134,107 @@ def main():
     """
     Main function to orchestrate loading data, creating the TCC map, and plotting the results.
     """
-    data_dir = "/Net/Groups/BGI/work_2/ForExD/WP1/Data"
-    result_dir = "/Net/Groups/BGI/scratch/fmueller/ForExD-WP1-P1/results/"
-    save_dir = "/Net/Groups/BGI/scratch/fmueller/ForExD-WP1-P1/figures/"
+   # Load environment variables from the .env file
+    env_path = Path('/net/projects/forexd/WP1/02_ImprovedLabels/Scripts/ForExD-WP1-P1/environment/.env')
+    load_dotenv(dotenv_path=env_path)
 
-    area_path = "/Net/Groups/BGI/scratch/fmueller/ForExD-WP1-P1/data/S_USA.AdministrativeRegion/S_USA.AdministrativeRegion.shp"
-    tcc_map_region_8 = os.path.join(data_dir, "nlcd_tcc_CONUS_2017_v2021-4/tcc_map_region_8.nc")
-    refdm_path = os.path.join(result_dir, "radar_enhanced_forest_disturbance_mapping.shp")
-    ids_path = os.path.join(result_dir, "region8_dca_filtered_ids_usda_polygons.csv")
+    # Retrieve and parse custom color settings from environment variables
+    custom_colors_json = os.getenv('COLORS')
+    custom_colors = parse_custom_colors(custom_colors_json)
 
-    figure_1 = "p1_f1_ids.png"
-    figure_reduction_potential = "p1_f2_radar_potential_analysis.png"
-    figure_size_shift = "p1_f3_size_shift_analysis.png"
-    figure_size_shift_quantiles = "p1_f4_size_shift_errorbars_analysis_quantiles.png"
-    figure_size_shift_error = "p1_f5_size_shift_errorbars_analysis.png"
-    figure_disturbance_duration = "p1_f6_disturbance_duration_analysis.png"
+    # Retrieve environment variables
+    s2_minicubes_folder = os.getenv('EQUI7_GRIDS')
+    print(f"Equi7 grids folder: {s2_minicubes_folder}")
 
-     # Save the plot
-    if not os.path.exists(save_dir):
-        os.makedirs(save_dir)
-    
+    # Check if the folder exists
+    if not os.path.isdir(s2_minicubes_folder):
+        raise FileNotFoundError(f"The folder {s2_minicubes_folder} does not exist.")
+
+    # Retrieve the CRS (Coordinate Reference System) for Equi7 NA
+    equi7_crs = os.getenv('EQUI7_NA_EPSG')
+
+    # Ensure the 'REGION' environment variable is set
+    region = os.getenv('REGION')
+    if region is None:
+        raise ValueError("The 'REGION' environment variable is not set. Please ensure it is defined in the .env file.")
+
+    # Format region ID as a two-digit string
+    region_id = str(region).zfill(2)
+
+    # Parameters for the grid
+    resolution = 10
+    pixel_size = 512
+
+    # Define file paths for shapefiles and output locations
+    usa_filepath = f"{os.getenv('REGION_SHAPE')}/S_USA.AdministrativeRegion.shp"
+    ids_path = f"{os.getenv('RESULTS')}/region{region_id}_dca_filtered_ids_usda_polygons.shp"
+    refdm_path = f"{os.getenv('RESULTS')}/radar_results/radar_enhanced_forest_disturbance_mapping_region_{region_id}.shp"
+    s1_tiles_boundary_path = f"{os.getenv('RESULTS')}/radar_results/s1cd_tiles_bounds_region_{region_id}.shp"
+
+    # TCC Paths
+    forest_map_path = f"{os.getenv('TCC_PATH')}/wp1_nlcd_tcc_conus_2017_v2021_4_20m_EPSG_4326_cropped_region_08.tif"
+    forest_map_downsampled_path = f"{os.getenv('TCC_PATH')}/intermediate_tcc_map_region_8.nc"
+    tcc_map_region_8 = f"{os.getenv('TCC_PATH')}/tcc_map_region_8.nc"
+
+    figure_output_path = f"{os.getenv('FIGURES')}"
+    if not os.path.exists(figure_output_path):
+            os.makedirs(figure_output_path)
+            
+    # Retrieve environment variables
+    s1_tiles_folder = os.getenv('SENTINEL1_TILES')
+    print(f"S1 Tiles folder: {s1_tiles_folder}")
+    if not os.path.isdir(s1_tiles_folder):
+        raise FileNotFoundError(f"The folder {s1_tiles_folder} does not exist.")
+
+    figure_study_area_path = figure_output_path + "p1_f6_refdm_study_area.png"
+    figure_radar_reduction_potential_path = figure_output_path + "p1_f7_ids_refdm_radar_reduction_potential.png"
+    figure_disturbance_duration_path = figure_output_path + "p1_f8_disturbance_duration.png"
+    figure_size_position_change_errrorbar_path = figure_output_path + "p1_f9_size_position_change_errrorbar.png"
+    figure_size_position_change_path = figure_output_path + "p1_f10_size_position_change.png"
+    figure_size_position_quantiles_change_path = figure_output_path + "p1_f11_size_position_quantiles_change.png"
+
 
     print("Script to analyse the radar enhanced forest disturbance dataset:\n")
 
     try:
-        # Step 1: Loading CSV file and converting to GeoDataFrame
-        print("Step 1: Loading data ...")
-        refdm, refdm_dissolved = load_dissolved_refdm_dataset(refdm_path)
-        ids = load_ids_dataset(ids_path)
+        print("Loading datsets:\n")
+
+        print("Load the Forest Disturbances...")
+        refdm = load_dissolved_refdm(refdm_path)
+        ids_gdf = load_ids_dataset(ids_path)
+        
+        print("Load the S1CD Outlines  ...")
+        tiles_bounds = calculate_s1cd_outline(s1_tiles_folder, s1_tiles_boundary_path)
+
+        print("Load the USA Mainland and Region 8 Shape ...")
+        mainland = get_mainland(usa_filepath)
+        region_8 = get_region_shape(usa_filepath, region_id=region_id)
+
+        #print("Create the downsampled TCC Map for Region 8 Shape ...")
+        #create_downsampled_tcc_map(forest_map_path, usa_filepath, region_id, forest_map_downsampled_path, tcc_map_region_8)
+
+        print("Load the TCC Region 8 Map ...")
+        tcc_dataset = load_tcc_dataset(tcc_map_region_8)
+
+        print("Plotting data\n")
+        print("Plot 1: Study area ...")
+        plot_figure_1(tcc_dataset, mainland, region_8, refdm, tiles_bounds, custom_colors, save_figure_path=figure_study_area_path)
 
 
-        print("Step 2: Plotting study area ...")
-        create_study_area_map(area_path, ids, tcc_map_region_8, path=os.path.join(save_dir, figure_1))
+        print("\nPlot 2: Radar reduction potential ...")
+        plot_radar_reduction_potential(refdm, ids_gdf, figure_radar_reduction_potential_path )
+        print(f"Remove drougth from data...")
+        # Filter out rows where 'DCA_ID' equals 'drought'
+        slimmed_refdm = refdm[refdm['DCA_ID'] != 'drought']
 
-        print("Step 3: Plotting Radar potential ...")
-        plot_radar_reduction_potential(refdm_dissolved, ids, path=os.path.join(save_dir, figure_reduction_potential))
+        print("\nPlot 3: Disturbance duration ...")
+        plot_disturbance_duration(slimmed_refdm, figure_disturbance_duration_path)
 
-        print("Step 4: Plotting Size and Location Difference and Density ...")
-        result_gdf = calculate_size_shift_difference(ids, refdm_dissolved)
-        plot_combined_areasize_shift_per_disturbances(result_gdf, ids, path=os.path.join(save_dir, figure_size_shift))
-        plot_combined_areasize_shift_per_disturbances_quantiles(result_gdf, ids, path=os.path.join(save_dir, figure_size_shift_quantiles))
-        plot_size_shift_comparison_errorbars(result_gdf, path=os.path.join(save_dir, figure_size_shift_error))
-
-        print("Step 5: Plotting Duration of Disturbance Events ...")
-        plot_length_of_disturbance_events(refdm, path=os.path.join(save_dir, figure_disturbance_duration))
+        print("\nStep 4: Plotting Size and Location Difference and Density ...")
+        gdf = calculate_size_shift_difference(ids_gdf, slimmed_refdm)
+        plot_combined_areasize_shift_per_disturbances(gdf, ids_gdf, custom_colors, figure_size_position_change_path)
+        plot_combined_areasize_shift_per_disturbances_quantiles(gdf, ids_gdf, custom_colors, figure_size_position_quantiles_change_path)
+        plot_size_shift_comparison_errorbars(gdf, custom_colors, figure_size_position_change_errrorbar_path)
 
         print("Main process completed successfully.")
 
