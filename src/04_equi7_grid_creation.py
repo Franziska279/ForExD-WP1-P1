@@ -77,6 +77,66 @@ def generate_equi7_grid(usa_filepath, resolution, pixel_size, region_id, output_
     return grid
 
 
+def plot_intersection_batches(intersection, region_shape_path, region_id, grid_figure_output_path, target_crs):
+    # Load and reproject region shape
+    r8 = get_region_shape(region_shape_path, region_id)
+    region_shape = r8.to_crs(target_crs)  # Reproject to EPSG:27705
+
+    # Step 1: Plot the intersection data
+    fig, ax = plt.subplots(figsize=(12, 12))  # Increased figure size for better readability
+
+    # Plot the region boundary first to be in the background
+    region_shape.boundary.plot(ax=ax, edgecolor='#264653', linewidth=2, linestyle='--', label='Region Boundary')
+
+    # Plot the intersection data on top
+    intersection.boundary.plot(ax=ax, edgecolor='#E76F51', linewidth=1, label='Intersection Data')
+
+    # Step 2: Add convex hull around specific batches (0-100, 100-200, etc.)
+    def add_convex_hull(ax, geometries, batch_idx, **kwargs):
+        """Add a convex hull around the geometries and label it with the batch index."""
+        # Combine geometries into one using the union_all method
+        combined_geom = geometries.geometry.unary_union
+        if isinstance(combined_geom, MultiPolygon):
+            combined_geom = combined_geom.convex_hull
+        else:
+            combined_geom = combined_geom.convex_hull
+        
+        # Convert convex hull to polygon and add to plot
+        if combined_geom.is_empty:
+            return
+
+        x, y = combined_geom.exterior.xy
+        ax.plot(x, y, **kwargs)
+        # Add label in the centroid of the geometry
+        centroid = combined_geom.centroid
+        ax.text(centroid.x, centroid.y, f'{batch_idx}', fontsize=20, color='#264653', ha='center')
+
+    # Define batch size (100)
+    batch_size = 100
+
+    # Loop over the data in batches of 100
+    for i in range(0, len(intersection), batch_size):
+        batch_geometries = intersection.iloc[i:i+batch_size]
+        add_convex_hull(ax, batch_geometries, batch_idx=i//batch_size, color='#2A9D8F', lw=2)  # Draw the convex hull and label
+
+    # Enhance plot aesthetics
+    ax.set_aspect('equal')
+    ax.set_title(f'Intersected Grid for Region {region_id} with {len(intersection)} Grid Cells\n (Marking the Grids in Batches of 100)', fontsize=16, fontweight='bold', loc='center')
+    ax.set_xlabel('Longitude', fontsize=14)
+    ax.set_ylabel('Latitude', fontsize=14)
+    ax.grid(True, linestyle='--', alpha=0.7)  # Add grid with dashed lines
+
+    # Add legend
+    ax.legend(loc='best', fontsize=12)
+
+    # Save the figure
+    plt.tight_layout()
+    plt.savefig(grid_figure_output_path, dpi=300)  # Save with high resolution
+
+    # Show the figure
+    plt.show()
+
+
 def create_convex_hulls(refdm, ids, output_path):
     """
     Create and save convex hulls from REFDM data and USDA polygon IDs by 
@@ -182,6 +242,27 @@ def intersect_grid(convex_hulls_gdf, grid_gdf, output_shapefile_path, output_fig
     
     return intersected_gdf_equi7
 
+def add_minicube_index(intersected_grid, refdm, output, equi7_crs):
+
+    reprojected_refdm = refdm.to_crs(equi7_crs)
+
+    # Ensure both GeoDataFrames are in the same CRS for proper spatial operations
+    if reprojected_refdm.crs != intersected_grid.crs:
+        intersected_grid = intersected_grid.to_crs(reprojected_refdm.crs)
+
+    # Function to get intersecting indices
+    def get_intersecting_indices(geometry, grid):
+        intersecting_indices = grid[grid.intersects(geometry)].index.tolist()
+        return intersecting_indices
+
+    # Apply the function to each row in reprojected_refdm
+    reprojected_refdm['minicube_index'] = reprojected_refdm['geometry'].apply(lambda geom: get_intersecting_indices(geom, intersected_grid))
+
+    # Add the 'cube_amount' column by counting the length of each list in 'minicube_index'
+    reprojected_refdm['cube_amount'] = reprojected_refdm['minicube_index'].apply(len)
+
+    reprojected_refdm.to_file(output)
+
 
 def main():
 
@@ -212,10 +293,12 @@ def main():
     usa_filepath = f"{os.getenv('REGION_SHAPE')}/S_USA.AdministrativeRegion.shp"
     ids_path = f"{os.getenv('RESULTS')}/region{region_id}_dca_filtered_ids_usda_polygons.shp"
     refdm_path = f"{os.getenv('RESULTS')}/radar_results/radar_enhanced_forest_disturbance_mapping_region_{region_id}.shp"
+    output_path_refdm = f"{os.getenv('RESULTS')}/radar_results/radar_enhanced_forest_disturbance_mapping_region_{region_id}_epsg_27705.shp"
     output_path_grid = f"{s2_minicubes_folder}/grid_equi7_{resolution}_{pixel_size}_region_{region_id}.shp"
     output_path_conves = f"{os.getenv('RESULTS')}/radar_results/convex_hulls_refdm_region_{region_id}_epsg_4326.shp"
     output_path_intersetion = f"{s2_minicubes_folder}/grid_equi7_{resolution}_{pixel_size}_region_{region_id}_intersetion.shp"
     output_figure_intersection = f"{os.getenv('FIGURES')}/p1_f4_grid_equi7_{resolution}_{pixel_size}_region_{region_id}.png"
+    grid_figure_output_path = f"{os.getenv('FIGURES')}/p1_f5_grid_equi7_{resolution}_{pixel_size}_region_{region_id}_intersecting_cells_batches.png"
 
     # Function to load region shape from USA boundary shapefile
     region_shape = get_region_shape(usa_filepath, region_id=region_id)
@@ -277,10 +360,19 @@ def main():
         region_id=region_id
     )
 
+    print("Add minicube indecies to correponing REFDM ...")
+    add_minicube_index(intersected, refdm_gdf, output_path_refdm, equi7_crs)
+
+    print("Plot ...")
+    plot_intersection_batches(intersected, usa_filepath, region_id, grid_figure_output_path, equi7_crs)
+
+    
     # Print the time taken for intersection
     print(f"Intersection completed in {time.time() - start_time_intersection:.2f} seconds.")
     print(f"Intersected grid saved to: {output_path_intersetion}")
+    print(f"Reprojected REFDM saved to: {output_path_refdm}")
     print(f"Intersection plot saved to: {output_figure_intersection}\n")
+    print(f"Intersection plot with batches saved to: {grid_figure_output_path}\n")
 
     # Print a message indicating the script has finished
     print("Process completed successfully!\n")
