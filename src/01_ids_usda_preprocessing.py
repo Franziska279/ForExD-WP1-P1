@@ -368,54 +368,354 @@ def analyze_and_enrich_overlaps(df, year_col='SURVEY_YEAR', id_col='ID_E', dca_c
     return exploded_df
 
 
-def filter_disturbance_data(enriched_df, excluded_dca_types, start_year=2015, end_year=2020):
-    """
-    Filter disturbance data by year range, excluded DCA_ID types, and mismatches between DCA_ID and O_DCA_ID.
+# def filter_disturbance_data(enriched_df, excluded_dca_types, start_year=2015, end_year=2020):
+#     """
+#     Filter disturbance data by year range, excluded DCA_ID types, and mismatches between DCA_ID and O_DCA_ID.
     
+#     Parameters:
+#     - enriched_df: DataFrame with enriched disturbance data.
+#     - excluded_dca_types: List of DCA_ID types to exclude.
+#     - start_year: Start of the year range.
+#     - end_year: End of the year range.
+
+#     Returns:
+#     - filtered_df_cleaned: DataFrame after all filters.
+#     - filtering_summary: Summary of the filtering process.
+#     """
+#     # Filter by year range
+#     df_filtered = enriched_df[(enriched_df['SURVEY_YEAR'] > start_year) & (enriched_df['SURVEY_YEAR'] <= end_year)].copy()
+    
+#     # Exclude specified DCA_ID types
+#     initial_count = len(df_filtered)
+#     df_filtered = df_filtered[~df_filtered['DCA_ID'].isin(excluded_dca_types)]
+#     rows_dropped_dca = initial_count - len(df_filtered)
+    
+#     # Find entries with mismatches between DCA_ID and O_DCA_ID, excluding NaNs
+#     mismatch_ids = df_filtered[
+#         (df_filtered['DCA_ID'] != df_filtered['O_DCA_ID']) &
+#         ~(df_filtered['DCA_ID'].isna() | df_filtered['O_DCA_ID'].isna())
+#     ]['ID_E'].unique()
+    
+#     # Find entries with excluded O_DCA_ID types
+#     excluded_ids = df_filtered[df_filtered['O_DCA_ID'].isin(excluded_dca_types)]['ID_E'].unique()
+    
+#     # Combine and exclude mismatched and excluded entries
+#     combined_exclusions = np.union1d(mismatch_ids, excluded_ids)
+#     df_cleaned = df_filtered[~df_filtered['ID_E'].isin(combined_exclusions)]
+#     rows_dropped_overlap = len(df_filtered) - len(df_cleaned)
+
+#     # Provide filtering summary
+#     total_events = len(df_cleaned)
+#     unique_events = df_cleaned['ID_E'].nunique()
+#     summary = (
+#         f"    Excluded {rows_dropped_dca} rows with specified DCA_ID types,"
+#         f"and {rows_dropped_overlap} additional rows due to mismatches or excluded O_DCA_ID.\n"
+#         f"    Unique events | Total events: {unique_events} | {total_events}\n"
+#         f"    Remaining overlapping events: {total_events - unique_events}"
+#     )
+    
+#     return df_cleaned, summary
+
+
+def remove_inverse_matches(df_filtered, with_id_o):
+    """
+    Removes rows from `df_filtered` where the inverse pair of ID_E and ID_O 
+    from removed rows (based on size constraints) are present.
+
     Parameters:
-    - enriched_df: DataFrame with enriched disturbance data.
-    - excluded_dca_types: List of DCA_ID types to exclude.
-    - start_year: Start of the year range.
-    - end_year: End of the year range.
+    - df_filtered: DataFrame that has been filtered according to size constraints.
+    - with_id_o: DataFrame with non-null ID_O and within the specified survey year range.
+    
+    Returns:
+    - remaining_df: DataFrame after removing rows with inverse matches.
+    - inverse_matches_df: DataFrame containing the inverse matches that were removed.
+    """
+    # Identify removed rows based on size constraints
+    removed_rows = with_id_o[~with_id_o['ID_E'].isin(df_filtered['ID_E'])]
+    print(f"Removing Inverse Matches:")
+
+    # Step 2: Extract removed ID_E and ID_O
+    removed_id_e = removed_rows['ID_E'].tolist()
+    removed_id_o = removed_rows['ID_O'].tolist()
+
+    # Step 3: Find inverse matches in the remaining data
+    # Create a set of (ID_E, ID_O) pairs from the removed rows
+    removed_pairs = set(zip(removed_rows['ID_E'], removed_rows['ID_O']))
+
+    # Create a DataFrame for remaining rows
+    remaining_df = df_filtered.copy()
+
+    # Initialize a list to store rows to remove
+    inverse_matches = []
+
+    # Iterate over removed pairs and check for their inverse in the remaining data
+    for id_e, id_o in removed_pairs:
+        # Find rows in the remaining data where ID_E is ID_O and ID_O is ID_E
+        inverse_rows = remaining_df[(remaining_df['ID_E'] == id_o) & (remaining_df['ID_O'] == id_e)]
+        if not inverse_rows.empty:
+            #print(f" > Inverse matches found for ID_E: {id_e} and ID_O: {id_o}. Removing these rows...")
+            inverse_matches.append((id_e, id_o))
+
+    # Convert inverse_matches to DataFrame
+    inverse_matches_df = pd.DataFrame(inverse_matches, columns=['ID_E', 'ID_O'])
+
+    # Remove inverse matches from the remaining DataFrame
+    for id_e, id_o in inverse_matches:
+        remaining_df = remaining_df[~((remaining_df['ID_E'] == id_o) & (remaining_df['ID_O'] == id_e))]
+
+    # Optional: Print details of removed rows for verification
+    if not inverse_matches_df.empty:
+        print(f"   > Removed rows with inverse matches: - {len(inverse_matches_df)}")
+        #print(inverse_matches_df)
+
+      # Print results
+    print(f"   = {len(remaining_df)}")
+
+
+    return remaining_df, inverse_matches_df
+
+def filter_time(original_data, start_year, end_year):
+    """
+    Filters the original data based on the survey year, removes inverse matches,
+    excludes elements with certain criteria, and returns the final DataFrame.
+
+    Parameters:
+    - original_data: DataFrame with the original data.
+    - start_year: The start year for filtering.
+    - end_year: The end year for filtering.
 
     Returns:
-    - filtered_df_cleaned: DataFrame after all filters.
-    - filtering_summary: Summary of the filtering process.
+    - final_df: The filtered and cleaned DataFrame.
     """
-    # Filter by year range
-    df_filtered = enriched_df[(enriched_df['SURVEY_YEAR'] > start_year) & (enriched_df['SURVEY_YEAR'] <= end_year)].copy()
     
-    # Exclude specified DCA_ID types
-    initial_count = len(df_filtered)
+    
+    print(f"DataFrame before excluding temporal outlieres: {len(original_data)}")
+
+    # Filter data based on survey year
+    filtered_df = original_data[(original_data['SURVEY_YEAR'] > start_year) & (original_data['SURVEY_YEAR'] <= end_year)].copy()
+
+      # Identify removed rows based on size constraints
+    removed_rows = original_data[~original_data['ID_E'].isin(filtered_df['ID_E'])]
+    print(f"    - {len(removed_rows)}")
+
+    print(f"    = {len(filtered_df)}")
+
+    # Remove inverse matches
+    remaining_df, inverse_matches_df = remove_inverse_matches(filtered_df, original_data)
+
+    final_df = remaining_df.copy()
+    # Check for elements with O_Year less than start_year
+    elements_with_old_years = remaining_df[remaining_df['O_Year'] < start_year]
+    
+    if not elements_with_old_years.empty:
+        print(f"There are {len(elements_with_old_years)} elements where O_Year is less than {start_year}.")
+        
+        # Identify ID_E values where O_Year is less than start_year
+        id_e_to_exclude = elements_with_old_years['ID_E'].unique()
+        
+        # Filter out rows with these ID_E values from the remaining DataFrame
+        filtered_df = remaining_df[~remaining_df['ID_E'].isin(id_e_to_exclude)]
+
+        final_df, _ = remove_inverse_matches(filtered_df, remaining_df)
+        print(f"DataFrame after excluding rows with O_Year < {start_year}: {len(final_df)}\n")
+    else:
+        print(f"There are no elements where O_Year is less than {start_year}.\n")
+
+    return final_df
+
+
+def filter_disturbance_type(original_data, excluded_dca_types):
+    """
+    Filters the original data based on excluded disturbance types, removes inverse matches,
+    and returns the final cleaned DataFrame.
+
+    Parameters:
+    - original_data: DataFrame with the original data.
+    - excluded_dca_types: List of disturbance types to be excluded.
+
+    Returns:
+    - final_df: The filtered and cleaned DataFrame.
+    """
+    print(f"DataFrame before excluding disturbance types: {len(original_data)}")
+    # Step 1: Filter out rows where 'DCA_ID' is in excluded_dca_types
+    filtered_df = original_data[~original_data['DCA_ID'].isin(excluded_dca_types)].copy()
+
+    # Identify removed rows based on size constraints
+    removed_rows = original_data[~original_data['ID_E'].isin(filtered_df['ID_E'])]
+    print(f"    - {len(removed_rows)}")
+
+    print(f"    = {len(filtered_df)}")
+
+    # Step 2: Remove inverse matches
+    remaining_df, inverse_matches_df = remove_inverse_matches(filtered_df, original_data)
+
+    final_df = remaining_df.copy()
+    # Step 3: Check for overlapping elements where 'O_DCA_ID' is in excluded_dca_types
+    has_overlaps = remaining_df[remaining_df['O_DCA_ID'].isin(excluded_dca_types)]
+
+    if not has_overlaps.empty:
+        print(f" > {len(has_overlaps)} elements overlapping with excluded types detected. Removing these elements...")
+
+        # Step 4: Identify ID_E values to be excluded due to overlaps
+        id_e_to_exclude = has_overlaps['ID_E'].unique()
+
+        # Step 5: Filter out rows with these 'ID_E' values
+        filtered_df = remaining_df[~remaining_df['ID_E'].isin(id_e_to_exclude)]
+        
+         # Step 6: Remove inverse matches again after the overlap removal
+        final_df, _ = remove_inverse_matches(filtered_df, remaining_df)
+        print(f" > DataFrame after removing overlapping disturbances: {len(final_df)} \n")
+    else:
+        print(f" > No elements overlap with excluded types. No removal needed.\n")
+
+
+    # Step 7: Create a unique identifier 'IDX_D' for each row based on 'DCA_ID', 'SURVEY_YEAR', and row index
+    final_df['IDX_D'] = final_df.apply(lambda row: f"{row['DCA_ID']}_{row['SURVEY_YEAR']}_{row.name}", axis=1)
+
+    return final_df
+
+
+def filter_size(original_data):
+
+
+    print(f"DataFrame before filtering by size: {len(original_data)}")
+    # Step 1: Filter out rows where 'DCA_ID' is in excluded_dca_types
+
+    gdf_with_area = calculate_area_in_km2(original_data)
+    filtered_df = gdf_with_area[gdf_with_area['area_km2'] <= 15]
+
+    # Identify removed rows based on size constraints
+    removed_rows = original_data[~original_data['ID_E'].isin(filtered_df['ID_E'])]
+    print(f"    - {len(removed_rows)}")
+
+    print(f"    = {len(filtered_df)}")
+
+
+    remaining_df, inverse_matches_df = remove_inverse_matches(filtered_df, original_data)
+
+    final_df = remaining_df.copy()
+
+    # Identify ID_E values removed due to size constraints
+    removed_id_e = set(gdf_with_area[~gdf_with_area['ID_E'].isin(remaining_df['ID_E'])]['ID_E'])
+    # Check if there are rows where ID_O matches the removed ID_E values
+    rows_to_remove = remaining_df[remaining_df['ID_O'].isin(removed_id_e)]
+
+    # Option 1: Remove only the large element and leave the restof the elements in that did overlap with the overlappin there
+    # Print the result for verification
+    if not rows_to_remove.empty:
+        print(f"   > {len(rows_to_remove)} rows where ID_O matches removed ID_E values detected ....")
+        
+        # Remove these rows from the DataFrame
+        filtered_df = remaining_df[~remaining_df['ID_O'].isin(removed_id_e)]
+        
+        # Step 6: Remove inverse matches again after the overlap removal
+        final_df, _ = remove_inverse_matches(filtered_df, remaining_df)
+
+        print(f" > DataFrame after removing rows with ID_O matching removed ID_E values: {len(final_df)}")
+    else:
+        print(f" > No rows with ID_O matching removed ID_E values. No removal needed.")
+
+    return final_df
+
+
+def check_values(df):
+    # Extract unique ID_E values from gdf_area
+    id_e_area = set(df['ID_E'].unique())
+
+    # Extract unique ID_O values from gdf_area
+    id_o_filtered = set(df['ID_O'].unique())
+
+    # Find ID_E values that are not in ID_O
+    id_e_not_in_o = id_e_area - id_o_filtered
+
+    # Print the result
+    if id_e_not_in_o:
+        print(f" > ID_E values that are not in ID_O: {len(id_e_not_in_o)}")
+        for id_e in id_e_not_in_o:
+            print(f"    ID_E: {id_e}")
+    else:
+        print(f" > All ID_E values have corresponding ID_O values in df_filtered.")
+
+
+    id_o_not_in_e = id_o_filtered - id_e_area
+
+    # Print the result
+    if id_o_not_in_e:
+        print(f" > ID_O values that are not in ID_E: {len(id_o_not_in_e)}")
+        for id_o in id_o_not_in_e:
+            print(f"    ID_O: {id_o}")
+    else:
+        print(f" > All ID_O values have corresponding ID_E values in df_filtered.")
+
+
+def filter_mismatch(original_data):
+    """
+    Filters out rows where 'DCA_ID' and 'O_DCA_ID' do not match and returns the updated DataFrame without mismatches.
+    
+    Parameters:
+    - original_data: DataFrame containing the original data.
+    
+    Returns:
+    - filtered_data: DataFrame with mismatches removed.
+    - mismatch_ids: DataFrame containing the rows that were identified as mismatches.
+    """
+
+    print(f"DataFrame before filtering by same DCA: {len(original_data)}")
+    
+    # Step 1: Identify mismatch IDs
+    mismatch_ids = original_data[
+        (original_data['DCA_ID'] != original_data['O_DCA_ID']) &
+        ~(original_data['DCA_ID'].isna() | original_data['O_DCA_ID'].isna())
+    ]
+    print(f"    - {len(mismatch_ids)} mismatched rows identified")
+    
+    # Step 2: Filter out mismatched IDs from the original DataFrame
+    filtered_data = original_data[
+        ~original_data.index.isin(mismatch_ids.index)
+    ]
+    print(f"    = {len(filtered_data)} rows after removing mismatches")
+    
+    return filtered_data
+
+
+def filter_disturbance_data(data, excluded_dca_types, start_year=2015, end_year=2020):
+    
+    # Step 1: Filter the non-overlapping elements (where ID_O is null)
+    without_id_o = data[data['ID_O'].isnull()]
+    print(f"DataFrame values without intersections: {len(without_id_o)}")
+    # Filter for timespan
+    df_filtered = without_id_o[(without_id_o['SURVEY_YEAR'] > start_year) & (without_id_o['SURVEY_YEAR'] <= end_year)].copy()
+    print(f"DataFrame filtered for timespan: {len(df_filtered)}")
+    # Filter out excluded disturbance types
     df_filtered = df_filtered[~df_filtered['DCA_ID'].isin(excluded_dca_types)]
-    rows_dropped_dca = initial_count - len(df_filtered)
+    print(f"DataFrame filtered for disturbance types: {len(df_filtered)}")
+    # Generate unique identifier for each row
+    df_filtered['IDX_D'] = df_filtered.apply(lambda row: f"{row['DCA_ID']}_{row['SURVEY_YEAR']}_{row.name}", axis=1)
+    # Filter by area size
+    gdf_with_area = calculate_area_in_km2(df_filtered)
+    gdf_area = gdf_with_area[gdf_with_area['area_km2'] <= 15]
+    print(f"DataFrame filtered for size: {len(gdf_area)}")
     
-    # Find entries with mismatches between DCA_ID and O_DCA_ID, excluding NaNs
-    mismatch_ids = df_filtered[
-        (df_filtered['DCA_ID'] != df_filtered['O_DCA_ID']) &
-        ~(df_filtered['DCA_ID'].isna() | df_filtered['O_DCA_ID'].isna())
-    ]['ID_E'].unique()
-    
-    # Find entries with excluded O_DCA_ID types
-    excluded_ids = df_filtered[df_filtered['O_DCA_ID'].isin(excluded_dca_types)]['ID_E'].unique()
-    
-    # Combine and exclude mismatched and excluded entries
-    combined_exclusions = np.union1d(mismatch_ids, excluded_ids)
-    df_cleaned = df_filtered[~df_filtered['ID_E'].isin(combined_exclusions)]
-    rows_dropped_overlap = len(df_filtered) - len(df_cleaned)
 
-    # Provide filtering summary
-    total_events = len(df_cleaned)
-    unique_events = df_cleaned['ID_E'].nunique()
-    summary = (
-        f"    Excluded {rows_dropped_dca} rows with specified DCA_ID types,"
-        f"and {rows_dropped_overlap} additional rows due to mismatches or excluded O_DCA_ID.\n"
-        f"    Unique events | Total events: {unique_events} | {total_events}\n"
-        f"    Remaining overlapping events: {total_events - unique_events}"
-    )
+    # Step 2: Filter the overlapping elements (where ID_O is not null)
+    with_id_o = data[data['ID_O'].notnull()]
+    # Apply various filtering functions
+    filtered_time_gdf = filter_time(with_id_o, start_year, end_year)
+    filtered_type_gdf = filter_disturbance_type(filtered_time_gdf, excluded_dca_types)
+    filtered_size_gdf = filter_size(filtered_type_gdf)
+    filtered_mismatch_gdf = filter_mismatch(filtered_size_gdf)
     
-    return df_cleaned, summary
+    if isinstance(gdf_area, gpd.GeoDataFrame) and isinstance(filtered_mismatch_gdf, gpd.GeoDataFrame):
+        combined_gdf = pd.concat([gdf_area, filtered_mismatch_gdf], ignore_index=True)
+    else:
+        raise TypeError("Both DataFrames must be GeoDataFrames")
 
+    # Convert back to GeoDataFrame if necessary
+    combined_gdf = gpd.GeoDataFrame(combined_gdf, geometry='geometry')  # Make sure to specify the geometry column
+
+    print(f"Combined DataFrame size: {len(combined_gdf)}")
+    
+    return combined_gdf
 
 def calculate_area_in_km2(gdf):
     """
@@ -516,7 +816,7 @@ def main():
     # Define file paths using environment variables
     region_shape_path = f"{os.getenv('REGION_SHAPE')}S_USA.AdministrativeRegion.shp"
     ids_region_file_path = f"{os.getenv('IDS_REGIONS')}CONUS_Region{region}_dissolved.csv"
-    file_output_path = f"{os.getenv('RESULTS')}/region{region_id}_dca_filtered_ids_usda_polygons.shp"
+    file_output_path = f"{os.getenv('RESULTS')}/region_{region_id}_dca_filtered_ids_usda_polygons.shp"
     figure_output_path = f"{os.getenv('FIGURES')}/p1_f1_disturbances_region_{region_id}.png"
 
 
@@ -557,26 +857,26 @@ def main():
     # Step 8: Filter disturbance data
     print("Step 8: Filtering disturbances between 2016 and 2020...")
     excluded_dca_types = ['other', 'multi_damage', 'other_abiotic', 'other_biotic']
-    filtered_df_cleaned, filtering_summary = filter_disturbance_data(enriched_df, excluded_dca_types, start_year=2015, end_year=2020)
-    print(filtering_summary)
+    filtered_df_cleaned = filter_disturbance_data(enriched_df, excluded_dca_types, start_year=2015, end_year=2020)
+    # print(filtering_summary)
 
-    # Step 9: Generate new index_usda values
-    print("Step 9: Generating new index_usda values...")
-    filtered_df_cleaned['IDX_D'] = filtered_df_cleaned.apply(
-        lambda row: f"{row['REGION_ID']}_{row['DCA_ID']}_{row['SURVEY_YEAR']}_{row.name}", axis=1
-    )
+    # # Step 9: Generate new index_usda values
+    # print("Step 9: Generating new index_usda values...")
+    # filtered_df_cleaned['IDX_D'] = filtered_df_cleaned.apply(
+    #     lambda row: f"{row['REGION_ID']}_{row['DCA_ID']}_{row['SURVEY_YEAR']}_{row.name}", axis=1
+    # )
 
-    # Step 10: Calculate area in km²
-    print("Step 10: Calculating area in km²...")
-    gdf_with_area = calculate_area_in_km2(filtered_df_cleaned)
+    # # Step 10: Calculate area in km²
+    # print("Step 10: Calculating area in km²...")
+    # gdf_with_area = calculate_area_in_km2(filtered_df_cleaned)
 
-    # Step 11: Remove elements larger than 15 km²
-    print("Step 11: Removing elements larger than 15 km²...")
-    gdf_area = gdf_with_area[gdf_with_area['area_km2'] <= 15]
+    # # Step 11: Remove elements larger than 15 km²
+    # print("Step 11: Removing elements larger than 15 km²...")
+    # gdf_area = gdf_with_area[gdf_with_area['area_km2'] <= 15]
 
     # Output summary
-    total_elements = len(gdf_area)
-    unique_events = len(gdf_area['ID_E'].unique())
+    total_elements = len(filtered_df_cleaned)
+    unique_events = len(filtered_df_cleaned['ID_E'].unique())
     overlapping_events = total_elements - unique_events
 
     print(f"Number of elements after removing large areas: {total_elements}")
@@ -589,7 +889,7 @@ def main():
         'SURVEY_YEAR': 'SURVEY_Y',
         'DA_Code_USDA': 'DA_C_USDA'
     }
-    data = gdf_area.rename(columns=column_renames)
+    data = filtered_df_cleaned.rename(columns=column_renames)
 
 
     # Step 12: Save the final GeoDataFrame to a shapefile
