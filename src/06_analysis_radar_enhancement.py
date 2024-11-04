@@ -189,7 +189,7 @@ def get_mainland(gdf_path):
         GeoDataFrame: Cleaned GeoDataFrame with mainland parts of specified regions.
     """
     gdf = gpd.read_file(gdf_path)
-    regions_to_clean = ['05', '10']
+    regions_to_clean = ['05', '08', '10']
     cleaned_parts = []
 
     for region in regions_to_clean:
@@ -199,7 +199,8 @@ def get_mainland(gdf_path):
         # Get the mainland part with the maximum area
         mainland_part = exploded.loc[exploded['area'].idxmax()]
         cleaned_region = exploded[exploded['area'] == mainland_part['area']]
-        cleaned_parts.append(cleaned_region)
+        if region != "10":
+            cleaned_parts.append(cleaned_region)
 
     cleaned_parts_gdf = gpd.GeoDataFrame(pd.concat(cleaned_parts, ignore_index=True))
 
@@ -210,6 +211,7 @@ def get_mainland(gdf_path):
     usa_mainland = pd.concat([gdf[~gdf['REGION'].isin(regions_to_clean)], cleaned_parts_gdf], ignore_index=True)
 
     return usa_mainland
+
 
 
 def get_region_shape(path, region_id):
@@ -449,7 +451,7 @@ def plot_figure_1(cropped_forest, usa_mainland, r8, data, s1cd, custom_colors, s
     plot_tcc_map(ax, cropped_forest, custom_cmap)
     
     # Plot the region outline with grids
-    r8.boundary.plot(ax=ax, linewidth=2, color='#297045')
+    r8.boundary.plot(ax=ax, linewidth=2, color='black')
     
     # Plot S1CD boundaries with grid lines
     s1cd.boundary.plot(ax=ax, linewidth=2, color='#150442')
@@ -467,10 +469,10 @@ def plot_figure_1(cropped_forest, usa_mainland, r8, data, s1cd, custom_colors, s
     ax.legend(handles=legend_patches, fontsize=18, title="Disturbance Type", title_fontsize=20, loc='center left', facecolor='white', framealpha=1)
     
     # Add a label indicating the grid lines for s1cd
-    ax.text(0.80, 0.45, 'S1CD Grids', transform=ax.transAxes, fontsize=20, color='#150442', bbox=dict(facecolor='white', alpha=1, edgecolor='#150442'))
+    ax.text(0.45, 0.95, 'S1CD Tiles', transform=ax.transAxes, fontsize=20, color='#150442', bbox=dict(facecolor='white', alpha=1, edgecolor='#150442'))
 
     
-    plt.savefig(save_figure_path, bbox_inches='tight')
+    plt.savefig(save_figure_path, dpi=300, bbox_inches='tight')
     plt.show()
 
 def plot_radar_reduction_potential(refdm_gdf, ids_gdf, save_path):
@@ -491,14 +493,14 @@ def plot_radar_reduction_potential(refdm_gdf, ids_gdf, save_path):
     # Combine the counts into a single DataFrame
     counts_df = pd.DataFrame({
         'IDS': dca_counts_ids,
-        'REFDM': dca_counts_refdm
+        'S1DM': dca_counts_refdm
     }).fillna(0)  # Fill NaN with 0 for counts that are missing in either dataset
 
     # Reset index to turn DCA_ID into a column
     counts_df.reset_index(inplace=True)
     counts_df.rename(columns={'index': 'DCA_ID'}, inplace=True)
     # Calculate reduction percentage
-    counts_df['Reduction (%)'] = -100 * (counts_df['IDS'] - counts_df['REFDM']) / counts_df['IDS']
+    counts_df['Reduction (%)'] = -100 * (counts_df['IDS'] - counts_df['S1DM']) / counts_df['IDS']
 
     # Ensure the DCA_ID is in the specified order
     counts_df['DCA_ID'] = pd.Categorical(counts_df['DCA_ID'], categories=['bark_beetle', 'wind', 'fire', 'defoliators', 'drought'], ordered=True)
@@ -516,18 +518,18 @@ def plot_radar_reduction_potential(refdm_gdf, ids_gdf, save_path):
     bar_positions = range(len(counts_df_sorted))  # X positions for bars
 
     ax1.bar(bar_positions, counts_df_sorted['IDS'], width=bar_width, color="#BCB6FF", label='IDS')
-    ax1.bar([pos + bar_width for pos in bar_positions], counts_df_sorted['REFDM'], width=bar_width, color="#AF42AE", label='REFDM')
+    ax1.bar([pos + bar_width for pos in bar_positions], counts_df_sorted['S1DM'], width=bar_width, color="#AF42AE", label='S1DM')
 
     # Add annotations for counts above bars
-    for i, (count_ids, count_refdm) in enumerate(zip(counts_df_sorted['IDS'], counts_df_sorted['REFDM'])):
+    for i, (count_ids, count_refdm) in enumerate(zip(counts_df_sorted['IDS'], counts_df_sorted['S1DM'])):
         ax1.text(bar_positions[i], count_ids + 2, str(int(count_ids)), ha='center', va='bottom', color='black', fontsize=annotation_fontsize)
         ax1.text(bar_positions[i] + bar_width, count_refdm + 2, str(int(count_refdm)), ha='center', va='bottom', color='black', fontsize=annotation_fontsize)
 
     # Set labels and title for the first subplot
-    ax1.set_ylabel('Amount of Disturbance Events', fontsize=label_fontsize, labelpad=20)  # Increase font size for ylabel and add padding
-    ax1.set_title('Radar Detection Potential per Disturbance Type', fontsize=title_fontsize, pad=20)  # Increase font size for title
+    ax1.set_ylabel('Number of Disturbance Events', fontsize=label_fontsize, labelpad=20)  # Increase font size for ylabel and add padding
+    #ax1.set_title('Radar Detection Potential per Disturbance Type', fontsize=title_fontsize, pad=20)  # Increase font size for title
     ax1.set_yscale('log')
-    ax1.set_ylim(1, counts_df_sorted[['IDS', 'REFDM']].max().max() * 2)  # Set y-limit for log scale
+    ax1.set_ylim(1, counts_df_sorted[['IDS', 'S1DM']].max().max() * 2)  # Set y-limit for log scale
     legend = ax1.legend(fontsize=legend_fontsize, title='Datasets')  # Increase font size for legend and add title
     legend.get_title().set_fontsize(legend_title_fontsize)
     ax1.grid(False)
@@ -563,41 +565,50 @@ def plot_radar_reduction_potential(refdm_gdf, ids_gdf, save_path):
     plt.yticks(fontsize=tick_fontsize)
     plt.tight_layout()  # Ensures labels, titles, and legends do not overlap
     
-    plt.savefig(save_path , bbox_inches='tight')
+    plt.savefig(save_path , dpi=300, bbox_inches='tight')
 
     plt.show()
 
 def plot_disturbance_duration(refdm_dissolved, save_path):
-
     # Count how often each duration occurs for each DCA_ID
     duration_counts = refdm_dissolved.groupby(['DCA_ID', 'Duration']).size().reset_index(name='Count')
 
     # Pivot the table for easy plotting
     pivot_table = duration_counts.pivot(index='DCA_ID', columns='Duration', values='Count').fillna(0)
-    
-    # Create a custom colormap: Light to dark
-    colors = ['#F9A87B', '#DB754D', '#BD411E']
+
+    # Create a custom colormap: Darker shades of red
+    colors = ['#FFAF6E', '#F28353', '#E65837', '#D92C1C', '#CC0000']  # Light to dark red
     cmap = mcolors.ListedColormap(colors)
 
     # Plot the grouped bar plot
-    fig, ax = plt.subplots(figsize=(12, 5))  # Adjusted size: wider and shorter
+    fig, ax = plt.subplots(figsize=(15, 6))  # Adjusted size: wider and shorter
+
+    # Set font sizes for various components
+    plt.rcParams.update({
+        'font.size': 16,           # Global font size
+        'axes.titlesize': 18,      # Title font size
+        'axes.labelsize': 20,      # X and Y label font size
+        'xtick.labelsize': 18,     # X tick label font size
+        'ytick.labelsize': 18,     # Y tick label font size
+    })
 
     # Plot the pivot table with the custom colormap
-    pivot_table.plot(kind='bar', ax=ax, cmap=cmap, width=0.8, edgecolor='None')
+    pivot_table.plot(kind='bar', ax=ax, cmap=cmap, width=0.8, edgecolor='None', legend=False)
 
     # Add labels to each bar with a buffer
     for p in ax.patches:
         height = p.get_height()
-        ax.annotate(
-            format(height, '.0f'),
-            (p.get_x() + p.get_width() / 2., height),
-            ha='center',
-            va='bottom',
-            xytext=(0, 4),  # 4 points vertical offset
-            textcoords='offset points'
-        )
+        if height > 0:
+            ax.annotate(
+                format(height, '.0f'),
+                (p.get_x() + p.get_width() / 2., height),
+                ha='center',
+                va='bottom',
+                xytext=(0, 4),  # 4 points vertical offset
+                textcoords='offset points',
+                fontsize=13  # Set the font size smaller here
+            )
 
-    # Set the y-axis limit to 500
     # Set the y-axis limit to the next multiple of 100 above the max count
     max_count = pivot_table.values.max()
     ax.set_ylim(0, np.ceil(max_count / 100) * 100)
@@ -605,35 +616,28 @@ def plot_disturbance_duration(refdm_dissolved, save_path):
     # Format x-axis labels
     ax.set_xticklabels([format_label(label.get_text()) for label in ax.get_xticklabels()])
 
-    # Add legend with white background
-    handles = [plt.Line2D([0], [0], color=cmap(i/2), lw=8) for i in range(len(colors))]
-    labels = ['1 Year', '2 Years', '3 Years']
-    ax.legend(handles, labels, title='Duration', title_fontsize='16', fontsize='14', facecolor='white')
-
     # Set labels and title with additional buffer
-    ax.set_xlabel('Disturbance Type', labelpad=15)
-    ax.set_ylabel('Amount of Events', labelpad=15)
-    ax.set_title('Duration of Disturbances as Detected by Sentinel-1 Change Detection', fontsize='20', pad=15)
-
-    # Adjust grid line appearance
-    ax.grid(True, linestyle='-', color='lightgray', alpha=0.4, linewidth=0.7)
-
-    # Set font sizes for various components
-    plt.rcParams.update({
-        'font.size': 14,           # Global font size
-        'axes.titlesize': 18,      # Title font size
-        'axes.labelsize': 16,      # X and Y label font size
-        'xtick.labelsize': 14,     # X tick label font size
-        'ytick.labelsize': 14,     # Y tick label font size
-    })
+    ax.set_xlabel('Disturbance Type', labelpad=20)
+    ax.set_ylabel('Number of Events', labelpad=20)
+    ax.set_title(' ', fontsize=20)
 
     plt.xticks(rotation=0)
+    ax.yaxis.set_major_locator(ticker.MaxNLocator(nbins=3))
+
+    # Create a colorbar and position it closer to the plot
+    norm = mcolors.BoundaryNorm(boundaries=[0, 1, 2, 3, 4, 5], ncolors=len(colors), clip=True)
+    cbar = plt.colorbar(plt.cm.ScalarMappable(norm=norm, cmap=cmap), ax=ax, orientation='vertical', pad=0.02)
+    cbar.set_label('Duration', fontsize=20, labelpad=10)  # Add a bit of space to the label
+    cbar.set_ticks([1, 2, 3, 4, 5])
+    cbar.set_ticklabels(['1 Year', '2 Years', '3 Years', '4 Years', '5 Years'])
+
     plt.tight_layout()
 
     # Save the figure with a specific DPI to fit an A4 page
-    plt.savefig(save_path, dpi=300, bbox_inches='tight')
+    plt.savefig(save_path, dpi=400, bbox_inches='tight')
 
     plt.show()
+
 
 
 def calculate_area_and_centroid_meters(gdf):
@@ -749,308 +753,6 @@ def calculate_size_shift_difference(ids_gdf, refdm_gdf_dissolved):
     return result_gdf
 
 
-def plot_combined_areasize_shift_per_disturbances(refdm, ids, custom_colors, path):
-   
-    # Determine the unique DCA_ID values from the filtered dataframe
-    unique_dca_ids = refdm['DCA_ID'].unique()
-
-    # Sort the categories based on the custom order (ensure dynamic behavior for unique DCA_IDs in the filtered data)
-    category_order = sorted(unique_dca_ids, key=lambda x: custom_colors.get(x, x))  # keeps custom order first if defined
-    # Get the default colors from 'tab10' palette for the rest of the disturbance types
-    default_palette = sns.color_palette('tab10', n_colors=10)
-    default_colors = [color for color in default_palette if color not in custom_colors.values()]
-
-    # Combine the custom colors with the default colors
-    custom_palette = {label: custom_colors.get(label, default_colors.pop(0)) for label in category_order}
-
-    # Set Seaborn style
-    sns.set(style="whitegrid")
-
-    # Determine the number of rows dynamically based on the number of unique DCA_IDs
-    n_categories = len(category_order)
-    n_cols = 4  # keeping the columns as 4, but can also be parameterized
-    
-    fig, axs = plt.subplots(n_categories, n_cols, figsize=(35, 40), gridspec_kw={'width_ratios': [3, 0.05, 2, 0.5]})
-    
-    # Define font sizes
-    fontsize_supertitle = 44
-    fontsize_legend = 36
-    fontsize_title = 36
-    fontsize_label = 32  # Reduced slightly for clarity
-    fontsize_tick = 28
-    padding_label = 25  # Slightly smaller padding
-    padding_title = 30
-
-    for i, category in enumerate(category_order):
-        
-        # Create combined data for violin plots
-        combined_data = pd.concat([
-            ids[ids['DCA_ID'] == category][['DCA_ID', 'area_km2']].assign(Source='IDS'),
-            refdm[refdm['DCA_ID'] == category][['DCA_ID', 'area_km2']].assign(Source='REFDM')
-        ])
-
-        # Violin plot for size differences (refdm and IDS)
-        ax = axs[i, 0]
-
-        # Filter data for the current category (REFDM and IDS)
-        data_refdm = combined_data[(combined_data['Source'] == 'REFDM') & (combined_data['DCA_ID'] == category)]
-        data_ids = combined_data[(combined_data['Source'] == 'IDS') & (combined_data['DCA_ID'] == category)]
-        
-        # Calculate the 0th and 100th percentiles for the x-axis limits
-        lower_percentile = np.percentile(combined_data['area_km2'], 0)
-        upper_percentile = np.percentile(combined_data['area_km2'], 100)
-        
-        # Add median lines in the same hue as corresponding KDE lines
-        median_refdm = np.median(data_refdm['area_km2'])
-        median_ids = np.median(data_ids['area_km2'])
-
-        # Black line at x=0 for reference
-        ax.axvline(x=0, color='black', linestyle='-', linewidth=2)
-
-        # Plot KDE plot for IDS
-        sns.kdeplot(
-            data=data_ids['area_km2'],
-            color=custom_palette[category],
-            ax=ax,
-            common_norm=True,
-            linewidth=4,  # Adjust line width
-            label='IDS',
-            alpha=0.5,  # Adjust transparency for IDS plot
-            linestyle='--',  # Dashed line style for IDS
-        )
-
-        ax.axvline(x=median_ids, color=custom_palette[category], linestyle='--', linewidth=3, alpha=0.5, label='IDS Median', marker='o', markersize=10)
-        
-        # Plot KDE plot for REFDM
-        sns.kdeplot(
-            data=data_refdm['area_km2'],
-            color=custom_palette[category],
-            ax=ax,
-            common_norm=True,
-            linewidth=4,  # Adjust line width
-            label='REFDM',
-            alpha=1,  # Adjust transparency for REFDM plot
-            linestyle='-',  # Solid line style for REFDM
-        )
-
-        # Unified median lines for IDS and REFDM with markers
-        ax.axvline(x=median_refdm, color=custom_palette[category], linestyle='-', linewidth=3, alpha=1, label='REFDM Median', marker='s', markersize=10)
-
-    
-        # Set axis limits and labels
-        ax.set_xlim(-1, 15)  # Adjust as necessary for your data
-        ax.set_ylim(0)  # Ensure y-axis starts from 0
-
-        # Customize axis labels
-        ax.tick_params(axis='x', labelsize=fontsize_tick)
-        ax.tick_params(axis='y', labelsize=fontsize_tick)
-
-        if i == len(category_order) - 1:  # Only set x-label for the bottom row
-            ax.set_xlabel('Disturbance Area (km²)', fontsize=fontsize_label, labelpad=padding_label)
-        else:
-            ax.set_xlabel('', labelpad=padding_label)
-
-        if i == 2:  # Only set y-label for the third row
-            ax.set_ylabel('Density', fontsize=fontsize_label, labelpad=padding_label)
-        else:
-            ax.set_ylabel(' ', fontsize=fontsize_label, labelpad=padding_label)
-        
-        if i == 0:  # Only set title for the first column
-            ax.set_title('Size of disturbance area', fontsize=fontsize_title, pad=padding_title)
-
-        ax.legend(fontsize=fontsize_tick)
-
-
-        # Distribution plot for centroid shifts
-        ax = axs[i, 2]
-        sns.histplot(
-            data=refdm[refdm['DCA_ID'] == category],
-            x='centroid_shift_m',
-            kde=True,
-            line_kws={'linewidth': 4},  # Adjust the line width of the KDE curve
-            color=custom_palette[category],
-            ax=ax
-        )
-        ax.tick_params(axis='x', labelsize=fontsize_tick)
-        ax.tick_params(axis='y', labelsize=fontsize_tick)
-        ax.set_xlim(0,2600)
-        if i == 2:  # Only set y-label for the third row
-            ax.set_ylabel('Event Count', fontsize=fontsize_label, labelpad=padding_label)
-        else:
-            ax.set_ylabel(' ', fontsize=fontsize_label, labelpad=padding_label)
-        
-        if i == len(category_order) - 1:  # Only set x-label for the bottom row
-            ax.set_xlabel('Centroid Shift (m)', fontsize=fontsize_label, labelpad=padding_label)  # Set x-axis label
-        else:
-            ax.set_xlabel('')
-
-        if i == 0:  # Only set y-label for the first column
-            ax.set_title('Shift of disturbance location', fontsize=fontsize_title, pad=padding_title)
-
-        # Custom legend in fourth column
-        ax = axs[i, 3]
-        ax.legend(handles=[mpatches.Patch(color=custom_palette[category], label=format_label(category))], loc='center', fontsize=fontsize_legend)
-        ax.axis('off')
-
-        axs[i, 1].axis('off')
-
-    # Adjust the layout to place shared labels
-    plt.tight_layout(rect=[0.05, 0.05, 1, 0.95])
-
-    plt.savefig(path, bbox_inches='tight')
-
-
-
-
-def plot_combined_areasize_shift_per_disturbances_quantiles(refdm, ids, custom_colors, path):
-
-    # Determine the unique DCA_ID values from the filtered dataframe
-    unique_dca_ids = refdm['DCA_ID'].unique()
-
-    # Sort the categories based on the custom order (ensure dynamic behavior for unique DCA_IDs in the filtered data)
-    category_order = sorted(unique_dca_ids, key=lambda x: custom_colors.get(x, x))  # keeps custom order first if defined
-    # Get the default colors from 'tab10' palette for the rest of the disturbance types
-    default_palette = sns.color_palette('tab10', n_colors=10)
-    default_colors = [color for color in default_palette if color not in custom_colors.values()]
-
-    # Combine the custom colors with the default colors
-    custom_palette = {label: custom_colors.get(label, default_colors.pop(0)) for label in category_order}
-
-    # Set Seaborn style
-    sns.set(style="whitegrid")
-
-    # Determine the number of rows dynamically based on the number of unique DCA_IDs
-    n_categories = len(category_order)
-    n_cols = 4  # keeping the columns as 4, but can also be parameterized
-    
-    fig, axs = plt.subplots(n_categories, n_cols, figsize=(35, 40), gridspec_kw={'width_ratios': [3, 0.05, 2, 0.5]})
-    
-    # Define font sizes
-    fontsize_supertitle = 44
-    fontsize_legend = 36
-    fontsize_title = 36
-    fontsize_label = 32  # Reduced slightly for clarity
-    fontsize_tick = 28
-    padding_label = 25  # Slightly smaller padding
-    padding_title = 30
-
-    for i, category in enumerate(category_order):
-        
-        # Create combined data for violin plots
-        combined_data = pd.concat([
-            ids[ids['DCA_ID'] == category][['DCA_ID', 'area_km2']].assign(Source='IDS'),
-            refdm[refdm['DCA_ID'] == category][['DCA_ID', 'area_km2']].assign(Source='REFDM')
-        ])
-
-        # Violin plot for size differences (refdm and IDS)
-        ax = axs[i, 0]
-
-        # Filter data for the current category (REFDM and IDS)
-        data_refdm = combined_data[(combined_data['Source'] == 'REFDM') & (combined_data['DCA_ID'] == category)]
-        data_ids = combined_data[(combined_data['Source'] == 'IDS') & (combined_data['DCA_ID'] == category)]
-        
-        # Calculate the 0th and 100th percentiles for the x-axis limits
-        lower_percentile = np.percentile(combined_data['area_km2'], 2)
-        upper_percentile = np.percentile(combined_data['area_km2'], 98)
-        
-        # Add median lines in the same hue as corresponding KDE lines
-        median_refdm = np.median(data_refdm['area_km2'])
-        median_ids = np.median(data_ids['area_km2'])
-
-        # Black line at x=0 for reference
-        ax.axvline(x=0, color='black', linestyle='-', linewidth=2)
-
-        # Plot KDE plot for IDS
-        sns.kdeplot(
-            data=data_ids['area_km2'],
-            color=custom_palette[category],
-            ax=ax,
-            common_norm=True,
-            linewidth=4,  # Adjust line width
-            label='IDS',
-            alpha=0.5,  # Adjust transparency for IDS plot
-            linestyle='--',  # Dashed line style for IDS
-        )
-
-        ax.axvline(x=median_ids, color=custom_palette[category], linestyle='--', linewidth=3, alpha=0.5, label='IDS Median', marker='o', markersize=10)
-        
-        # Plot KDE plot for REFDM
-        sns.kdeplot(
-            data=data_refdm['area_km2'],
-            color=custom_palette[category],
-            ax=ax,
-            common_norm=True,
-            linewidth=4,  # Adjust line width
-            label='REFDM',
-            alpha=1,  # Adjust transparency for REFDM plot
-            linestyle='-',  # Solid line style for REFDM
-        )
-
-        # Unified median lines for IDS and REFDM with markers
-        ax.axvline(x=median_refdm, color=custom_palette[category], linestyle='-', linewidth=3, alpha=1, label='REFDM Median', marker='s', markersize=10)
-
-    
-        # Set axis limits and labels
-        ax.set_xlim(lower_percentile, upper_percentile)  # Adjust as necessary for your data
-        ax.set_ylim(0)  # Ensure y-axis starts from 0
-
-        # Customize axis labels
-        ax.tick_params(axis='x', labelsize=fontsize_tick)
-        ax.tick_params(axis='y', labelsize=fontsize_tick)
-
-        if i == len(category_order) - 1:  # Only set x-label for the bottom row
-            ax.set_xlabel('Disturbance Area (km²)', fontsize=fontsize_label, labelpad=padding_label)
-        else:
-            ax.set_xlabel('', labelpad=padding_label)
-
-        if i == 2:  # Only set y-label for the third row
-            ax.set_ylabel('Density', fontsize=fontsize_label, labelpad=padding_label)
-        else:
-            ax.set_ylabel(' ', fontsize=fontsize_label, labelpad=padding_label)
-        
-        if i == 0:  # Only set title for the first column
-            ax.set_title('Size of disturbance area', fontsize=fontsize_title, pad=padding_title)
-
-        ax.legend(fontsize=fontsize_tick)
-
-        # Distribution plot for centroid shifts
-        ax = axs[i, 2]
-        sns.histplot(
-            data=refdm[refdm['DCA_ID'] == category],
-            x='centroid_shift_m',
-            kde=True,
-            line_kws={'linewidth': 4},  # Adjust the line width of the KDE curve
-            color=custom_palette[category],
-            ax=ax
-        )
-        ax.tick_params(axis='x', labelsize=fontsize_tick)
-        ax.tick_params(axis='y', labelsize=fontsize_tick)
-        ax.set_xlim(0,2600)
-        if i == 2:  # Only set y-label for the third row
-            ax.set_ylabel('Event Count', fontsize=fontsize_label, labelpad=padding_label)
-        else:
-            ax.set_ylabel(' ', fontsize=fontsize_label, labelpad=padding_label)
-        
-        if i == len(category_order) - 1:  # Only set x-label for the bottom row
-            ax.set_xlabel('Centroid Shift (m)', fontsize=fontsize_label, labelpad=padding_label)  # Set x-axis label
-        else:
-            ax.set_xlabel('')
-
-        if i == 0:  # Only set y-label for the first column
-            ax.set_title('Shift of disturbance location', fontsize=fontsize_title, pad=padding_title)
-
-        # Custom legend in fourth column
-        ax = axs[i, 3]
-        ax.legend(handles=[mpatches.Patch(color=custom_palette[category], label=format_label(category))], loc='center', fontsize=fontsize_legend)
-        ax.axis('off')
-
-        axs[i, 1].axis('off')
-
-    # Adjust the layout to place shared labels
-    plt.tight_layout(rect=[0.05, 0.05, 1, 0.95])
-
-    plt.savefig(path, bbox_inches='tight')
-
 def plot_size_shift_comparison_errorbars(gdf, custom_colors, save_path):
 
     # Get the default colors from 'tab10' palette for the rest of the disturbance types
@@ -1127,6 +829,161 @@ def plot_size_shift_comparison_errorbars(gdf, custom_colors, save_path):
     plt.tight_layout()
    
     plt.savefig(save_path, bbox_inches='tight')
+
+
+def format_ticks(x, pos):
+    """Format the ticks to always have one decimal place."""
+    return f'{x:.1f}'
+
+def plot_area_size_shift_per_disturbances(gdf, ids, custom_colors, save_path):
+    """
+    Plot the comparison between IDS and REFDM disturbance areas and centroid shifts,
+    with the legend placed inside the centroid shift plot.
+    """
+    # Determine the unique DCA_ID values from the filtered dataframe
+    unique_dca_ids = gdf['DCA_ID'].unique()
+
+    # Sort the categories based on the custom order
+    category_order = sorted(unique_dca_ids, key=lambda x: custom_colors.get(x, x))  
+    default_palette = sns.color_palette('tab10', n_colors=10)
+    default_colors = [color for color in default_palette if color not in custom_colors.values()]
+
+    # Combine the custom colors with the default colors
+    custom_palette = {label: custom_colors.get(label, default_colors.pop(0)) for label in category_order}
+
+    sns.set(style="whitegrid")
+
+    n_categories = len(category_order)
+    n_cols = 3  
+    
+    fig, axs = plt.subplots(n_categories, n_cols, figsize=(35, 40), gridspec_kw={'width_ratios': [3, 0.02, 2]})
+    
+    fontsize_supertitle = 44
+    fontsize_legend = 46
+    fontsize_title = 46
+    fontsize_label = 44
+    fontsize_tick = 40
+    padding_label = 25
+    padding_title = 25
+
+    for i, category in enumerate(category_order):
+        # Create combined data for violin plots
+        combined_data = pd.concat([
+            ids[ids['DCA_ID'] == category][['DCA_ID', 'area_km2']].assign(Source='IDS'),
+            gdf[gdf['DCA_ID'] == category][['DCA_ID', 'area_km2']].assign(Source='REFDM')
+        ])
+
+        ax = axs[i, 0]
+        data_refdm = combined_data[(combined_data['Source'] == 'REFDM') & (combined_data['DCA_ID'] == category)]
+        data_ids = combined_data[(combined_data['Source'] == 'IDS') & (combined_data['DCA_ID'] == category)]
+
+        median_refdm = np.median(data_refdm['area_km2'])
+        median_ids = np.median(data_ids['area_km2'])
+
+        ax.axvline(x=0, color='black', linestyle='-', linewidth=2)
+
+        # Plot KDE for IDS
+        sns.kdeplot(
+            data=data_ids['area_km2'],
+            color='black',
+            ax=ax,
+            common_norm=True,
+            linewidth=4,
+            label='IDS',
+            alpha=0.8,
+            linestyle='--'
+        )
+
+        #ax.axvline(x=median_ids, color='black', linestyle='--', linewidth=3, alpha=0.8, label=f'IDS Median: {median_ids:.2f}', marker='o', markersize=16)#
+
+        # Plot KDE for REFDM
+        sns.kdeplot(
+            data=data_refdm['area_km2'],
+            color=custom_palette[category],
+            ax=ax,
+            common_norm=True,
+            linewidth=4,
+            label='S1DM',
+            alpha=1,
+            linestyle='-'
+        )
+
+        #ax.axvline(x=median_refdm, color=custom_palette[category], linestyle='-', linewidth=3, alpha=1, label=f'S1DM Median: {median_refdm:.2f}', marker='s', markersize=16)#
+
+        # Adjust median formatting for Bark Beetle DCA_ID
+        if category == 'bark_beetle':
+            median_refdm_label = f'S1DM Median: {median_refdm:.4f}' if median_refdm > 0 else 'S1DM Median: 0.0'
+            median_ids_label = f'IDS Median: {median_ids:.4f}' if median_ids > 0 else 'IDS Median: 0.0'
+        # elif category == 'wind':
+        #     median_refdm_label = f'S1DM Median: {median_refdm:.3f}' if median_refdm > 0 else 'S1DM Median: 0.0'
+        #     median_ids_label = f'IDS Median: {median_ids:.3f}' if median_ids > 0 else 'IDS Median: 0.0'
+        else:
+            median_refdm_label = f'S1DM Median: {median_refdm:.2f}'
+            median_ids_label = f'IDS Median: {median_ids:.2f}'
+
+        ax.axvline(x=median_ids, color='black', linestyle='--', linewidth=3, alpha=0.8, label=median_ids_label, marker='o', markersize=16)
+
+        ax.axvline(x=median_refdm, color=custom_palette[category], linestyle='-', linewidth=3, alpha=1, label=median_refdm_label, marker='s', markersize=16)
+
+        ax.tick_params(axis='y', labelsize=fontsize_tick)
+        ax.tick_params(axis='x', labelsize=fontsize_tick)
+
+        if i == len(category_order) - 1:  # Only set x-label for the bottom row
+            ax.set_xlabel('Disturbance Area (km²)', fontsize=fontsize_label, labelpad=padding_label)
+        else:
+            ax.set_xlabel('', labelpad=padding_label)
+
+        ax.set_ylabel(' ', fontsize=fontsize_label, labelpad=padding_label)
+
+        # Set the x-ticks and limit to 4 while ensuring not to include 0
+        ax.xaxis.set_major_locator(ticker.MaxNLocator(nbins=5, integer=True, prune=None))  # Prune limits for edge ticks
+        ax.yaxis.set_major_locator(ticker.MaxNLocator(nbins=3, prune='lower'))
+        ax.yaxis.set_major_formatter(ticker.FuncFormatter(format_ticks))
+
+        ax.set_xlim(-0.01, 10)
+        ax.set_ylim(0)
+        ax.legend(fontsize=fontsize_tick)
+
+        # Distribution plot for centroid shifts
+        ax = axs[i, 2]
+        sns.histplot(
+            data=gdf[gdf['DCA_ID'] == category],
+            x='centroid_shift_m',
+            kde=True,
+            line_kws={'linewidth': 4},
+            color=custom_palette[category],
+            ax=ax
+        )
+
+        if i == len(category_order) - 1:
+            ax.set_xlabel('Centroid Shift (m)', fontsize=fontsize_label, labelpad=padding_label)
+        else:
+            ax.set_xlabel(' ', fontsize=fontsize_label, labelpad=padding_label)
+
+        ax.tick_params(axis='x', labelsize=fontsize_tick)
+        ax.tick_params(axis='y', labelsize=fontsize_tick)
+        ax.set_xlim(0, 2600)
+
+        ax.set_ylabel(' ', fontsize=fontsize_label, labelpad=padding_label)
+
+        # Set the x-ticks for centroid shifts
+        ax.xaxis.set_major_locator(ticker.MaxNLocator(nbins=4, prune=None))  # Prune limits for edge ticks
+        ax.yaxis.set_major_locator(ticker.MaxNLocator(nbins=3, prune='lower')) 
+        
+        # Add the custom legend
+        ax.legend(handles=[mpatches.Patch(color=custom_palette[category], label=format_label(category))],
+                  loc='upper right', fontsize=fontsize_legend, frameon=True, fancybox=True, facecolor='white', edgecolor='black')
+
+        axs[i, 1].axis('off')
+
+    # Add common y-axis labels for the plots
+    fig.text(0.05, 0.5, 'PDF', va='center', rotation='vertical', fontsize=fontsize_label)
+    fig.text(0.63, 0.5, 'Number of Events', va='center', rotation='vertical', fontsize=fontsize_label)
+
+    plt.tight_layout(rect=[0.05, 0.05, 1, 0.95])
+    plt.savefig(save_path, dpi=400, bbox_inches='tight')
+    plt.show()
+
 
 
 def main():
@@ -1232,10 +1089,8 @@ def main():
 
         print("\nStep 4: Plotting Size and Location Difference and Density ...")
         gdf = calculate_size_shift_difference(ids_gdf, slimmed_refdm)
-        plot_combined_areasize_shift_per_disturbances(gdf, ids_gdf, custom_colors, figure_size_position_change_path)
-        plot_combined_areasize_shift_per_disturbances_quantiles(gdf, ids_gdf, custom_colors, figure_size_position_quantiles_change_path)
+        plot_area_size_shift_per_disturbances(gdf, ids_gdf, custom_colors, figure_size_position_change_path)
         plot_size_shift_comparison_errorbars(gdf, custom_colors, figure_size_position_change_errrorbar_path)
-
         print("Main process completed successfully.")
 
     except Exception as e:
