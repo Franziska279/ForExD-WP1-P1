@@ -817,6 +817,7 @@ def main():
     region_shape_path = f"{os.getenv('REGION_SHAPE')}S_USA.AdministrativeRegion.shp"
     ids_region_file_path = f"{os.getenv('IDS_REGIONS')}CONUS_Region{region}_dissolved.csv"
     file_output_path = f"{os.getenv('RESULTS')}/region_{region_id}_dca_filtered_ids_usda_polygons.shp"
+    file_equi7_output_path = f"{os.getenv('RESULTS')}/region{region_id}_dca_filtered_ids_usda_polygons_espg_27705.shp"
     figure_output_path = f"{os.getenv('FIGURES')}/p1_f1_disturbances_region_{region_id}.png"
 
 
@@ -838,8 +839,8 @@ def main():
     gdf_no_overlap = remove_overlapping_entries(merged_gdf, year_range=5)
     print(f"> Number of records after removing overlaps: {len(gdf_no_overlap)}")
 
-    print("Step 4: Identifying entries with temporal and spatial overlaps within ±1 year...")
-    gdf_overlap = keep_overlapping_entries(merged_gdf, year_range=1)
+    print("Step 4: Identifying entries with temporal and spatial overlaps within ±5 year...")
+    gdf_overlap = keep_overlapping_entries(merged_gdf, year_range=5)
     print(f"> Number of records with detected overlaps: {len(gdf_overlap)}")
 
     # Step 5: Analyzing overlaps
@@ -858,22 +859,7 @@ def main():
     print("Step 8: Filtering disturbances between 2016 and 2020...")
     excluded_dca_types = ['other', 'multi_damage', 'other_abiotic', 'other_biotic']
     filtered_df_cleaned = filter_disturbance_data(enriched_df, excluded_dca_types, start_year=2015, end_year=2020)
-    # print(filtering_summary)
-
-    # # Step 9: Generate new index_usda values
-    # print("Step 9: Generating new index_usda values...")
-    # filtered_df_cleaned['IDX_D'] = filtered_df_cleaned.apply(
-    #     lambda row: f"{row['REGION_ID']}_{row['DCA_ID']}_{row['SURVEY_YEAR']}_{row.name}", axis=1
-    # )
-
-    # # Step 10: Calculate area in km²
-    # print("Step 10: Calculating area in km²...")
-    # gdf_with_area = calculate_area_in_km2(filtered_df_cleaned)
-
-    # # Step 11: Remove elements larger than 15 km²
-    # print("Step 11: Removing elements larger than 15 km²...")
-    # gdf_area = gdf_with_area[gdf_with_area['area_km2'] <= 15]
-
+   
     # Output summary
     total_elements = len(filtered_df_cleaned)
     unique_events = len(filtered_df_cleaned['ID_E'].unique())
@@ -897,8 +883,18 @@ def main():
     data.to_file(file_output_path, index=False)
     print(f"Results successfully saved to: {file_output_path}")
 
-    # Step 13: Plot the final results
-    print("Step 13: Plotting the final results...")
+    # Define the target EPSG (Equi7 projection for the region you're interested in, here it's EPSG:27705)
+    target_crs = "EPSG:27705"
+    print(f"Step 13: Transforming the GeoDataFrame to {target_crs}...")
+    # Reproject the GeoDataFrame to the target CRS
+    data_transformed = data.to_crs(target_crs)
+    # Save the transformed GeoDataFrame to a shapefile
+    print(f"Saving transformed data to: {file_equi7_output_path} ...")
+    data_transformed.to_file(file_equi7_output_path, index=False)
+    print(f"Results successfully saved to: {file_equi7_output_path}")
+
+    # Step 14: Plot the final results
+    print("Step 14: Plotting the final results...")
     plot_regions_disturbances(
         data, 
         region_shape_path, 
