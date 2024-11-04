@@ -292,6 +292,7 @@ def main():
     # Define file paths for shapefiles and output locations
     usa_filepath = f"{os.getenv('REGION_SHAPE')}/S_USA.AdministrativeRegion.shp"
     ids_path = f"{os.getenv('RESULTS')}/region{region_id}_dca_filtered_ids_usda_polygons.shp"
+    ids_equi7_path = f"{os.getenv('RESULTS')}/region{region_id}_dca_filtered_ids_usda_polygons_espg_27705.shp"
     refdm_path = f"{os.getenv('RESULTS')}/radar_results/radar_enhanced_forest_disturbance_mapping_region_{region_id}.shp"
     output_path_refdm = f"{os.getenv('RESULTS')}/radar_results/radar_enhanced_forest_disturbance_mapping_region_{region_id}_epsg_27705.shp"
     output_path_grid = f"{s2_minicubes_folder}/grid_equi7_{resolution}_{pixel_size}_region_{region_id}.shp"
@@ -362,7 +363,7 @@ def main():
 
     print("Add minicube indecies to correponing REFDM ...")
     add_minicube_index(intersected, refdm_gdf, output_path_refdm, equi7_crs)
-
+    
     print("Plot ...")
     plot_intersection_batches(intersected, usa_filepath, region_id, grid_figure_output_path, equi7_crs)
 
