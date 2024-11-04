@@ -16,7 +16,7 @@ logging.basicConfig(
     format='%(asctime)s - %(levelname)s - %(message)s',
     handlers=[
         logging.StreamHandler(),  # Logs to the console
-        logging.FileHandler('sentinel_processing_4.log')  # Logs to a file
+        logging.FileHandler('sentinel_downloading_0.log')  # Logs to a file
     ]
 )
 logger = logging.getLogger()
@@ -42,7 +42,7 @@ def load_sentle(grid_path, idx, res):
             bound_bottom=bound_bottom,
             bound_right=bound_right,
             bound_top=bound_top,
-            datetime="2015-01-01/2024-07-31",
+            datetime="2016-01-01/2024-09-30",
             target_resolution=res,
             dask_scheduler_port=10022,
             dask_dashboard_address='127.0.0.1:37386',
@@ -52,7 +52,7 @@ def load_sentle(grid_path, idx, res):
             S1_assets=["vv", "vh"],
             S2_apply_snow_mask=True,
             S2_apply_cloud_mask=True,
-            time_composite_freq="7d",
+            #time_composite_freq="7d",
             # NOTE clemens: this can be set to 40
             num_workers=40,
         )
@@ -98,7 +98,7 @@ def main(idx):
         # with `export CUDA_VISIBLE_DEVICES=2`
         
         # Set CUDA environment
-        os.environ["CUDA_VISIBLE_DEVICES"] = "3"
+        os.environ["CUDA_VISIBLE_DEVICES"] = "2"
         logger.info(f"> Available CUDA devices: {torch.cuda.device_count()}")
 
         # Ensure the 'REGION' environment variable is set
