@@ -39,6 +39,11 @@ from matplotlib.colors import LinearSegmentedColormap
 import matplotlib.pyplot as plt
 from shapely import wkt
 
+from pathlib import Path
+import geopandas as gpd
+from tqdm import tqdm  # For progress bars
+from dotenv import load_dotenv
+
 
 custom_colors = {
     'wind': '#1f77b4',      # tab:blue
@@ -83,21 +88,15 @@ def get_mainland(gdf_path):
     return usa_mainland
 
 
-def get_region_8(path):
-    """
-    Extracts the first part of REGION 08 from the given GeoDataFrame.
+def get_region_shape(path, region_id):
     
-    Parameters:
-        path (str): Path to the input GeoDataFrame file.
-    
-    Returns:
-        GeoDataFrame: GeoDataFrame with the first part of REGION 08.
-    """
     usa = gpd.read_file(path)
-    region_8 = usa[usa['REGION'] == '08']
-    # Explode the geometries and reset the index to get the first part
-    region_8_exploded = region_8.explode(index_parts=True).reset_index(drop=True)
-    return region_8_exploded.iloc[[0]]
+    country = usa[usa.REGION == region_id]
+    
+    region = country.explode()[0:1] 
+
+    return region
+    
 
 def load_refdm_dataset(refdm_path):
     """
@@ -127,10 +126,8 @@ def load_refdm_dataset(refdm_path):
 
 
 def load_ids_dataset(path):
-    df = pd.read_csv(path)
-    df['geometry'] = df['geometry'].apply(wkt.loads)
-    gdf = gpd.GeoDataFrame(df, geometry='geometry')
-    gdf_ids = gdf.rename(columns={'index_usda': 'USDA_IDX'})
+    gdf_ids = gpd.read_file(path)
+    #gdf_ids = gdf.rename(columns={'index_usda': 'USDA_IDX'})
     return gdf_ids
 
 
@@ -149,12 +146,12 @@ def load_tcc_dataset(tcc_nc_path):
     return tcc_dataset
 
 
-def create_downsampled_tcc_map(forest_map_path, area_path, forest_map_downsampled_path, forest_map_downsampled_path_final):
+def create_downsampled_tcc_map(forest_map_path, area_path, region_id, forest_map_downsampled_path, forest_map_downsampled_path_final):
 
     try:
         print("Step 1: Get Region 8 geometry ...")
         # Get Region 8 geometry
-        r8_geometry = get_region_8(area_path)
+        r8_geometry = get_region_shape(area_path, region_id)
         r8_union = r8_geometry.unary_union
 
         print("Step 2: Load the forest map TIFF file ...")
@@ -306,24 +303,47 @@ def main():
     """
     Main function to orchestrate loading data, creating the TCC map, and plotting the results.
     """
-    forest_map_path = "/Net/Groups/BGI/work_2/ForExD/WP1/Data/nlcd_tcc_CONUS_2017_v2021-4/wp1_nlcd_tcc_conus_2017_v2021_4_20m_4326_cropped_region_08.tif"
-    forest_map_downsampled_path = "/Net/Groups/BGI/work_2/ForExD/WP1/Data/nlcd_tcc_CONUS_2017_v2021-4/intermediate_tcc_map_region_8.nc"
-    area_path = "/Net/Groups/BGI/scratch/fmueller/ForExD-WP1-P1/data/S_USA.AdministrativeRegion/S_USA.AdministrativeRegion.shp"
-    refdm_path = "/Net/Groups/BGI/scratch/fmueller/ForExD-WP1-P1/results/radar_enhanced_forest_disturbance_mapping.shp"
-    ids_path = "/Net/Groups/BGI/scratch/fmueller/ForExD-WP1-P1/results/region8_dca_filtered_ids_usda_polygons.csv"
-    tcc_map_region_8 = "/Net/Groups/BGI/work_2/ForExD/WP1/Data/nlcd_tcc_CONUS_2017_v2021-4/tcc_map_region_8.nc"
-    figure_dir = "/Net/Groups/BGI/scratch/fmueller/ForExD-WP1-P1/figures/"
+
+    # Load environment variables from the .env file
+    env_path = Path('/net/projects/forexd/WP1/02_ImprovedLabels/Scripts/ForExD-WP1-P1/environment/.env')
+    load_dotenv(dotenv_path=env_path)
+
+    # Retrieve environment variables
+    s2_minicubes_folder = os.getenv('EQUI7_GRIDS')
+    print(f"Equi7 grids folder: {s2_minicubes_folder}")
+
+    # Retrieve the CRS (Coordinate Reference System) for Equi7 NA
+    equi7_crs = os.getenv('EQUI7_NA_EPSG')
+
+    # Ensure the 'REGION' environment variable is set
+    region = os.getenv('REGION')
+    if region is None:
+        raise ValueError("The 'REGION' environment variable is not set. Please ensure it is defined in the .env file.")
+
+    # Format region ID as a two-digit string
+    region_id = str(region).zfill(2)
+    forest_map_path = f"{os.getenv('TCC_PATH')}/wp1_nlcd_tcc_conus_2017_v2021_4_20m_EPSG_4326_cropped_region_08.tif"
+    forest_map_downsampled_path = f"{os.getenv('TCC_PATH')}/intermediate_tcc_map_region_8.nc"
+    #area_path = "/Net/Groups/BGI/scratch/fmueller/ForExD-WP1-P1/data/S_USA.AdministrativeRegion/S_USA.AdministrativeRegion.shp"
+    #refdm_path = "/Net/Groups/BGI/scratch/fmueller/ForExD-WP1-P1/results/radar_enhanced_forest_disturbance_mapping.shp"
+    #ids_path = "/Net/Groups/BGI/scratch/fmueller/ForExD-WP1-P1/results/region8_dca_filtered_ids_usda_polygons.csv"
+    tcc_map_region_8 = f"{os.getenv('TCC_PATH')}/tcc_map_region_8.nc"
+    figure_dir = f"{os.getenv('FIGURES')}"
+    area_path = f"{os.getenv('REGION_SHAPE')}/S_USA.AdministrativeRegion.shp"
+    ids_path = f"{os.getenv('RESULTS')}/region{region_id}_dca_filtered_ids_usda_polygons.shp"
+    refdm_path = f"{os.getenv('RESULTS')}/radar_results/radar_enhanced_forest_disturbance_mapping_region_{region_id}.shp"
+ 
 
     print("Load the USA Mainland and Region 8 Shape ...")
     mainland = get_mainland(area_path)
-    region_8 = get_region_8(area_path)
+    region_8 = get_region_shape(area_path, region_id=region_id)
 
     print("Load the Forest Disturbances ...")
     #refdm_dissolved = load_refdm_dataset(refdm_path)
     ids =load_ids_dataset(ids_path)
 
     # Uncomment the following line to create the downsampled TCC map
-    # create_downsampled_tcc_map(forest_map_path, area_path, forest_map_downsampled_path, tcc_map_region_8)
+    # create_downsampled_tcc_map(forest_map_path, area_path, region_id, forest_map_downsampled_path, tcc_map_region_8)
     
     print("Load the TCC Region 8 Map ...")
     tcc_dataset = load_tcc_dataset(tcc_map_region_8)
