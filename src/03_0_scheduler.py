@@ -85,7 +85,7 @@ def main():
     print(f"Working on USDA Region {region_id} ...")
 
     # Constants
-    MAX_JOBS = 20
+    MAX_JOBS = 2
     INPUT_PATHS = f"{os.getenv('SENTINEL1_TILES')}" 
     #"/Net/Groups/BGI/work_2/ForExD/WP1/Data/s1_change_detection_northamerica/"
     TCC_PATH = tcc_dir + "wp1_nlcd_tcc_conus_2017_v2021_4_20m_EPSG_4326_cropped_region_08.tif"
