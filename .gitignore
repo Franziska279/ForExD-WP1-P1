@@ -1,5 +1,6 @@
 # ignore ALL these files 
 results/03_s1cd_polygons/
+results_clean/
 logs/
 results/tmp
 results/
