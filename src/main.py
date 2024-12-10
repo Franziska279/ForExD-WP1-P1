@@ -10,7 +10,7 @@ def main():
     filter and analyze it, and then save and plot the results.
     """
     # Specify the path to the environment file
-    env_path = Path('/net/projects/forexd/WP1/02_ImprovedLabels/Scripts/ForExD-WP1-P1/environment/.env')
+    env_path = Path('/home/sc.uni-leipzig.de/sy58xupo/ForExD-WP1-P1/environment/.env')
     
     # # Initialize the IDSProcessor with the environment path
     # processor = IDSProcessor(env_path)
@@ -31,7 +31,7 @@ def main():
     # processor.save_and_plot()
 
 
-    # Create an instance of TCCProcessor and run the processing
+    # # Create an instance of TCCProcessor and run the processing
     # tcc_processor = TCCProcessor(env_path)
     # tcc_processor.process()
 
