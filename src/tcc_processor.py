@@ -129,6 +129,51 @@ class TCCProcessor:
 
         return x_min, y_min, x_max, y_max
 
+
+
+    def __normalize_raster_in_chunks(self, input_file, output_file, chunk_size=1024):
+        """
+        Normalizes the values of a raster file between 0 and 1 in chunks to avoid memory overload.
+        
+        Args:
+            input_file (str): Path to the input cropped raster file.
+            output_file (str): Path to the output normalized raster file.
+            chunk_size (int): Size of the chunk (in pixels) to process at a time.
+        """
+        if not self.__confirm_and_delete(output_file):
+            return
+        
+        with rasterio.open(input_file) as src:
+            profile = src.profile  # Save metadata for later
+
+            # Update profile for the normalized data
+            profile.update(dtype=rasterio.float32)
+
+            # Create the output file
+            with rasterio.open(output_file, 'w', **profile) as dst:
+                # Iterate over windows (chunks) of the raster
+                for ji, window in src.block_windows(1):  # Process by blocks defined by the raster's internal tiling
+                    # Read data for the current window
+                    data = src.read(window=window)
+
+                    # Normalize the data
+                    normalized_data = np.empty_like(data, dtype=np.float32)
+                    for i in range(data.shape[0]):  # Loop over each band
+                        band = data[i]
+                        min_val = band.min()
+                        max_val = band.max()
+                        print(f"Window {ji}, Band {i + 1} - Min: {min_val}, Max: {max_val}")
+
+                        if max_val > min_val:
+                            normalized_data[i] = (band - min_val) / (max_val - min_val)
+                        else:
+                            normalized_data[i] = band  # No normalization if min == max
+
+                    # Write normalized data to the corresponding window
+                    dst.write(normalized_data, window=window)
+
+        print(f"Normalization completed in chunks. Saved to {output_file}.")
+
     def __normalize_raster(self, input_file, output_file):
         """
         Normalizes the values of a raster file between 0 and 1 and saves it to a new file.
@@ -221,7 +266,7 @@ class TCCProcessor:
 
         # Step 5: Normalizing the cropped raster
         print("Step 5: Normalizing the cropped raster...")
-        self.__normalize_raster(self.output_file_cropped_epsg4326, self.normalized_output_file)
+        self.__normalize_raster_in_chunks(self.output_file_cropped_epsg4326, self.normalized_output_file)
 
         # Step 6: Plotting the final result
         print("Step 6: Plotting the final result...")
