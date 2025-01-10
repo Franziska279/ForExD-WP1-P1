@@ -7,6 +7,9 @@ from matplotlib.patches import Patch
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from func_helper import format_label
 from matplotlib.gridspec import GridSpec
+import matplotlib.pyplot as plt
+from matplotlib.ticker import MaxNLocator, FuncFormatter
+import numpy as np
 
 ## IDS Preprocessing 
 def plot_regions_disturbances(disturbance_gdf, filepath, output_file, custom_colors, region_nr):
@@ -73,6 +76,141 @@ def plot_regions_disturbances(disturbance_gdf, filepath, output_file, custom_col
         plt.savefig(output_file, dpi=300, bbox_inches='tight')
     
     # Show plot
+    plt.show()
+
+
+import matplotlib.pyplot as plt
+from matplotlib.ticker import MaxNLocator, FuncFormatter
+import numpy as np
+
+def plot_stacked_bar_chart(ids, custom_colors, save_to=None):
+    """
+    Plot a stacked bar chart of event counts and destroyed area by survey year and DCA_ID.
+    
+    Parameters:
+    - ids: DataFrame containing the data with 'SURVEY_Y', 'DCA_ID', 'ID_E', and 'area_km2'.
+    - custom_colors: Dictionary mapping DCA_IDs to colors.
+    - save_to: Optional; if provided, the plot will be saved to this filename (including extension).
+    
+    """
+    # Aggregate data for counts by SURVEY_Y and DCA_ID
+    count_by_year_and_dca = ids.groupby(['SURVEY_Y', 'DCA_ID'])['ID_E'].count().unstack(fill_value=0)
+
+    # Convert the counts to integers
+    count_by_year_and_dca = count_by_year_and_dca.astype(int)
+
+    # Aggregate data for area by SURVEY_Y and DCA_ID
+    area_by_year_and_dca = ids.groupby(['SURVEY_Y', 'DCA_ID'])['area_km2'].sum().unstack(fill_value=0)
+
+    # Convert the areas to integers
+    area_by_year_and_dca = area_by_year_and_dca.astype(int)
+
+    # Create positions for grouped bars
+    x = np.arange(len(count_by_year_and_dca.index))  # X-axis positions
+    bar_width = 0.4  # Width of the grouped bars
+
+    # Retrieve DCA_IDs and their custom colors
+    dca_ids = count_by_year_and_dca.columns
+    colors = [custom_colors.get(str(dca_id), 'gray') for dca_id in dca_ids]  # Default to gray if color is missing
+
+    fig, ax1 = plt.subplots(figsize=(16, 8))
+
+    # Remove background color for the plot (set it to default white)
+    ax1.set_facecolor('white')
+
+    # Plot stacked bars for Event Count with transparency (alpha=0.5)
+    for i, dca_id in enumerate(dca_ids):
+        bottom_count = count_by_year_and_dca.iloc[:, :i].sum(axis=1)  # Stack previous bars
+        ax1.bar(
+            x - bar_width / 2,  # Position for count bars
+            count_by_year_and_dca[dca_id],
+            width=bar_width,
+            bottom=bottom_count,
+            color=colors[i],  # Use custom color for DCA_ID
+            alpha=0.5,  # Make count bars transparent
+        )
+
+    # Plot stacked bars for Destroyed Area
+    for i, dca_id in enumerate(dca_ids):
+        bottom_area = area_by_year_and_dca.iloc[:, :i].sum(axis=1)  # Stack previous bars
+        ax1.bar(
+            x + bar_width / 2,  # Position for area bars
+            area_by_year_and_dca[dca_id],
+            width=bar_width,
+            bottom=bottom_area,
+            color=colors[i],  # Use custom color for DCA_ID
+        )
+
+    # Add edge outlines around the total bar for counts (white)
+    for pos in x:
+        total_height = count_by_year_and_dca.sum(axis=1).iloc[pos]
+        ax1.bar(
+            pos - bar_width / 2,  # Same position as count bars
+            total_height,
+            width=bar_width,
+            color='none',  # Transparent to keep the existing stacks
+            edgecolor='gray',
+            alpha=0.5,
+            linewidth=1.5,
+        )
+
+    # Add edge outlines around the total bar for areas (black)
+    for pos in x:
+        total_height = area_by_year_and_dca.sum(axis=1).iloc[pos]
+        ax1.bar(
+            pos + bar_width / 2,  # Same position as area bars
+            total_height,
+            width=bar_width,
+            color='none',  # Transparent to keep the existing stacks
+            edgecolor='black',
+            linewidth=1.5,
+        )
+
+    # Set larger font size for labels, ticks, and legend
+    ax1.set_xlabel('Survey Year', fontsize=24, labelpad=20)  # Add padding to the x-axis label
+    ax1.set_ylabel('Counts / Area (km²)', fontsize=24, labelpad=20)  # Add padding to the y-axis label
+    ax1.set_xticks(x)
+    ax1.set_xticklabels(count_by_year_and_dca.index, rotation=0, fontsize=20)  # 90 degree rotation for x labels
+
+    # Define a FuncFormatter to remove the ".0" on y-axis labels
+    def format_y_ticks(x, pos):
+        return f'{int(x)}'  # Convert to integer without decimals
+
+    # Apply the FuncFormatter to the y-axis
+    ax1.yaxis.set_major_formatter(FuncFormatter(format_y_ticks))
+
+    # Apply padding for ticks (buffers between ticks and labels)
+    ax1.tick_params(axis='y', labelsize=20, pad=15)  # Add padding to the y-axis ticks
+    ax1.tick_params(axis='x', labelsize=20, pad=15)  # Add padding to the x-axis ticks
+
+    # Set the y-axis ticks locator
+    ax1.yaxis.set_major_locator(MaxNLocator(integer=True))  # Ensure integer ticks on the y-axis
+
+    # Add a grid for better readability
+    ax1.grid(axis='y', linestyle='--', alpha=0.7, color='gray')
+
+    # Create the legend for Count, Area, and DCA_IDs
+    count_legend = plt.Line2D([0], [0], color='gray', lw=4, alpha=0.5)  # Transparent for count
+    area_legend = plt.Line2D([0], [0], color='black', lw=4)  # Full color for area
+
+    # Add the DCA_ID legends as colored boxes (rectangles)
+    dca_legend = [plt.Rectangle((0, 0), 1, 1, color=colors[i]) for i in range(len(dca_ids))]
+
+    # Add the combined legend (Count, Area, and DCA_IDs)
+    legend = ax1.legend(
+        [count_legend, area_legend] + dca_legend,  # Count, Area, and DCA_IDs
+        ['Count', 'Area'] + [f'{format_label(dca)}' for dca in dca_ids],  # Labels for the legend
+        loc='upper left',  # Position the legend in the upper left inside the plot
+        fontsize=20,  # Larger font size for legend
+        frameon=True,
+    )
+
+    # Tight layout and show plot
+    fig.tight_layout()
+
+    # Save the plot if a filename is provided
+    if save_to:
+        plt.savefig(save_to, dpi=300, bbox_inches='tight')  # Save at high resolution
     plt.show()
 
 

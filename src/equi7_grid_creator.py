@@ -27,7 +27,7 @@ class Equi7GridCreator:
 
     def _set_up_logging(self):
         """Set up logging to file with timestamp."""
-        logging.basicConfig(filename='gridCreation.log', level=logging.INFO, format='%(asctime)s - %(message)s')
+        logging.basicConfig(filename='log_equi7_gridCreation.log', level=logging.INFO, format='%(asctime)s - %(message)s')
 
     def _load_env_variables(self, env_path):
         """Load environment variables from a .env file."""
@@ -44,7 +44,7 @@ class Equi7GridCreator:
 
     def create_grid(self):
         """Main public method to create the Equi7 grid, perform intersection and save results."""
-        region_shape = self._get_region_shape()
+        region_shape = self._get_region_shape(self.usa_filepath, self.region_id)
 
         # Step 1: Generate the Equi7 grid
         grid = self._generate_equi7_grid()
@@ -66,12 +66,23 @@ class Equi7GridCreator:
         self._plot_intersection_batches(intersected, region_shape)
 
 
+
+    def _get_region_shape(self, path, region_id):
+        
+        usa = gpd.read_file(path)
+        country = usa[usa.REGION == region_id]
+        
+        region = country.explode()[0:1] 
+
+        return region
+    
+
     def _generate_equi7_grid(self):
         """Private method to generate the Equi7 grid."""
         size = self.resolution * self.pixel_size
         grid_system = Equi7Grid(min_grid_size=size)
 
-        region = load_and_extract_region(self.region_id, self.output_paths["grid_output_path"])
+        region = load_and_extract_region(self.usa_filepath, self.region_id)
 
         grid = grid_system.create_grid(level=0, zone="NA", mask=region)
         grid.to_file(self.output_paths["grid_output_path"])
