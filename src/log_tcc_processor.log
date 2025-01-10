@@ -1,0 +1,59 @@
+2024-12-10 16:13:59,728 - INFO - Changing resolution of /work/sy58xupo-CleaningSpace/Data/CONUS/tcc/nlcd_tcc_conus_2017_v2021-4.tif to (20, 20) -> /work/sy58xupo-CleaningSpace/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2017_v2021_4_20m.tif
+2024-12-10 16:13:59,730 - INFO - Deleting existing file: /work/sy58xupo-CleaningSpace/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2017_v2021_4_20m.tif
+2024-12-10 16:13:59,859 - INFO - Resolution change completed: /work/sy58xupo-CleaningSpace/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2017_v2021_4_20m.tif
+2024-12-10 16:13:59,859 - INFO - Reprojecting /work/sy58xupo-CleaningSpace/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2017_v2021_4_20m.tif to EPSG:4326 -> /work/sy58xupo-CleaningSpace/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2017_v2021_4_20m_EPSG_4326.tif
+2024-12-10 16:13:59,860 - INFO - Deleting existing file: /work/sy58xupo-CleaningSpace/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2017_v2021_4_20m_EPSG_4326.tif
+2024-12-10 16:13:59,917 - INFO - Reprojection completed: /work/sy58xupo-CleaningSpace/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2017_v2021_4_20m_EPSG_4326.tif
+2024-12-10 16:13:59,917 - INFO - Extracting region shape bounds...
+2024-12-10 16:14:00,758 - INFO - Region bounds extracted: [-106.645646     25.12068714  -75.71740719   39.46601202]
+2024-12-10 16:14:00,758 - INFO - Cropping /work/sy58xupo-CleaningSpace/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2017_v2021_4_20m_EPSG_4326.tif to bounds -106.645646, 25.120687139999973, -75.71740719000002, 39.466012019999994 -> /work/sy58xupo-CleaningSpace/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2017_v2021_4_20m_EPSG_4326_cropped_region_08.tif
+2024-12-10 16:14:00,759 - INFO - Deleting existing file: /work/sy58xupo-CleaningSpace/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2017_v2021_4_20m_EPSG_4326_cropped_region_08.tif
+2024-12-10 16:14:00,802 - INFO - Cropping completed: /work/sy58xupo-CleaningSpace/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2017_v2021_4_20m_EPSG_4326_cropped_region_08.tif
+2024-12-10 16:16:30,714 - INFO - Processing USDA Region 8...
+2024-12-10 16:16:30,715 - INFO - Changing resolution of /work/sy58xupo-CleaningSpace/Data/CONUS/tcc/nlcd_tcc_conus_2017_v2021-4.tif to (20, 20) -> /work/sy58xupo-CleaningSpace/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2017_v2021_4_20m.tif
+2024-12-10 16:16:30,769 - INFO - Resolution change completed: /work/sy58xupo-CleaningSpace/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2017_v2021_4_20m.tif
+2024-12-10 16:16:30,769 - INFO - Reprojecting the file to EPSG:4326...
+2024-12-10 16:16:30,769 - INFO - Reprojecting /work/sy58xupo-CleaningSpace/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2017_v2021_4_20m.tif to EPSG:4326 -> /work/sy58xupo-CleaningSpace/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2017_v2021_4_20m_EPSG_4326.tif
+2024-12-10 16:16:30,831 - INFO - Reprojection completed: /work/sy58xupo-CleaningSpace/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2017_v2021_4_20m_EPSG_4326.tif
+2024-12-10 16:16:30,831 - INFO - Extract region bounds
+2024-12-10 16:16:30,831 - INFO - Extracting region shape bounds...
+2024-12-10 16:16:31,690 - INFO - Region bounds extracted: [-106.645646     25.12068714  -75.71740719   39.46601202]
+2024-12-10 16:16:31,690 - INFO - Crop raster to region bounds
+2024-12-10 16:16:31,691 - INFO - Cropping /work/sy58xupo-CleaningSpace/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2017_v2021_4_20m_EPSG_4326.tif to bounds -106.645646, 25.120687139999973, -75.71740719000002, 39.466012019999994 -> /work/sy58xupo-CleaningSpace/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2017_v2021_4_20m_EPSG_4326_cropped_region_08.tif
+2024-12-10 16:16:31,740 - INFO - Cropping completed: /work/sy58xupo-CleaningSpace/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2017_v2021_4_20m_EPSG_4326_cropped_region_08.tif
+2024-12-10 16:16:31,740 - INFO - Normalize raster
+2024-12-10 16:16:31,740 - INFO - Normalizing raster /work/sy58xupo-CleaningSpace/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2017_v2021_4_20m_EPSG_4326_cropped_region_08.tif -> /work/sy58xupo-CleaningSpace/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2017_v2021_4_20m_EPSG_4326_cropped_normalized_region_08.tif
+2024-12-10 16:16:31,741 - INFO - Deleting existing file: /work/sy58xupo-CleaningSpace/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2017_v2021_4_20m_EPSG_4326_cropped_normalized_region_08.tif
+2024-12-10 16:16:31,747 - INFO - GDAL signalled an error: err_no=4, msg='/work/sy58xupo-CleaningSpace/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2017_v2021_4_20m_EPSG_4326_cropped_region_08.tif: No such file or directory'
+2024-12-11 17:31:42,714 - INFO - Processing USDA Region 8...
+2024-12-11 17:31:42,716 - INFO - Changing resolution of /work/sy58xupo-CleaningSpace/Data/CONUS/tcc/nlcd_tcc_conus_2017_v2021-4.tif to (20, 20) -> /work/sy58xupo-CleaningSpace/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2017_v2021_4_20m.tif
+2024-12-11 17:45:57,118 - INFO - Resolution change completed: /work/sy58xupo-CleaningSpace/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2017_v2021_4_20m.tif
+2024-12-11 17:45:57,118 - INFO - Reprojecting the file to EPSG:4326...
+2024-12-11 17:45:57,118 - INFO - Reprojecting /work/sy58xupo-CleaningSpace/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2017_v2021_4_20m.tif to EPSG:4326 -> /work/sy58xupo-CleaningSpace/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2017_v2021_4_20m_EPSG_4326.tif
+2024-12-11 18:01:14,129 - INFO - Reprojection completed: /work/sy58xupo-CleaningSpace/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2017_v2021_4_20m_EPSG_4326.tif
+2024-12-11 18:01:14,130 - INFO - Extract region bounds
+2024-12-11 18:01:14,130 - INFO - Extracting region shape bounds...
+2024-12-11 18:01:15,793 - INFO - Region bounds extracted: [-106.645646     25.12068714  -75.71740719   39.46601202]
+2024-12-11 18:01:15,794 - INFO - Crop raster to region bounds
+2024-12-11 18:01:15,794 - INFO - Cropping /work/sy58xupo-CleaningSpace/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2017_v2021_4_20m_EPSG_4326.tif to bounds -106.645646, 25.120687139999973, -75.71740719000002, 39.466012019999994 -> /work/sy58xupo-CleaningSpace/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2017_v2021_4_20m_EPSG_4326_cropped_region_08.tif
+2024-12-11 18:05:09,515 - INFO - Cropping completed: /work/sy58xupo-CleaningSpace/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2017_v2021_4_20m_EPSG_4326_cropped_region_08.tif
+2024-12-11 18:05:09,515 - INFO - Normalize raster
+2024-12-11 18:05:09,515 - INFO - Normalizing raster /work/sy58xupo-CleaningSpace/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2017_v2021_4_20m_EPSG_4326_cropped_region_08.tif -> /work/sy58xupo-CleaningSpace/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2017_v2021_4_20m_EPSG_4326_cropped_normalized_region_08.tif
+2024-12-11 18:07:23,130 - INFO - Normalization completed: /work/sy58xupo-CleaningSpace/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2017_v2021_4_20m_EPSG_4326_cropped_normalized_region_08.tif
+2024-12-11 18:07:23,986 - INFO - Plot raster with region boundaries
+2024-12-11 18:07:23,986 - INFO - Plotting raster /work/sy58xupo-CleaningSpace/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2017_v2021_4_20m_EPSG_4326_cropped_normalized_region_08.tif with region boundaries...
+2024-12-11 18:27:47,883 - INFO - Raster plot saved to: /work/sy58xupo-CleaningSpace/Data/CONUS/tcc/tcc_bounds_epsg4326_region_08.png
+2024-12-11 18:27:47,884 - INFO - Processing completed successfully.
+2024-12-12 10:12:03,697 - INFO - Normalize raster
+2024-12-12 10:12:58,784 - INFO - Normalize raster
+2024-12-12 10:12:58,785 - INFO - Deleting existing file: /work/sy58xupo-CleaningSpace/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2017_v2021_4_20m_EPSG_4326_cropped_normalized_region_08.tif
+2024-12-12 10:13:17,597 - INFO - Band 1 - Min: 0, Max: 255
+2024-12-12 10:28:20,528 - INFO - Normalize raster
+2024-12-12 10:28:20,530 - INFO - Step 1: Calculating global min and max for /work/sy58xupo-CleaningSpace/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2017_v2021_4_20m_EPSG_4326_cropped_region_08.tif
+2024-12-12 10:28:43,643 - INFO - Global Min: 0, Global Max: 255
+2024-12-12 10:28:43,645 - INFO - Step 2: Normalizing raster /work/sy58xupo-CleaningSpace/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2017_v2021_4_20m_EPSG_4326_cropped_region_08.tif -> /work/sy58xupo-CleaningSpace/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2017_v2021_4_20m_EPSG_4326_cropped_normalized_region_08.tif
+2024-12-12 10:30:41,495 - INFO - Normalization completed. Saved to /work/sy58xupo-CleaningSpace/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2017_v2021_4_20m_EPSG_4326_cropped_normalized_region_08.tif.
+2024-12-12 10:30:41,496 - INFO - Plot raster with region boundaries
+2024-12-12 10:30:41,496 - INFO - Plotting raster /work/sy58xupo-CleaningSpace/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2017_v2021_4_20m_EPSG_4326_cropped_normalized_region_08.tif with region boundaries...
+2024-12-12 10:48:44,381 - INFO - Raster plot saved to: /work/sy58xupo-CleaningSpace/Data/CONUS/tcc/tcc_bounds_epsg4326_region_08.png
+2024-12-12 10:48:44,405 - INFO - Processing completed successfully.

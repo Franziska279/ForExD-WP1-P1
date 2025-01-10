@@ -8,6 +8,9 @@ import xarray as xr
 import rioxarray
 from tqdm import tqdm
 from concurrent.futures import ProcessPoolExecutor
+from concurrent.futures import ThreadPoolExecutor
+from multiprocessing import Manager, Lock
+from concurrent.futures import as_completed
 from affine import Affine
 import rasterio
 from shapely.geometry import box, shape
@@ -17,83 +20,113 @@ from func_file_io import load_data
 import shutil
 import pandas as pd
 import geopandas as gpd
+import time
 import numpy as np
 import rasterio
 from affine import Affine
 from shapely.geometry import box, shape
 import pandas as pd
 
-
 class S1CDProcessor:
-
-    def __init__(self, env_path, buffer_years=2, max_jobs=4):
+    def __init__(self, env_path, buffer_years, max_jobs):
+        """Initialize the S1CDProcessor with environment variables, buffer settings, and logging."""
         self.max_jobs = max_jobs
         self._set_up_logging()
         self._load_env_variables(env_path)
-        self.dataset = None
-        self.buffer_years = buffer_years
-        self.metadata_table = []  
+        self.dataset = None  # Dataset to be processed
+        self.buffer_years = buffer_years  # Buffer for year filtering
+        self.metadata_table = []  # Store metadata for processed files
 
     def _set_up_logging(self):
-        """Set up logging to file with timestamp."""
-        logging.basicConfig(filename='scheduler.log', level=logging.INFO, format='%(asctime)s - %(message)s')
-
-    def save_metadata_table(self, output_path):
-        """Save the metadata table to a CSV file."""
-        try:
-            metadata_df = pd.DataFrame(self.metadata_table)
-            metadata_df.to_csv(output_path, index=False)
-            logging.info(f"Metadata table saved to {output_path}")
-        except Exception as e:
-            logging.error(f"Error saving metadata table: {e}")
+        """Set up logging to a file with timestamps for tracking the process."""
+        logging.basicConfig(
+            filename='log_s1cd_processor.log',
+            level=logging.INFO, 
+            format='%(asctime)s - %(message)s'
+        )
 
     def _load_env_variables(self, env_path):
-        """Load environment variables from a .env file."""
+        """Load required environment variables from a .env file."""
         if not env_path.exists():
             raise FileNotFoundError(f"The .env file does not exist at {env_path}")
         load_dotenv(dotenv_path=env_path)
+
+        # Load environment variables and validate
         self.region = os.getenv('REGION')
-        if self.region is None:
+        if not self.region:
             raise ValueError("The 'REGION' environment variable is not set.")
         self.region_id = str(self.region).zfill(2)
-        
+
         self.tcc_dir = os.getenv('TCC_PATH')
         self.input_dir = os.getenv('SENTINEL1_TILES')
         self.output_dir = os.getenv('RESULTS')
+
+        # Ensure all required paths are set
         if not all([self.tcc_dir, self.input_dir, self.output_dir]):
-            raise ValueError("TCC_PATH, SENTINEL1_TILES, or RESULTS environment variables are not set")
-        
-        # Ensure required directories exist
+            raise ValueError("Missing required environment variables: TCC_PATH, SENTINEL1_TILES, or RESULTS")
+
+        # Create required output directories
         self.shapefile_dir = Path(f"{self.output_dir}/03_s1cd_polygons")
         self.shapefile_dir.mkdir(parents=True, exist_ok=True)
-        
         self.s1dm_dir = Path(f"{self.output_dir}/s1dm")
         self.s1dm_dir.mkdir(parents=True, exist_ok=True)
-        
+        # Create required output directories
+        self.output_path_metadata = Path(f"{self.output_dir}/metadata")
+        self.output_path_metadata.mkdir(parents=True, exist_ok=True)
+        #self.output_path_metadata.mkdir(parents=True, exist_ok=True)  # Ensure directory exists
+        # self.save_metadata_table(output_path_metadata)
+
+
+        # Set target CRS (Coordinate Reference System)
         self.target_crs = "EPSG:4326"
 
+    def save_metadata_table(self):
+        """Save the metadata table to a CSV file."""
+        try:
+            # Convert shared metadata list to a DataFrame
+            metadata_df = pd.DataFrame(list(self.metadata_table))
+            metadata_df.to_csv(self.output_path_metadata, index=False)
+            logging.info(f"Metadata table saved to {self.output_path_metadata}")
+        except Exception as e:
+            logging.error(f"Error saving metadata table: {e}")
+
+    
+
+    def process_file_wrapper(self, file_name):
+        try:
+            if self.run_extraction_script(file_name):
+                logging.info(f"Successfully processed {file_name}")
+                return True
+            else:
+                logging.error(f"Failed to process {file_name}")
+                return False
+        except Exception as e:
+            logging.error(f"Error processing {file_name}: {e}")
+            return False
+
     def process_files(self):
-        """Processes input files and updates progress bar."""
-
-        logging.info("Starting batch processing...")
-
+        """
+        Process all input files concurrently.
+        """
+        logging.info("============================================\nStarting batch processing...")
+        
         input_files = [f for f in os.listdir(self.input_dir) if not f.endswith('.py')]
-        total_files = min(6, len(input_files))  # Limit to the first 20 files (or fewer if there are less than 20)
+        total_files = len(input_files)
+        logging.info(f"Total files to process: {total_files}")
 
-        with tqdm(total=total_files, desc="Processing Files") as pbar:
-            success_count, error_count = 0, 0
-            with ProcessPoolExecutor(max_workers=self.max_jobs) as executor:
-                # Only submit the first 20 files (or fewer if less than 20)
-                futures = [executor.submit(self.run_extraction_script, f) for f in input_files[:total_files]]
-                
-                for future in concurrent.futures.as_completed(futures):
-                    if future.result():
-                        success_count += 1
-                    else:
-                        error_count += 1
-                    pbar.update(1)
-                    pbar.set_description(f"Success: {success_count}, Errors: {error_count}")
+        if total_files == 0:
+            logging.warning("No files found for processing. Exiting.")
+            return
 
+        success_count, error_count = 0, 0
+        with ProcessPoolExecutor(max_workers=self.max_jobs) as executor:
+            results = list(executor.map(self.process_file_wrapper, input_files))
+            success_count = sum(results)
+            error_count = len(results) - success_count
+
+        logging.info(f"Processing complete. Success: {success_count}, Errors: {error_count}")
+
+    
         # Step to merge after all files have been processed
         logging.info("All individual files processed. Starting merge of shapefiles...")
         merged_gdf = self.merge_shapefiles(self.shapefile_dir)
@@ -104,22 +137,30 @@ class S1CDProcessor:
         # Save the final merged and filtered result
         self.save_result(filtered_gdf, self.output_dir, output_filename=f'radar_enhanced_forest_disturbance_mapping_region_{self.region_id}.shp')
 
-    # Cleanup: Remove the directory with individual shapefiles (optional)
-    # try:
-    #     shutil.rmtree(self.shapefile_dir)
-    #     logging.info(f"Successfully removed directory and all contents: {self.shapefile_dir}")
-    # except OSError as e:
-    #     logging.error(f"Error removing directory and all contents: {self.shapefile_dir} - {e}")
+        self.save_metadata_table()
+        logging.info(f"Metadata saved to {self.metadata_output}")
 
-    # logging.info("Batch processing completed.")
+    # Cleanup: Remove the directory with individual shapefiles (optional)
+        # try:
+        #     shutil.rmtree(self.shapefile_dir)
+        #     logging.info(f"Successfully removed directory and all contents: {self.shapefile_dir}")
+        # except OSError as e:
+        #     logging.error(f"Error removing directory and all contents: {self.shapefile_dir} - {e}")
+
+        # logging.info("Batch processing completed.")
+
 
     def run_extraction_script(self, input_file):
-        """Process individual file and log result."""
+        """
+        Run the extraction process for a single input file.
+        Includes applying a TCC mask, extracting polygons, and filtering.
+        """
         input_path = os.path.join(self.input_dir, input_file)
         ids_path = f"{self.output_dir}/region_{self.region_id}_dca_filtered_ids_usda_polygons.shp"
-        tcc_path = os.path.join(self.tcc_dir, "wp1_nlcd_tcc_conus_2017_v2021_4_20m_EPSG_4326_cropped_normalized_region_08.tif")
+        tcc_path = os.path.join(self.tcc_dir, f"wp1_nlcd_tcc_conus_2017_v2021_4_20m_EPSG_4326_cropped_normalized_region_08.tif")  # Dynamically select TCC file
 
         try:
+            # Extract polygons from raster and process
             if self.extract_polygons_from_raster(input_path, ids_path, tcc_path, self.target_crs, self.shapefile_dir):
                 logging.info(f"Extraction successful for {input_file}")
                 return True
@@ -127,47 +168,10 @@ class S1CDProcessor:
                 logging.error(f"Extraction failed for {input_file}")
                 return False
         except Exception as e:
-            logging.error(f"Error during polygon extraction for {input_file}: {str(e)}")
+            logging.error(f"Error during extraction for {input_file}: {str(e)}")
             return False
+            
 
-    def extract_year_from_filename(self, input_path):
-        """Extract year from filename with pattern '_year_'."""
-        try:
-            filename = os.path.basename(input_path)
-            return int(filename.split('_year_')[-1].split('_')[0])
-        except (IndexError, ValueError) as e:
-            logging.error(f"Error extracting year from filename {input_path}: {e}")
-            return None
-
-    def drop_unnecessary_vars(self):
-        """Drop unnecessary variables from the dataset."""
-        self.dataset = self.dataset.drop_vars(["x_bnds", "y_bnds"], errors='ignore')
-        return self.dataset
-
-    def rename_variables(self):
-        """Rename variables for consistency."""
-        if 'unnamed' in self.dataset.variables:
-            self.dataset = self.dataset.rename({'unnamed': 'layer'})
-        if 'X' in self.dataset.variables and 'Y' in self.dataset.variables:
-            self.dataset = self.dataset.rename({'X': 'x', 'Y': 'y'})
-        return self.dataset
-
-    def reproject_to_wgs84(self):
-        """Reproject the dataset to WGS 84 CRS."""
-        
-        crs_azimuthal_equidistant = "+proj=aeqd +lat_0=52 +lon_0=-97.5 +x_0=8264722.17686 +y_0=4867518.35323 +datum=WGS84 +units=m +no_defs"
-        crs_wgs84 = 'GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],AUTHORITY["EPSG","6326"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4326"]]'
-        self.dataset.rio.write_crs(crs_azimuthal_equidistant, inplace=True)
-    
-        return self.dataset.rio.reproject(crs_wgs84)
-
-    def load_and_preprocess_dataset(self, input_file):
-        """Load and preprocess the raster dataset."""
-        self.dataset = xr.open_dataset(input_file)
-        self.dataset = self.drop_unnecessary_vars()
-        self.dataset = self.rename_variables()
-        self.dataset = self.reproject_to_wgs84()
-        return self.dataset 
 
     def apply_tcc_mask(self, tcc_path):
         """
@@ -284,7 +288,20 @@ class S1CDProcessor:
         logging.info("Step 1: Loading and buffering USDA polygons...")
         try:
             ids_usda_gdf = load_data(ids_usda_path)
-            ids_usda_gdf['geometry'] = ids_usda_gdf['geometry'].buffer(0.005)  # 500m buffer
+            # ids_usda_gdf['geometry'] = ids_usda_gdf['geometry'].buffer(0.005)  # 500m buffer
+
+            # Überprüfen und Setzen des CRS
+            if ids_usda_gdf.crs is None:
+                ids_usda_gdf.set_crs("EPSG:4326", inplace=True)  # Standard-CRS setzen, falls nicht definiert
+
+            # Reprojektieren in metrisches CRS
+            ids_usda_gdf = ids_usda_gdf.to_crs("EPSG:3857")  # Metrisches CRS für Buffer-Operationen
+
+            # Buffer-Operation (500m)
+            ids_usda_gdf['geometry'] = ids_usda_gdf['geometry'].buffer(500)
+
+            # Zurück zu WGS 84, falls erforderlich
+            ids_usda_gdf = ids_usda_gdf.to_crs("EPSG:4326")
         except Exception as e:
             logging.error(f"Error loading USDA polygons: {e}")
             return
@@ -295,6 +312,8 @@ class S1CDProcessor:
                 (ids_usda_gdf['SURVEY_Y'] >= s1_year - year_buffer) & 
                 (ids_usda_gdf['SURVEY_Y'] <= s1_year + year_buffer)
             ]
+            ids_area_gdf = calculate_area_in_km2_s1cd(ids_usda_filtered)
+            ids_area = ids_area_gdf['area'].sum()
         except Exception as e:
             logging.error(f"Error filtering USDA polygons: {e}")
             return
@@ -329,12 +348,24 @@ class S1CDProcessor:
 
         # Add metadata to the table
         tile_name = extract_s1cd_filename_part(os.path.basename(file))
-        self.metadata_table.append({
+       
+        metadata_entries = [{
             'Tile': tile_name,
             'Year': s1_year,
+            'IDS Area': ids_area,
             'Area Before Intersection': area_before_intersection,
-            'Area After Intersection': area_after_intersection
-        })
+            'Area After Intersection': area_after_intersection  
+        }]
+        metadata_df = pd.DataFrame(metadata_entries)
+
+        # Define output path for the shapefile
+        meta_path = os.path.join(self.output_path_metadata, f"metadata_table_{tile_name}.csv")
+
+        # Save the GeoDataFrame as a shapefile
+        metadata_df.to_csv(meta_path)
+        logging.info(f"Metadata table saved as shapefile to {meta_path}")
+        
+        logging.info(f"Added metadata.")
 
         logging.info("Step 6: Aggregating geometries by USDA_IDX...")
         try:
@@ -357,20 +388,26 @@ class S1CDProcessor:
 
     def extract_polygons_from_raster(self, input_file, ids_usda_path, tcc_path, target_crs, output_dir):
         try:
-            s1_year = self.extract_year_from_filename(input_file)
+            s1_year = self.extract_year_from_s1cd_filename(input_file)
             filename = os.path.basename(input_file)
             logging.info(f"Processing file: {input_file} for year {s1_year}")
 
+            # Load and preprocess the dataset
             self.dataset = self.load_and_preprocess_dataset(input_file)
+            
+            # Uncomment these lines if needed for additional processing
             self.dataset = self.apply_tcc_mask(tcc_path)
             self.dataset = self.extract_polygons_from_mask(filename, self.dataset)
-            self.process_and_filter_polygons(ids_usda_path,s1_year, self.buffer_years, input_file, target_crs, output_dir)
-            
+            self.process_and_filter_polygons(ids_usda_path, s1_year, self.buffer_years, input_file, target_crs, output_dir)
+
+            # Log success message
             logging.info(f"Polygon extraction successful for {input_file}, saved to {output_dir}")
+
             return True
         except Exception as e:
             logging.error(f"Error during polygon extraction for {input_file}: {e}")
             return False
+
 
 
     def merge_shapefiles(self, input_dir):
@@ -426,3 +463,48 @@ class S1CDProcessor:
         logging.info(f"Saving result to {output_path}...")
         gdf.to_file(output_path)
         logging.info("Result saved successfully.")
+
+
+
+    def extract_year_from_s1cd_filename(self, input_path):
+        """
+        Extract the year from the filename, assuming a specific pattern '_year_'.
+        Returns None if parsing fails.
+        """
+        try:
+            filename = os.path.basename(input_path)
+            return int(filename.split('_year_')[-1].split('_')[0])
+        except (IndexError, ValueError) as e:
+            logging.error(f"Error extracting year from filename {input_path}: {e}")
+            return None
+
+    def drop_unnecessary_vars(self):
+        """Drop unnecessary variables from the dataset."""
+        self.dataset = self.dataset.drop_vars(["x_bnds", "y_bnds"], errors='ignore')
+        return self.dataset
+
+    def rename_variables(self):
+        """Rename variables for consistency."""
+        if 'unnamed' in self.dataset.variables:
+            self.dataset = self.dataset.rename({'unnamed': 'layer'})
+        if 'X' in self.dataset.variables and 'Y' in self.dataset.variables:
+            self.dataset = self.dataset.rename({'X': 'x', 'Y': 'y'})
+        return self.dataset
+
+    def reproject_to_wgs84(self):
+        """Reproject the dataset to WGS 84 CRS."""
+        
+        crs_azimuthal_equidistant = "+proj=aeqd +lat_0=52 +lon_0=-97.5 +x_0=8264722.17686 +y_0=4867518.35323 +datum=WGS84 +units=m +no_defs"
+        crs_wgs84 = 'GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],AUTHORITY["EPSG","6326"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4326"]]'
+        self.dataset.rio.write_crs(crs_azimuthal_equidistant, inplace=True)
+    
+        return self.dataset.rio.reproject(crs_wgs84)
+
+    def load_and_preprocess_dataset(self, input_file):
+        """Load and preprocess the raster dataset."""
+        self.dataset = xr.open_dataset(input_file)
+        self.dataset = self.drop_unnecessary_vars()
+        self.dataset = self.rename_variables()
+        self.dataset = self.reproject_to_wgs84()
+        return self.dataset 
+
