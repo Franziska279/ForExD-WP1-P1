@@ -35,7 +35,7 @@ def main():
     # tcc_processor = TCCProcessor(env_path)
     # tcc_processor.process()
 
-    s1cd_processor = S1CDProcessor(env_path, buffer_years=0)  # Example: region 8
+    s1cd_processor = S1CDProcessor(env_path, buffer_years=2)  # Example: region 8
     s1cd_processor.process_files()
     # Save the metadata table after processing all files
     s1cd_processor.save_metadata_table("/net/projects/forexd/WP1/02_ImprovedLabels/Scripts/ForExD-WP1-P1/results_clean/metadata_table.csv")
