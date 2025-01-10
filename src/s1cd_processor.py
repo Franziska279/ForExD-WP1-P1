@@ -102,7 +102,7 @@ class S1CDProcessor:
         filtered_gdf = self.calculate_and_filter_area(merged_gdf)
         
         # Save the final merged and filtered result
-        self.save_result(filtered_gdf, self.output_dir, output_filename='s1dm.shp')
+        self.save_result(filtered_gdf, self.output_dir, output_filename=f'radar_enhanced_forest_disturbance_mapping_region_{self.region_id}.shp')
 
     # Cleanup: Remove the directory with individual shapefiles (optional)
     # try:
