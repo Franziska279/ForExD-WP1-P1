@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Patch
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from func_helper import format_label
+from matplotlib.gridspec import GridSpec
 
 ## IDS Preprocessing 
 def plot_regions_disturbances(disturbance_gdf, filepath, output_file, custom_colors, region_nr):
@@ -217,4 +218,103 @@ def create_plots(combined_dataset, refdm_filtered, ids_filtered, grid, unique_mi
     plt.subplots_adjust(top=0.85)  # Adjust the top margin to give space for the super title
     
     # Show the plots
+    plt.show()
+
+
+
+# Analysis plots
+
+def plot_radar_reduction_potential(refdm_gdf, ids_gdf, save_path, plot_reduction=True):
+    # Define font sizes and bar parameters
+    title_fontsize = 34
+    legend_title_fontsize = 30
+    label_fontsize = 28
+    legend_fontsize = 28
+    tick_fontsize = 26
+    annotation_fontsize = 26
+    bar_width = 0.35  # Width of the bars
+    double_bar_width = bar_width * 2  # Make the bottom bars as wide as the combined width of the top two bars
+    bar_offset = 0.2  # Offset to move the lower bars to the right
+
+    dca_counts_refdm = refdm_gdf['DCA_ID'].value_counts()
+    dca_counts_ids = ids_gdf['DCA_ID'].value_counts()
+
+    # Combine the counts into a single DataFrame
+    counts_df = pd.DataFrame({
+        'IDS': dca_counts_ids,
+        'S1DM': dca_counts_refdm
+    }).fillna(0)  # Fill NaN with 0 for counts that are missing in either dataset
+
+    # Reset index to turn DCA_ID into a column
+    counts_df.reset_index(inplace=True)
+    counts_df.rename(columns={'index': 'DCA_ID'}, inplace=True)
+    # Calculate reduction percentage
+    counts_df['Reduction (%)'] = -100 * (counts_df['IDS'] - counts_df['S1DM']) / counts_df['IDS']
+
+    # Ensure the DCA_ID is in the specified order
+    counts_df['DCA_ID'] = pd.Categorical(counts_df['DCA_ID'], categories=['bark_beetle', 'wind', 'fire', 'defoliators', 'drought'], ordered=True)
+    counts_df_sorted = counts_df.sort_values('DCA_ID')
+
+    # Capitalize DCA_ID labels
+    dca_labels = [format_label(label) for label in counts_df_sorted['DCA_ID']]
+
+    # Create a figure with 2 rows and 1 column for the two subplots, conditionally plotting the second subplot
+    fig = plt.figure(figsize=(24, 12))  # Increase the figure height
+    gs = GridSpec(nrows=2 if plot_reduction else 1, ncols=1, height_ratios=[5, 2] if plot_reduction else [5])
+
+    # Plot Counts in the first subplot
+    ax1 = fig.add_subplot(gs[0])
+    bar_positions = range(len(counts_df_sorted))  # X positions for bars
+
+    ax1.bar(bar_positions, counts_df_sorted['IDS'], width=bar_width, color="#BCB6FF", label='IDS')
+    ax1.bar([pos + bar_width for pos in bar_positions], counts_df_sorted['S1DM'], width=bar_width, color="#AF42AE", label='S1DM')
+
+    # Add annotations for counts above bars
+    for i, (count_ids, count_refdm) in enumerate(zip(counts_df_sorted['IDS'], counts_df_sorted['S1DM'])):
+        ax1.text(bar_positions[i], count_ids + 2, str(int(count_ids)), ha='center', va='bottom', color='black', fontsize=annotation_fontsize)
+        ax1.text(bar_positions[i] + bar_width, count_refdm + 2, str(int(count_refdm)), ha='center', va='bottom', color='black', fontsize=annotation_fontsize)
+
+    # Set labels and title for the first subplot
+    ax1.set_ylabel('Number of Disturbance Events', fontsize=label_fontsize, labelpad=20)  # Increase font size for ylabel and add padding
+    ax1.set_yscale('log')
+    ax1.set_ylim(1, counts_df_sorted[['IDS', 'S1DM']].max().max() * 2)  # Set y-limit for log scale
+    legend = ax1.legend(fontsize=legend_fontsize, title='Datasets')  # Increase font size for legend and add title
+    legend.get_title().set_fontsize(legend_title_fontsize)
+    ax1.grid(False)
+    plt.yticks(fontsize=tick_fontsize)
+    plt.xticks(bar_positions, dca_labels, fontsize=tick_fontsize)
+    ax1.tick_params(axis='x', which='major', pad=15)
+
+    # Plot Reduction (%) in the second subplot if plot_reduction is True
+    if plot_reduction:
+        ax2 = fig.add_subplot(gs[1], sharex=ax1)
+        ax2.bar([pos + bar_offset for pos in bar_positions], counts_df_sorted['Reduction (%)'], width=double_bar_width, color='#FF3E41', label='Reduction (%)')
+
+        # Add annotations for reduction below bars
+        for i, reduction_percentage in enumerate(counts_df_sorted['Reduction (%)']):
+            ax2.text(bar_positions[i] + bar_offset, reduction_percentage - 2, f'{reduction_percentage:.2f}%', ha='center', va='top', color='black', fontsize=annotation_fontsize)
+
+        # Set labels and title for the second subplot
+        ax2.set_xlabel('Disturbance Type', fontsize=label_fontsize)  # Increase font size for xlabel
+        ax2.set_ylim(0, -110)
+        ax2.invert_yaxis()
+        ax2.set_ylabel('Reduction \nPercentage (%)', fontsize=label_fontsize, labelpad=20)  # Increase font size for ylabel and add padding
+
+        # Set y-axis ticks to only show 4 ticks
+        ax2.set_yticks([0, -20, -40, -60, -80, -100])
+        ax2.set_yticklabels(['0', '-20', '-40', '-60', '-80', '-100'])
+
+        plt.xticks([pos + bar_offset for pos in bar_positions], dca_labels, fontsize=tick_fontsize, ha='right')  # Adjust the rotation and alignment
+
+        # Rotate x-axis labels for ax2
+        ax2.set_xticklabels(dca_labels, ha='right', fontsize=0)  # Rotate and increase font size
+        ax2.grid(False)
+
+        # Adjust x-axis ticks and labels
+        plt.yticks(fontsize=tick_fontsize)
+
+    # Adjust x-axis ticks and labels
+    plt.tight_layout()  # Ensures labels, titles, and legends do not overlap
+
+    plt.savefig(save_path, dpi=300, bbox_inches='tight')
     plt.show()
