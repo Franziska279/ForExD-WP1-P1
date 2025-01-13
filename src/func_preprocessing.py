@@ -7,6 +7,9 @@ from scipy.ndimage import gaussian_filter
 from numcodecs import Blosc
 import os
 import xarray as xr
+import matplotlib.patches as mpatches
+import pandas as pd
+import geopandas as gpd
 
 from func_indecies import (ndvi, nbr, ndwi, ndre, 
                           tcw, tcg, tcb, ndmi, nirv, 
@@ -264,3 +267,118 @@ def preprocess_sentinel_data(idx, logger, path, output_path):
     # Save the smoothed data to a NetCDF file
     smoothed_data.to_netcdf(output_path, mode='w')
     logger.info(f"Successfully saved at: {output_path}")
+
+
+
+def calculate_area_and_centroid_meters(gdf):
+    """Calculate area in square meters, square kilometers, and convex hull area for a GeoDataFrame."""
+    # Set the coordinate reference system (CRS) for the GeoDataFrame to WGS84
+    gdf.crs = 'EPSG:4326'
+    
+    # Define the target projection system (e.g., UTM Zone 18N)
+    target_crs = 'EPSG:27705'
+    
+    # Reproject the GeoDataFrame to the target projection system
+    gdf_projected = gdf.to_crs(target_crs)
+    
+    # Calculate the area of the geometry in square meters
+    gdf_projected['area_meters'] = gdf_projected.geometry.area
+    gdf_projected['square_km'] = gdf_projected['area_meters'] / 1e6
+    # Calculate the convex hull of each geometry
+    gdf_projected['convex_hull'] = gdf_projected.geometry.convex_hull
+    
+    # Calculate the area of the convex hull in square meters
+    gdf_projected['area_convex_meters'] = gdf_projected['convex_hull'].area
+    
+    # Convert the area to square kilometers
+    gdf_projected['area_convex_km'] = gdf_projected['area_convex_meters'] / 1e6
+    
+    # Calculate the centroid of the geometry in projected coordinates (meters)
+    gdf_projected['centroid_meters'] = gdf_projected.geometry.centroid
+    
+    # Assign the calculated fields back to the original GeoDataFrame (which is still in WGS84)
+    gdf['area_meters'] = gdf_projected['area_meters']
+    gdf['square_km'] = gdf_projected['square_km']
+    gdf['area_convex_meters'] = gdf_projected['area_convex_meters']
+    gdf['area_convex_km'] = gdf_projected['area_convex_km']
+    gdf['centroid_meters'] = gdf_projected['centroid_meters']
+    
+    # Return the GeoDataFrame with the new area and convex hull columns
+    return gdf
+
+def calculate_size_shift_difference(ids_gdf, refdm_gdf_dissolved):
+    """
+    Calculate the centroid shift and size differences between polygons in two GeoDataFrames based on USDA_IDX.
+
+    This function compares two GeoDataFrames (`ids_gdf` and `refdm_gdf_dissolved`) by calculating:
+    1. The centroid shift between corresponding polygons.
+    2. The size difference between the polygons' areas.
+    3. The convex hull size difference for each polygon.
+
+    Parameters:
+    - ids_gdf (GeoDataFrame): GeoDataFrame containing polygons with USDA_IDX and their geometry (including areas).
+    - refdm_gdf_dissolved (GeoDataFrame): GeoDataFrame containing reference polygons with USDA_IDX and their geometry.
+
+    Returns:
+    - result_gdf (GeoDataFrame): A GeoDataFrame containing USDA_IDX, centroid shift, size difference, and geometry.
+    """
+
+    # Step 1: Calculate area and centroid in meters for both GeoDataFrames
+    ids = calculate_area_and_centroid_meters(ids_gdf)
+    refdm = calculate_area_and_centroid_meters(refdm_gdf_dissolved)
+
+    # Step 2: Initialize lists to store results
+    usda_idx_list = []
+    centroid_shift_list = []
+    size_difference_list = []
+    size_difference_ref_list = []
+    convex_size_difference_list = []
+    convex_size_difference_ref_list = []
+
+    # Step 3: Loop through unique USDA_IDX values to compare the corresponding polygons
+    unique_usda_idx = ids['ID_E'].unique()
+
+    for usda_idx in unique_usda_idx:
+        # Filter rows corresponding to the current USDA_IDX in both GeoDataFrames
+        ids_row = ids[ids['ID_E'] == usda_idx]
+        refdm_row = refdm[refdm['ID_E'] == usda_idx]
+        
+        # Ensure that both rows exist in the GeoDataFrames
+        if not ids_row.empty and not refdm_row.empty:
+            # Step 4: Calculate the centroid shift between polygons
+            centroid_shift = ids_row.iloc[0]['centroid_meters'].distance(refdm_row.iloc[0]['centroid_meters'])
+            
+            # Step 5: Calculate the size difference between the areas of the two polygons
+            size_difference = ids_row.iloc[0]['square_km'] - refdm_row.iloc[0]['square_km']
+            size_difference_ref = refdm_row.iloc[0]['square_km'] - ids_row.iloc[0]['square_km']
+
+            # Step 6: Calculate the convex hull size difference for the polygons
+            convex_size_difference = ids_row.iloc[0]['area_convex_km'] - refdm_row.iloc[0]['area_convex_km']
+            convex_size_difference_ref = refdm_row.iloc[0]['area_convex_km'] - ids_row.iloc[0]['area_convex_km']
+
+            # Step 7: Append the results to the corresponding lists
+            usda_idx_list.append(usda_idx)
+            centroid_shift_list.append(centroid_shift)
+            size_difference_list.append(size_difference)
+            size_difference_ref_list.append(size_difference_ref)
+            convex_size_difference_list.append(convex_size_difference)
+            convex_size_difference_ref_list.append(convex_size_difference_ref)
+
+    # Step 8: Create a DataFrame from the collected results
+    results_df = pd.DataFrame({
+        'ID_E': usda_idx_list,
+        'centroid_shift_m': centroid_shift_list,
+        'size_difference_km2': size_difference_list,
+        'size_difference_ref_km2': size_difference_ref_list,
+        'convex_size_difference_km2': convex_size_difference_list,
+        'convex_size_difference_ref_km2': convex_size_difference_ref_list
+    })
+
+    # Step 9: Merge the results with the original GeoDataFrame (`ids_gdf`) to keep the geometry
+    result_gdf = ids_gdf.merge(results_df, on='ID_E')
+
+    # Step 10: Convert the merged DataFrame back to a GeoDataFrame, preserving the geometry and CRS
+    result_gdf = gpd.GeoDataFrame(result_gdf, geometry='geometry', crs=ids_gdf.crs)
+
+    # Return the final GeoDataFrame with the results
+    return result_gdf
