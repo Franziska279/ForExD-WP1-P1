@@ -26,6 +26,10 @@ import rasterio
 from affine import Affine
 from shapely.geometry import box, shape
 import pandas as pd
+import geopandas as gpd
+from shapely.geometry import MultiPolygon
+from shapely.ops import unary_union
+
 
 class S1CDProcessor:
     def __init__(self, env_path, buffer_years, max_jobs):
@@ -409,6 +413,40 @@ class S1CDProcessor:
             return False
 
 
+def merge_geometries_and_keep_columns(gdf):
+    """
+    Merge geometries by 'IDX_D' and 'S1_YEAR' into a single geometry (MultiPolygon) and
+    keep the first value for all other columns.
+
+    Parameters:
+    - gdf (GeoDataFrame): The input GeoDataFrame with geometries and other columns.
+    
+    Returns:
+    - GeoDataFrame: A new GeoDataFrame with merged geometries and first values of other columns.
+    """
+    grouped_gdf = gdf.groupby(['IDX_D', 'S1_YEAR']).apply(
+        lambda group: group.unary_union  # Merge the geometries within each group
+    ).reset_index(name='geometry')
+
+    # Step 2: For other columns, keep the first value
+    for column in gdf.columns:
+        if column not in ['IDX_D', 'S1_YEAR', 'geometry']:  # Skip 'IDX_D', 'S1_YEAR', and 'geometry'
+            # Ensure the aggregation keeps the first value for each group
+            grouped_gdf[column] = gdf.groupby(['IDX_D', 'S1_YEAR'])[column].first().values
+
+    # Step 3: Convert to GeoDataFrame and ensure geometries are MultiPolygons if they aren't already
+    grouped_gdf = gpd.GeoDataFrame(grouped_gdf, geometry='geometry')
+
+    # Ensure the geometries are MultiPolygons if they aren't already
+    grouped_gdf['geometry'] = grouped_gdf['geometry'].apply(
+        lambda geom: MultiPolygon([geom]) if not isinstance(geom, MultiPolygon) else geom
+    )
+
+    # Step 4: Set CRS (coordinate reference system) if needed
+    grouped_gdf.set_crs(gdf.crs, allow_override=True, inplace=True)
+
+    return grouped_gdf
+
 
     def merge_shapefiles(self, input_dir):
         """
@@ -429,8 +467,9 @@ class S1CDProcessor:
             gdf_list.append(gdf)
         
         merged_gdf = gpd.GeoDataFrame(pd.concat(gdf_list, ignore_index=True))
+        merged_gdf_yearly_aggregated = merge_geometries_and_keep_columns(merged_gdf)
         logging.info("Shapefiles merged successfully.")
-        return merged_gdf
+        return merged_gdf_yearly_aggregated
 
     def calculate_and_filter_area(self, gdf):
         """
