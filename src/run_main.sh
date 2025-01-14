@@ -2,7 +2,7 @@
 #SBATCH --job-name=run_main            # Job name
 #SBATCH --output=logs/run_main_%j.out  # Standard output log (%j will be replaced with job ID)
 #SBATCH --error=logs/run_main_%j.err   # Standard error log
-#SBATCH --time=2-00:00:00              # Time limit hh:mm:ss
+#SBATCH --time=5:00:00              # Time limit hh:mm:ss
 #SBATCH --partition=clara              # Partition name (adjust to your system's available partitions)
 #SBATCH --ntasks=1                     # Number of tasks (1 for a single Python script)
 #SBATCH --cpus-per-task=8              # Number of CPU cores per task
