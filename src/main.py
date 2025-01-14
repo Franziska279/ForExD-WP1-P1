@@ -3,6 +3,7 @@ from pathlib import Path
 from ids_processor import IDSProcessor
 from tcc_processor import TCCProcessor
 from s1cd_processor import S1CDProcessor
+from equi7_grid_creator import Equi7GridCreator
 import argparse
 
 def main(env_path, metadata_output):
@@ -36,8 +37,11 @@ def main(env_path, metadata_output):
     # tcc_processor = TCCProcessor(env_path)
     # tcc_processor.process()
 
-    s1cd_processor = S1CDProcessor(env_path, buffer_years=2, max_jobs=4)  # Example: region 8
-    s1cd_processor.process_files()
+    # s1cd_processor = S1CDProcessor(env_path, buffer_years=2, max_jobs=4)  # Example: region 8
+    # s1cd_processor.process_files()
+
+    grid_creator = Equi7GridCreator(resolution = 10, pixel_size = 512, env_path=env_path)
+    grid_creator.create_grid()
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run Sentinel-1 Data Processor")
