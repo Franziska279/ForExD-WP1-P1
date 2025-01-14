@@ -629,6 +629,7 @@ def plot_area_size_shift_per_disturbances(gdf, ids, custom_colors, save_path):
 
 
 
+
 def plot_disturbance_signal_duration(refdm_dissolved, save_path):
     """
     Plot a grouped bar chart showing the count of events by signal_duration for each DCA_ID.
@@ -648,7 +649,7 @@ def plot_disturbance_signal_duration(refdm_dissolved, save_path):
     cmap = mcolors.ListedColormap(colors)
 
     # Plot the grouped bar plot
-    fig, ax = plt.subplots(figsize=(15, 8))  # Adjusted size: wider and taller
+    fig, ax = plt.subplots(figsize=(15, 5))  # Adjusted size: wider and taller
 
     # Set font sizes for various components
     plt.rcParams.update({
@@ -696,18 +697,20 @@ def plot_disturbance_signal_duration(refdm_dissolved, save_path):
 
     # Create a colorbar and position it closer to the plot
     norm = mcolors.BoundaryNorm(boundaries=[0, 1, 2, 3, 4, 5], ncolors=len(colors), clip=True)
-    cbar = plt.colorbar(plt.cm.ScalarMappable(norm=norm, cmap=cmap), ax=ax, orientation='vertical', pad=0.02)
-    cbar.set_label('S1 Signal Appearances (±2 Years)', fontsize=20, labelpad=10)  # Added clearer label
+    cbar = plt.colorbar(plt.cm.ScalarMappable(norm=norm, cmap=cmap), ax=ax, orientation='vertical', pad=0.04)
+    cbar.set_label(f'S1 Signal Persistance', fontsize=20, labelpad=20)  # Added clearer label
     cbar.set_ticks([1, 2, 3, 4, 5])
     cbar.set_ticklabels(['1 Year', '2 Years', '3 Years', '4 Years', '5 Years'])
-
+    # Remove the top and right spines (keeping the left and bottom spines)
+    plt.gca().spines['top'].set_visible(False)
+    plt.gca().spines['right'].set_visible(False)
+    plt.grid(False) # linestyle='--', color='lightgray', alpha=0.5)  # Adjust alpha to your preference
     plt.tight_layout()
 
     # Save the figure with a specific DPI to fit an A4 page
     plt.savefig(save_path, dpi=400, bbox_inches='tight')
 
     plt.show()
-
 
 
 
