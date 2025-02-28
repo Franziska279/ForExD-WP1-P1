@@ -646,7 +646,7 @@ def plot_d_area_ch_area_centroid_disturbances(gdf, ids, s1dm_convex, ids_convex,
         ax.yaxis.set_major_locator(ticker.MaxNLocator(nbins=3, prune='lower'))
         ax.yaxis.set_major_formatter(ticker.FuncFormatter(format_ticks))
 
-        #ax.set_xlim(-0.01, 10)
+        ax.set_xlim(-0.01, 10)
         ax.set_ylim(0)
         ax.legend(fontsize=fontsize_tick)
 
@@ -740,7 +740,7 @@ def plot_d_area_ch_area_centroid_disturbances(gdf, ids, s1dm_convex, ids_convex,
         ax.yaxis.set_major_locator(ticker.MaxNLocator(nbins=3, prune='lower'))
         ax.yaxis.set_major_formatter(ticker.FuncFormatter(format_ticks))
 
-        #ax.set_xlim(-0.01, 15)
+        ax.set_xlim(-0.01, 15)
         ax.set_ylim(0)
         ax.legend(fontsize=fontsize_tick)
 
@@ -805,14 +805,13 @@ def plot_d_area_ch_area_centroid_disturbances(gdf, ids, s1dm_convex, ids_convex,
 
         ax.tick_params(axis='x', labelsize=fontsize_tick)
         ax.tick_params(axis='y', labelsize=fontsize_tick)
-        #ax.set_xlim(0,)
 
         ax.set_ylabel(' ', fontsize=fontsize_label, labelpad=padding_label)
 
         # Set the x-ticks for centroid shifts
         ax.xaxis.set_major_locator(ticker.MaxNLocator(nbins=4, prune=None))  # Prune limits for edge ticks
         ax.yaxis.set_major_locator(ticker.MaxNLocator(nbins=3, prune='lower')) 
-        
+
         # Add the custom legend
         ax.legend(handles=[
                         mpatches.Patch(color=custom_palette[category], label=format_label(category)),  # Main category label
@@ -1228,7 +1227,6 @@ def calculate_plot_overlap_percentage(ids, s1dm, custom_colors, save_path):
     plt.savefig(save_path, dpi=300, bbox_inches='tight')
     plt.show()
     
-
 
 def plot_percentages_histograms(ids_gdf, s1dm_gdf, custom_colors, save_path=None):
     """

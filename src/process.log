@@ -9290,3 +9290,122 @@ https://docs.xarray.dev/en/stable/user-guide/io.html
 2025-02-28 15:51:32,840 - INFO - Processing for buffer: 1000
 2025-02-28 15:53:16,190 - INFO - Calculate and plot overlap percentages
 2025-02-28 15:53:59,582 - INFO - Plot generation completed.
+2025-02-28 16:31:51,827 - INFO - Loading environment variables...
+2025-02-28 16:31:51,840 - INFO - Starting IDS processing pipeline for region 8...
+2025-02-28 16:31:51,840 - INFO - Running Plotter...
+2025-02-28 16:31:51,851 - INFO - Processing for buffer: 100
+2025-02-28 16:32:13,890 - INFO - Calculate and plot overlap percentages
+2025-02-28 16:32:25,816 - INFO - Processing for buffer: 250
+2025-02-28 16:32:56,099 - INFO - Calculate and plot overlap percentages
+2025-02-28 16:33:11,684 - INFO - Processing for buffer: 500
+2025-02-28 16:33:59,873 - INFO - Calculate and plot overlap percentages
+2025-02-28 16:34:22,258 - INFO - Processing for buffer: 1000
+2025-02-28 16:34:52,820 - INFO - Loading environment variables...
+2025-02-28 16:34:52,829 - INFO - Starting IDS processing pipeline for region 8...
+2025-02-28 16:34:52,830 - INFO - Running Plotter...
+2025-02-28 16:34:52,990 - INFO - Load the USA Mainland and Region 8 Shape ...
+2025-02-28 16:34:53,746 - INFO - Load the TCC Region 8 Map ...
+2025-02-28 16:34:54,843 - INFO - Plot Study area figure ...
+2025-02-28 16:34:55,032 - INFO - s1_tiles contains 19 features
+2025-02-28 16:35:14,576 - INFO - Processing for buffer: 100
+2025-02-28 16:35:35,041 - INFO - Claculate size shift difference
+2025-02-28 16:35:42,263 - INFO - Plot radar reduction potential
+2025-02-28 16:35:43,928 - INFO - Plot size and position change
+2025-02-28 16:35:59,687 - INFO - Plot signal counts
+2025-02-28 16:36:01,448 - INFO - Calculate and plot overlap percentages
+2025-02-28 16:36:02,273 - INFO - Calculate and plot overlap percentages
+2025-02-28 16:36:06,379 - INFO - Processing for buffer: 250
+2025-02-28 16:36:34,435 - INFO - Claculate size shift difference
+2025-02-28 16:36:42,512 - INFO - Plot radar reduction potential
+2025-02-28 16:36:44,075 - INFO - Plot size and position change
+2025-02-28 16:36:45,809 - INFO - Plot generation completed.
+2025-02-28 16:36:59,255 - INFO - Plot signal counts
+2025-02-28 16:37:00,965 - INFO - Calculate and plot overlap percentages
+2025-02-28 16:37:06,811 - INFO - Processing for buffer: 500
+2025-02-28 16:37:50,543 - INFO - Claculate size shift difference
+2025-02-28 16:38:00,069 - INFO - Plot radar reduction potential
+2025-02-28 16:38:01,631 - INFO - Plot size and position change
+2025-02-28 16:38:17,991 - INFO - Plot signal counts
+2025-02-28 16:38:19,828 - INFO - Calculate and plot overlap percentages
+2025-02-28 16:38:26,530 - INFO - Processing for buffer: 1000
+2025-02-28 16:39:54,666 - INFO - Claculate size shift difference
+2025-02-28 16:40:07,647 - INFO - Plot radar reduction potential
+2025-02-28 16:40:09,237 - INFO - Plot size and position change
+2025-02-28 16:40:24,722 - INFO - Plot signal counts
+2025-02-28 16:40:26,451 - INFO - Calculate and plot overlap percentages
+2025-02-28 16:40:34,035 - INFO - Plot generation completed.
+2025-02-28 16:43:25,534 - INFO - Loading environment variables...
+2025-02-28 16:43:25,545 - INFO - Starting IDS processing pipeline for region 8...
+2025-02-28 16:43:25,545 - INFO - Running Plotter...
+2025-02-28 16:43:25,705 - INFO - Load the USA Mainland and Region 8 Shape ...
+2025-02-28 16:43:26,148 - INFO - Load the TCC Region 8 Map ...
+2025-02-28 16:43:26,205 - INFO - Plot Study area figure ...
+2025-02-28 16:43:26,246 - INFO - s1_tiles contains 19 features
+2025-02-28 16:43:45,792 - INFO - Processing for buffer: 100
+2025-02-28 16:44:06,182 - INFO - Claculate size shift difference
+2025-02-28 16:44:13,180 - INFO - Plot radar reduction potential
+2025-02-28 16:44:14,813 - INFO - Plot size and position change
+2025-02-28 16:44:30,832 - INFO - Plot signal counts
+2025-02-28 16:44:32,565 - INFO - Calculate and plot overlap percentages
+2025-02-28 16:44:37,458 - INFO - Processing for buffer: 250
+2025-02-28 16:45:05,479 - INFO - Claculate size shift difference
+2025-02-28 16:45:13,539 - INFO - Plot radar reduction potential
+2025-02-28 16:45:15,111 - INFO - Plot size and position change
+2025-02-28 16:45:31,069 - INFO - Plot signal counts
+2025-02-28 16:45:35,171 - INFO - Calculate and plot overlap percentages
+2025-02-28 16:45:40,994 - INFO - Processing for buffer: 500
+2025-02-28 16:46:24,559 - INFO - Claculate size shift difference
+2025-02-28 16:46:34,070 - INFO - Plot radar reduction potential
+2025-02-28 16:46:35,634 - INFO - Plot size and position change
+2025-02-28 16:46:51,101 - INFO - Plot signal counts
+2025-02-28 16:46:52,807 - INFO - Calculate and plot overlap percentages
+2025-02-28 16:46:59,488 - INFO - Processing for buffer: 1000
+2025-02-28 16:48:27,315 - INFO - Claculate size shift difference
+2025-02-28 16:48:40,249 - INFO - Plot radar reduction potential
+2025-02-28 16:48:41,808 - INFO - Plot size and position change
+2025-02-28 16:48:57,039 - INFO - Plot signal counts
+2025-02-28 16:48:58,728 - INFO - Calculate and plot overlap percentages
+2025-02-28 16:49:06,302 - INFO - Plot generation completed.
+2025-02-28 16:53:59,281 - INFO - Loading environment variables...
+2025-02-28 16:53:59,292 - INFO - Starting IDS processing pipeline for region 8...
+2025-02-28 16:53:59,292 - INFO - Running Plotter...
+2025-02-28 16:53:59,451 - INFO - Load the USA Mainland and Region 8 Shape ...
+2025-02-28 16:53:59,888 - INFO - Load the TCC Region 8 Map ...
+2025-02-28 16:53:59,945 - INFO - Plot Study area figure ...
+2025-02-28 16:53:59,986 - INFO - s1_tiles contains 19 features
+2025-02-28 16:54:19,524 - INFO - Processing for buffer: 100
+2025-02-28 16:54:39,975 - INFO - Claculate size shift difference
+2025-02-28 16:54:46,989 - INFO - Plot radar reduction potential
+2025-02-28 16:54:48,617 - INFO - Plot size and position change
+2025-02-28 16:55:09,856 - INFO - Loading environment variables...
+2025-02-28 16:55:09,867 - INFO - Starting IDS processing pipeline for region 8...
+2025-02-28 16:55:09,868 - INFO - Running Plotter...
+2025-02-28 16:55:10,213 - INFO - Load the USA Mainland and Region 8 Shape ...
+2025-02-28 16:55:10,824 - INFO - Load the TCC Region 8 Map ...
+2025-02-28 16:55:10,944 - INFO - Plot Study area figure ...
+2025-02-28 16:55:10,988 - INFO - s1_tiles contains 19 features
+2025-02-28 16:55:30,565 - INFO - Processing for buffer: 100
+2025-02-28 16:55:52,328 - INFO - Claculate size shift difference
+2025-02-28 16:55:59,260 - INFO - Plot radar reduction potential
+2025-02-28 16:56:00,976 - INFO - Plot size and position change
+2025-02-28 16:56:16,154 - INFO - Plot signal counts
+2025-02-28 16:56:17,936 - INFO - Calculate and plot overlap percentages
+2025-02-28 16:56:30,039 - INFO - Processing for buffer: 250
+2025-02-28 16:57:00,250 - INFO - Claculate size shift difference
+2025-02-28 16:57:08,278 - INFO - Plot radar reduction potential
+2025-02-28 16:57:09,835 - INFO - Plot size and position change
+2025-02-28 16:57:24,954 - INFO - Plot signal counts
+2025-02-28 16:57:26,652 - INFO - Calculate and plot overlap percentages
+2025-02-28 16:57:42,749 - INFO - Processing for buffer: 500
+2025-02-28 16:58:30,876 - INFO - Claculate size shift difference
+2025-02-28 16:58:40,333 - INFO - Plot radar reduction potential
+2025-02-28 16:58:41,890 - INFO - Plot size and position change
+2025-02-28 16:58:57,165 - INFO - Plot signal counts
+2025-02-28 16:58:58,865 - INFO - Calculate and plot overlap percentages
+2025-02-28 16:59:22,232 - INFO - Processing for buffer: 1000
+2025-02-28 17:01:05,418 - INFO - Claculate size shift difference
+2025-02-28 17:01:18,428 - INFO - Plot radar reduction potential
+2025-02-28 17:01:20,033 - INFO - Plot size and position change
+2025-02-28 17:01:35,515 - INFO - Plot signal counts
+2025-02-28 17:01:37,199 - INFO - Calculate and plot overlap percentages
+2025-02-28 17:02:20,011 - INFO - Plot generation completed.

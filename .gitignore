@@ -1,15 +1,2 @@
 # ignore ALL these files 
-results/03_s1cd_polygons/
-results_clean/
-logs/
-results/tmp
-results/
-results/intermediate_results/
-grids/
-timeseries/
-logs/
-overlapping_results/
-figures/timeseries_merged_vegetation_indecies/
-figures/ids_refdm_timeseries_drought/
-figures/ids_refdm_timeseries_vegiation_indecies_drought/
-environment/.env/
+src/logs/
