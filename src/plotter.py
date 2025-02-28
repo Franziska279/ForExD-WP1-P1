@@ -67,7 +67,7 @@ class Plotter:
             ids_convex = calculate_minimum_outerline_area(ids_gdf)[['geometry', 'area_km2', 'DCA_ID']]
             
             # Remove drought disturbances
-            s1dm_no_drought = remove_drought(s1dm_frequency)
+            s1dm_no_drought = remove_drought(s1dm_cleaned)
             s1dm_no_drought_gdf = remove_drought(s1dm_gdf)
         
 
@@ -104,7 +104,7 @@ class Plotter:
             logging.info('Calculate and plot overlap percentages')
             plot_percentages_histograms(
                 ids_gdf, 
-                s1dm_no_drought, 
+                s1dm_no_drought_gdf, 
                 self.custom_colors, 
                 figure_overlap_percentage_path
             )
