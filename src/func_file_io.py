@@ -142,3 +142,19 @@ def remove_directory(input_dir):
         print(f"Successfully removed directory and all contents: {input_dir}")
     except OSError as e:
         print(f"Error removing directory and all contents: {input_dir} - {e}")
+
+
+
+def load_tcc_nc_dataset(tcc_nc_path):
+    """
+    Load and process the REFDM dataset by dissolving it based on the USDA_IDX column.
+
+    Parameters:
+        refdm_path (str): Path to the REFDM shapefile.
+    
+    Returns:
+        GeoDataFrame: Processed REFDM GeoDataFrame with unique events.
+    """
+    # Load the shapefile using geopandas
+    tcc_dataset = xr.open_dataset(tcc_nc_path)
+    return tcc_dataset

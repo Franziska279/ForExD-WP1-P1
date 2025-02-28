@@ -2,6 +2,7 @@ import json
 from scipy.stats import zscore
 import xarray as xr
 import numpy as np
+import pandas as pd
 from func_file_io import load_data
 
 ########################################################################################
@@ -87,6 +88,73 @@ def load_and_extract_region(path, region_id):
     return region_conus
 
 
+# def get_mainland(gdf_path, region_id):
+#     """
+#     Extracts the mainland parts of specified regions from the given GeoDataFrame.
+    
+#     Parameters:
+#         gdf_path (str): Path to the input GeoDataFrame file.
+#         region_ids (list): List of region IDs to process.
+    
+#     Returns:
+#         GeoDataFrame: Cleaned GeoDataFrame with only the mainland parts of specified regions.
+#     """
+#     gdf = gpd.read_file(gdf_path)
+#     cleaned_parts = []
+
+#     for region_id in region_id:
+#         region_gdf = gdf[gdf['REGION'] == region_id]
+#         exploded = region_gdf.explode(index_parts=True)
+#         exploded['area'] = exploded.area
+        
+#         # Select the largest mainland part
+#         mainland_part = exploded.loc[exploded['area'].idxmax()]
+#         cleaned_region = exploded[exploded['area'] == mainland_part['area']]
+#         cleaned_parts.append(cleaned_region)
+
+#     cleaned_parts_gdf = gpd.GeoDataFrame(pd.concat(cleaned_parts, ignore_index=True))
+
+#     # Combine cleaned mainland regions with the rest of the dataset
+#     mainland_gdf = pd.concat([gdf[~gdf['REGION'].isin(region_ids)], cleaned_parts_gdf], ignore_index=True)
+
+#     return mainland_gdf
+
+
+
+def get_mainland(gdf_path):
+    """
+    Cleans the mainland parts of specified regions from the given GeoDataFrame.
+    
+    Parameters:
+        gdf_path (str): Path to the input GeoDataFrame file.
+    
+    Returns:
+        GeoDataFrame: Cleaned GeoDataFrame with mainland parts of specified regions.
+    """
+    gdf = gpd.read_file(gdf_path)
+    regions_to_clean = ['05', '10']
+    cleaned_parts = []
+
+    for region in regions_to_clean:
+        region_gdf = gdf[gdf['REGION'] == '08']
+        exploded = region_gdf.explode(index_parts=True)
+        exploded['area'] = exploded.area
+        # Get the mainland part with the maximum area
+        mainland_part = exploded.loc[exploded['area'].idxmax()]
+        cleaned_region = exploded[exploded['area'] == mainland_part['area']]
+        cleaned_parts.append(cleaned_region)
+
+    cleaned_parts_gdf = gpd.GeoDataFrame(pd.concat(cleaned_parts, ignore_index=True))
+
+    # Combine cleaned parts with the rest of the GeoDataFrame
+    #usa_mainland = gdf[~gdf['REGION'].isin(regions_to_clean)].append(cleaned_parts_gdf, ignore_index=True)
+
+    # Update mainland by removing small parts and adding cleaned parts
+    usa_mainland = pd.concat([gdf[~gdf['REGION'].isin(regions_to_clean)], cleaned_parts_gdf], ignore_index=True)
+
+    return usa_mainland
+
+
 def calculate_area_in_km2(gdf):
     """
     Calculate the area of each polygon in the GeoDataFrame in square kilometers.
@@ -104,3 +172,162 @@ def calculate_area_in_km2(gdf):
     gdf['area_km2'] = projected_gdf['area_km2']
 
     return gdf
+
+
+def calculate_minimum_outerline_area(gdf):
+    """
+    Calculate the area of the minimum outerline (convex hull) of each multipolygon 
+    in the GeoDataFrame in square kilometers.
+
+    Parameters:
+    gdf (GeoDataFrame): GeoDataFrame with geometries.
+
+    Returns:
+    GeoDataFrame: GeoDataFrame with added column 'area_km2' for area in square kilometers.
+    """
+    # Calculate the convex hull for each geometry (minimum outerline)
+    gdf['geometry'] = gdf.geometry.apply(lambda geom: geom.convex_hull if geom else None)
+
+    # Calculate the area of the convex hulls in km² using the provided function
+    gdf = calculate_area_in_km2(gdf)
+
+    return gdf
+
+
+import geopandas as gpd
+from shapely.geometry import MultiPolygon
+from shapely.ops import unary_union
+
+def merge_geometries_and_keep_columns(gdf):
+    """
+    Merge geometries by 'IDX_D' and 'S1_YEAR' into a single geometry (MultiPolygon) and
+    keep the first value for all other columns.
+
+    Parameters:
+    - gdf (GeoDataFrame): The input GeoDataFrame with geometries and other columns.
+    
+    Returns:
+    - GeoDataFrame: A new GeoDataFrame with merged geometries and first values of other columns.
+    """
+    grouped_gdf = gdf.groupby(['IDX_D', 'S1_YEAR']).apply(
+        lambda group: group.unary_union  # Merge the geometries within each group
+    ).reset_index(name='geometry')
+
+    # Step 2: For other columns, keep the first value
+    for column in gdf.columns:
+        if column not in ['IDX_D', 'S1_YEAR', 'geometry']:  # Skip 'IDX_D', 'S1_YEAR', and 'geometry'
+            # Ensure the aggregation keeps the first value for each group
+            grouped_gdf[column] = gdf.groupby(['IDX_D', 'S1_YEAR'])[column].first().values
+
+    # Step 3: Convert to GeoDataFrame and ensure geometries are MultiPolygons if they aren't already
+    grouped_gdf = gpd.GeoDataFrame(grouped_gdf, geometry='geometry')
+
+    # Ensure the geometries are MultiPolygons if they aren't already
+    grouped_gdf['geometry'] = grouped_gdf['geometry'].apply(
+        lambda geom: MultiPolygon([geom]) if not isinstance(geom, MultiPolygon) else geom
+    )
+
+    # Step 4: Set CRS (coordinate reference system) if needed
+    grouped_gdf.set_crs(gdf.crs, allow_override=True, inplace=True)
+
+    return grouped_gdf
+
+
+
+from shapely.ops import unary_union
+
+def remove_drought(gdf):
+    return gdf[gdf['DCA_ID'] != 'drought']
+
+def closest_s1_year(group):
+    # Ensure that both 'S1_YEAR' and 'SURVEY_Y' are numeric
+    group['S1_YEAR'] = pd.to_numeric(group['S1_YEAR'], errors='coerce')
+    group['SURVEY_Y'] = pd.to_numeric(group['SURVEY_Y'], errors='coerce')
+    
+    # Calculate the absolute difference between 'S1_YEAR' and 'SURVEY_Y'
+    group['S1_Y_diff'] = (group['S1_YEAR'] - group['SURVEY_Y']).abs()
+    
+    # Find the index of the row with the minimum difference
+    closest_idx = group['S1_Y_diff'].idxmin()
+    
+    return group.loc[closest_idx, 'S1_YEAR']
+
+
+def add_signal_duration_column(refdm_gdf, crs=None):
+    """
+    Fügt eine Signal-Dauer-Spalte basierend auf der Häufigkeit von IDX_D hinzu und aggregiert
+    nach IDX_D, so dass jedes IDX_D nur einmal erscheint. Dabei wird die Geometrie der verschiedenen
+    IDX_D-Ereignisse zu einem MultiPolygon zusammengeführt. Alle Spalten, die für jedes IDX_D denselben Wert haben,
+    bleiben erhalten, während Spalten mit unterschiedlichen Werten entsprechend aggregiert werden.
+
+    Parameter:
+    - refdm_gdf (GeoDataFrame): Das GeoDataFrame mit der Spalte IDX_D.
+    - crs (str oder dict, optional): Das CRS, das der Geometrie zugewiesen werden soll.
+
+    Rückgabe:
+    - refdm_gdf_aggregated (GeoDataFrame): Aggregiertes GeoDataFrame mit zusätzlicher 'signal_duration'-Spalte.
+    """
+
+    # Zähle, wie oft jedes IDX_D vorkommt
+    signal_duration_counts = refdm_gdf.groupby('IDX_D').size().reset_index(name='signal_duration')
+    
+    # Wir erstellen eine Aggregationsstrategie für alle Spalten
+    aggregation = {
+        'geometry': unary_union  # Aggregiert Geometrien zu einem MultiPolygon
+    }
+    
+    # Aggregiere für alle anderen Spalten
+    for column in refdm_gdf.columns:
+        if column != 'IDX_D' and column != 'geometry':  # Alle anderen Spalten außer IDX_D und geometry
+            if refdm_gdf[column].nunique() == 1:  # Wenn alle Werte in der Spalte gleich sind
+                aggregation[column] = 'first'  # Behalte den ersten Wert
+            else:
+                aggregation[column] = 'first'  # Ansonsten könnte man z.B. 'first' oder 'mean' verwenden
+    
+    # Aggregiere das GeoDataFrame nach IDX_D
+    refdm_gdf_aggregated = refdm_gdf.groupby('IDX_D').agg(aggregation).reset_index()
+    
+    # Add the 'S1_YEAR' closest to 'SURVEY_Y' for each 'IDX_D'
+    refdm_gdf_aggregated['S1_YEAR'] = refdm_gdf.groupby('IDX_D').apply(closest_s1_year).values
+    
+    # Setze die Geometriespalte explizit
+    refdm_gdf_aggregated = refdm_gdf_aggregated.set_geometry('geometry')
+
+    # Merge die gezählten Signal-Dauern in das aggregierte GeoDataFrame
+    refdm_gdf_aggregated = refdm_gdf_aggregated.merge(signal_duration_counts, on='IDX_D', how='left')
+    
+    # Falls ein CRS übergeben wurde, weise es der Geometrie zu
+    if crs:
+        refdm_gdf_aggregated.set_crs(crs, allow_override=True, inplace=True)
+    
+    return refdm_gdf_aggregated
+
+
+def calculate_overlap_percentages(ids, s1dm):
+    """Calculate the overlap percentage between IDS and S1DM geometries."""
+    # Ensure CRS matches
+    if ids.crs != s1dm.crs:
+        s1dm = s1dm.to_crs(ids.crs)
+
+    # Filter for common IDX_D values
+    common_idx_d = set(ids["IDX_D"]).intersection(s1dm["IDX_D"])
+    ids_common = ids[ids["IDX_D"].isin(common_idx_d)]
+    s1cd_common = s1dm[s1dm["IDX_D"].isin(common_idx_d)]
+
+    # Store results
+    results = []
+    for idx_d in common_idx_d:
+        ids_poly = ids_common[ids_common["IDX_D"] == idx_d].geometry.union_all()
+        s1cd_poly = s1cd_common[s1cd_common["IDX_D"] == idx_d].geometry.union_all()
+        
+        ids_area = ids_poly.area
+        s1cd_area = s1cd_poly.area
+        intersection_area = ids_poly.intersection(s1cd_poly).area
+        
+        percentage_ids = (intersection_area / ids_area) * 100 if ids_area > 0 else 0
+        percentage_s1cd = (intersection_area / s1cd_area) * 100 if s1cd_area > 0 else 0
+        
+        dca_id = ids_common[ids_common["IDX_D"] == idx_d]["DCA_ID"].iloc[0]
+        results.append({"DCA_ID": dca_id, "percentage_ids": percentage_ids, "percentage_s1cd": percentage_s1cd})
+
+    return pd.DataFrame(results)

@@ -17,10 +17,19 @@ from matplotlib.ticker import FormatStrFormatter
 from matplotlib.ticker import MaxNLocator, FuncFormatter
 import matplotlib.ticker as ticker
 from scipy.stats import gaussian_kde
+from shapely.geometry import Polygon
+from matplotlib.colors import LinearSegmentedColormap
+import matplotlib.pyplot as plt
+from shapely import wkt
+import seaborn as sns
+import numpy as np
+from matplotlib.lines import Line2D
+from pathlib import Path
+import geopandas as gpd
+from tqdm import tqdm 
 
-
-
-from func_helper import parse_custom_colors, format_label
+from func_helper import parse_custom_colors, format_label, calculate_minimum_outerline_area, get_mainland, load_and_extract_region, calculate_overlap_percentages
+from func_file_io import load_tcc_nc_dataset, load_data
 
 def format_ticks(x, pos):
     """Format the ticks to always have one decimal place."""
@@ -376,12 +385,14 @@ def create_plots(combined_dataset, refdm_filtered, ids_filtered, grid, unique_mi
 
 
 # Analysis plots
+
+# Analysis plots
 def plot_radar_reduction_potential(refdm_gdf, ids_gdf, save_path, plot_reduction=True):
     # Define font sizes and bar parameters
     title_fontsize = 34
     legend_title_fontsize = 30
-    label_fontsize = 28
-    legend_fontsize = 28
+    label_fontsize = 30
+    legend_fontsize = 30
     tick_fontsize = 26
     annotation_fontsize = 26
     bar_width = 0.35  # Width of the bars
@@ -433,14 +444,20 @@ def plot_radar_reduction_potential(refdm_gdf, ids_gdf, save_path, plot_reduction
         ax1.text(bar_positions[i] + bar_width, count_refdm + 2, str(int(count_refdm)), ha='center', va='bottom', color='black', fontsize=annotation_fontsize)
 
     # Set labels and title for the first subplot
-    ax1.set_ylabel('Number of Disturbance Events', fontsize=label_fontsize, labelpad=20)  # Increase font size for ylabel and add padding
+    ax1.set_ylabel(r"${N_{\text{Disturbance Events}}}$", fontsize=label_fontsize, labelpad=20)  # Increase font size for ylabel and add padding
     ax1.set_yscale('log')
     ax1.set_ylim(1, counts_df_sorted[['IDS', 'S1DM']].max().max() * 2)  # Set y-limit for log scale
     legend = ax1.legend(fontsize=legend_fontsize, title='Datasets')  # Increase font size for legend and add title
     legend.get_title().set_fontsize(legend_title_fontsize)
     ax1.grid(False)
     plt.yticks(fontsize=tick_fontsize)
-    plt.xticks(bar_positions, dca_labels, fontsize=tick_fontsize)
+
+    # Calculate the midpoint of the grouped bars and adjust to move slightly left
+    group_width = bar_width * 2  # Total width of a group (2 bars per group)
+    tick_positions = [pos + group_width / 2 - (bar_width / 2.5) for pos in bar_positions]  # Slightly move left
+    plt.xticks(tick_positions, dca_labels, fontsize=tick_fontsize, ha='center')  # Center the x-ticks
+
+
     ax1.tick_params(axis='x', which='major', pad=15)
 
     # Plot Reduction (%) in the second subplot if plot_reduction is True
@@ -465,7 +482,7 @@ def plot_radar_reduction_potential(refdm_gdf, ids_gdf, save_path, plot_reduction
         plt.xticks([pos + bar_offset for pos in bar_positions], dca_labels, fontsize=tick_fontsize, ha='right')  # Adjust the rotation and alignment
 
         # Rotate x-axis labels for ax2
-        ax2.set_xticklabels(dca_labels, ha='right', fontsize=0)  # Rotate and increase font size
+        ax2.set_xticklabels('', ha='right', fontsize=1)  # Rotate and increase font size
         ax2.grid(False)
 
         # Adjust x-axis ticks and labels
@@ -479,6 +496,13 @@ def plot_radar_reduction_potential(refdm_gdf, ids_gdf, save_path, plot_reduction
     plt.show()
 
 
+
+import matplotlib.pyplot as plt
+import seaborn as sns
+import pandas as pd
+import numpy as np
+import matplotlib.patches as mpatches
+from matplotlib import ticker
 import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
@@ -486,7 +510,9 @@ import numpy as np
 import matplotlib.patches as mpatches
 from matplotlib import ticker
 
-def plot_area_size_shift_per_disturbances(gdf, ids, custom_colors, save_path):
+from matplotlib.lines import Line2D
+
+def plot_d_area_ch_area_centroid_disturbances(gdf, ids, s1dm_convex, ids_convex, custom_colors, save_path):
     """
     Plot the comparison between IDS and REFDM disturbance areas and centroid shifts,
     with the legend placed inside the centroid shift plot.
@@ -505,15 +531,20 @@ def plot_area_size_shift_per_disturbances(gdf, ids, custom_colors, save_path):
     sns.set(style="whitegrid")
 
     n_categories = len(category_order)
-    n_cols = 3  
+    n_cols = 3  # Fixed number of columns
+    fig, axs = plt.subplots(
+        n_categories, 
+        n_cols, 
+        figsize=(40, 8 * n_categories), 
+        gridspec_kw={'width_ratios': [3, 3, 2], 'wspace': 0.3} # Reduce the width ratios for empty columns
+    )
 
-    fig, axs = plt.subplots(n_categories, n_cols, figsize=(35, 40), gridspec_kw={'width_ratios': [3, 0.02, 2]})
     
     fontsize_supertitle = 44
-    fontsize_legend = 46
+    fontsize_legend = 40
     fontsize_title = 46
-    fontsize_label = 44
-    fontsize_tick = 40
+    fontsize_label = 50
+    fontsize_tick = 35
     padding_label = 25
     padding_title = 25
 
@@ -524,6 +555,11 @@ def plot_area_size_shift_per_disturbances(gdf, ids, custom_colors, save_path):
             gdf.loc[gdf['DCA_ID'] == category, ['DCA_ID', 'area_km2']].assign(Source='REFDM')
         ])
 
+        combined_convex = pd.concat([
+            ids_convex.loc[ids_convex['DCA_ID'] == category, ['DCA_ID', 'area_km2']].assign(Source='IDS'),
+            s1dm_convex.loc[s1dm_convex['DCA_ID'] == category, ['DCA_ID', 'area_km2']].assign(Source='REFDM')
+        ])
+
         ax = axs[i, 0]
         data_refdm = combined_data.loc[(combined_data['Source'] == 'REFDM') & (combined_data['DCA_ID'] == category)]
         data_ids = combined_data.loc[(combined_data['Source'] == 'IDS') & (combined_data['DCA_ID'] == category)]
@@ -532,7 +568,7 @@ def plot_area_size_shift_per_disturbances(gdf, ids, custom_colors, save_path):
         median_ids = np.median(data_ids['area_km2'])
 
         ax.axvline(x=0, color='black', linestyle='-', linewidth=2)
-
+        
         # Plot KDE for IDS
         sns.kdeplot(
             data=data_ids['area_km2'],
@@ -542,7 +578,7 @@ def plot_area_size_shift_per_disturbances(gdf, ids, custom_colors, save_path):
             linewidth=4,
             label='IDS',
             alpha=0.8,
-            linestyle='--'
+            linestyle='-'
         )
 
         # Plot KDE for REFDM
@@ -557,6 +593,14 @@ def plot_area_size_shift_per_disturbances(gdf, ids, custom_colors, save_path):
             linestyle='-'
         )
 
+        # # Calculate the 90th percentile for disturbance area
+        # percentile_90_refdm = np.percentile(data_refdm['area_km2'], 90)
+        # percentile_90_ids = np.percentile(data_ids['area_km2'], 90)
+
+        # # Add vertical lines at the 90th percentile
+        # ax.axvline(x=percentile_90_ids, color='black', linestyle=':', linewidth=3, alpha=0.8, label=f'IDS 90th: {percentile_90_ids:.2f}', marker='o', markersize=16)
+        # ax.axvline(x=percentile_90_refdm, color=custom_palette[category], linestyle=':', linewidth=3, alpha=1, label=f'S1DM 90th: {percentile_90_refdm:.2f}', marker='s', markersize=16)
+
         # Adjust median formatting for Bark Beetle DCA_ID
         if category == 'bark_beetle':
             median_refdm_label = f'S1DM Median: {median_refdm:.4f}' if median_refdm > 0 else 'S1DM Median: 0.0'
@@ -565,14 +609,33 @@ def plot_area_size_shift_per_disturbances(gdf, ids, custom_colors, save_path):
             median_refdm_label = f'S1DM Median: {median_refdm:.2f}'
             median_ids_label = f'IDS Median: {median_ids:.2f}'
 
-        ax.axvline(x=median_ids, color='black', linestyle='--', linewidth=3, alpha=0.8, label=median_ids_label, marker='o', markersize=16)
-        ax.axvline(x=median_refdm, color=custom_palette[category], linestyle='-', linewidth=3, alpha=1, label=median_refdm_label, marker='s', markersize=16)
+        from scipy.stats import gaussian_kde
+
+        # Calculate KDE for IDS
+        kde_ids = gaussian_kde(data_ids['area_km2'])
+        x_vals_ids = np.linspace(min(data_ids['area_km2']), max(data_ids['area_km2']), 1000)
+        kde_vals_ids = kde_ids(x_vals_ids)
+        kde_at_median_ids = kde_ids(median_ids)[0]  # KDE value at median
+
+        # Draw the median line for IDS
+        ax.plot([median_ids, median_ids], [0, kde_at_median_ids], color='black', linestyle='--', linewidth=3, alpha=0.8, label=median_ids_label)
+        ax.plot(median_ids, kde_at_median_ids, 'o', color='black', markersize=10)  # Dot at the median peak
+
+        # Calculate KDE for REFDM
+        kde_refdm = gaussian_kde(data_refdm['area_km2'])
+        x_vals_refdm = np.linspace(min(data_refdm['area_km2']), max(data_refdm['area_km2']), 1000)
+        kde_vals_refdm = kde_refdm(x_vals_refdm)
+        kde_at_median_refdm = kde_refdm(median_refdm)[0]  # KDE value at median
+
+        # Draw the median line for REFDM
+        ax.plot([median_refdm, median_refdm], [0, kde_at_median_refdm], color=custom_palette[category], linestyle='--', linewidth=3, alpha=1, label=median_refdm_label)
+        ax.plot(median_refdm, kde_at_median_refdm, 'o', color=custom_palette[category], markersize=10)  # Dot at the median peak
 
         ax.tick_params(axis='y', labelsize=fontsize_tick)
         ax.tick_params(axis='x', labelsize=fontsize_tick)
 
         if i == len(category_order) - 1:  # Only set x-label for the bottom row
-            ax.set_xlabel('Disturbance Area (km²)', fontsize=fontsize_label, labelpad=padding_label)
+            ax.set_xlabel(r"${A_{\text{D}}\text{ (km²)} }$", fontsize=fontsize_label, labelpad=padding_label)
         else:
             ax.set_xlabel('', labelpad=padding_label)
 
@@ -583,11 +646,106 @@ def plot_area_size_shift_per_disturbances(gdf, ids, custom_colors, save_path):
         ax.yaxis.set_major_locator(ticker.MaxNLocator(nbins=3, prune='lower'))
         ax.yaxis.set_major_formatter(ticker.FuncFormatter(format_ticks))
 
-        ax.set_xlim(-0.01, 10)
+        #ax.set_xlim(-0.01, 10)
         ax.set_ylim(0)
         ax.legend(fontsize=fontsize_tick)
 
-        # Distribution plot for centroid shifts
+        ax = axs[i, 1]
+        data_refdm = combined_convex.loc[(combined_convex['Source'] == 'REFDM') & (combined_convex['DCA_ID'] == category)]
+        data_ids = combined_convex.loc[(combined_convex['Source'] == 'IDS') & (combined_convex['DCA_ID'] == category)]
+
+        median_refdm = np.median(data_refdm['area_km2'])
+        median_ids = np.median(data_ids['area_km2'])
+
+        ax.axvline(x=0, color='black', linestyle='-', linewidth=2)
+        
+        # Plot KDE for IDS
+        sns.kdeplot(
+            data=data_ids['area_km2'],
+            color='black',
+            ax=ax,
+            common_norm=True,
+            linewidth=4,
+            label='IDS',
+            alpha=0.8,
+            linestyle='-'
+        )
+
+        # Plot KDE for REFDM
+        sns.kdeplot(
+            data=data_refdm['area_km2'],
+            color=custom_palette[category],
+            ax=ax,
+            common_norm=True,
+            linewidth=4,
+            label='S1DM',
+            alpha=1,
+            linestyle='-'
+        )
+
+        #  # Calculate the 90th percentile for disturbance area
+        # percentile_90_refdm = np.percentile(data_refdm['area_km2'], 90)
+        # percentile_90_ids = np.percentile(data_ids['area_km2'], 90)
+
+        # # Add vertical lines at the 90th percentile
+        # ax.axvline(x=percentile_90_ids, color='black', linestyle=':', linewidth=3, alpha=0.8, label=f'IDS 90th: {percentile_90_ids:.2f}', marker='o', markersize=16)
+        # ax.axvline(x=percentile_90_refdm, color=custom_palette[category], linestyle=':', linewidth=3, alpha=1, label=f'S1DM 90th: {percentile_90_refdm:.2f}', marker='s', markersize=16)
+
+        # Adjust median formatting for Bark Beetle DCA_ID
+        if category == 'bark_beetle':
+            median_refdm_label = f'S1DM Median: {median_refdm:.4f}' if median_refdm > 0 else 'S1DM Median: 0.0'
+            median_ids_label = f'IDS Median: {median_ids:.4f}' if median_ids > 0 else 'IDS Median: 0.0'
+        else:
+            median_refdm_label = f'S1DM Median: {median_refdm:.2f}'
+            median_ids_label = f'IDS Median: {median_ids:.2f}'
+
+        # ax.axvline(x=median_ids, color='black', linestyle='--', linewidth=3, alpha=0.8, label=median_ids_label, marker='o', markersize=16)
+        # ax.axvline(x=median_refdm, color=custom_palette[category], linestyle='--', linewidth=3, alpha=1, label=median_refdm_label, marker='s', markersize=16)
+        
+        from scipy.stats import gaussian_kde
+
+        # Calculate KDE for IDS
+        kde_ids = gaussian_kde(data_ids['area_km2'])
+        x_vals_ids = np.linspace(min(data_ids['area_km2']), max(data_ids['area_km2']), 1000)
+        kde_vals_ids = kde_ids(x_vals_ids)
+        kde_at_median_ids = kde_ids(median_ids)[0]  # KDE value at median
+
+        # Draw the median line for IDS
+        ax.plot([median_ids, median_ids], [0, kde_at_median_ids], color='black', linestyle='--', linewidth=3, alpha=0.8, label=median_ids_label)
+        ax.plot(median_ids, kde_at_median_ids, 'o', color='black', markersize=10)  # Dot at the median peak
+
+        # Calculate KDE for REFDM
+        kde_refdm = gaussian_kde(data_refdm['area_km2'])
+        x_vals_refdm = np.linspace(min(data_refdm['area_km2']), max(data_refdm['area_km2']), 1000)
+        kde_vals_refdm = kde_refdm(x_vals_refdm)
+        kde_at_median_refdm = kde_refdm(median_refdm)[0]  # KDE value at median
+
+        # Draw the median line for REFDM
+        ax.plot([median_refdm, median_refdm], [0, kde_at_median_refdm], color=custom_palette[category], linestyle='--', linewidth=3, alpha=1, label=median_refdm_label)
+        ax.plot(median_refdm, kde_at_median_refdm, 'o', color=custom_palette[category], markersize=10)  # Dot at the median peak
+
+
+        ax.tick_params(axis='y', labelsize=fontsize_tick)
+        ax.tick_params(axis='x', labelsize=fontsize_tick)
+
+        if i == len(category_order) - 1:  # Only set x-label for the bottom row
+            ax.set_xlabel(r"${A_{\text{CH}}\text{ (km²)} }$", fontsize=fontsize_label, labelpad=padding_label)
+        else:
+            ax.set_xlabel('', labelpad=padding_label)
+
+        ax.set_ylabel(' ', fontsize=fontsize_label, labelpad=padding_label)
+
+        # Set the x-ticks and limit to 4 while ensuring not to include 0
+        ax.xaxis.set_major_locator(ticker.MaxNLocator(nbins=5, integer=True, prune=None))  # Prune limits for edge ticks
+        ax.yaxis.set_major_locator(ticker.MaxNLocator(nbins=3, prune='lower'))
+        ax.yaxis.set_major_formatter(ticker.FuncFormatter(format_ticks))
+
+        #ax.set_xlim(-0.01, 15)
+        ax.set_ylim(0)
+        ax.legend(fontsize=fontsize_tick)
+
+
+        
         ax = axs[i, 2]
         sns.histplot(
             data=gdf.loc[gdf['DCA_ID'] == category],  # Use .loc[] to filter rows by DCA_ID
@@ -595,17 +753,59 @@ def plot_area_size_shift_per_disturbances(gdf, ids, custom_colors, save_path):
             kde=True,
             line_kws={'linewidth': 4},
             color=custom_palette[category],
-            ax=ax
+            ax=ax,
+            stat='count'  # This ensures the histogram is using 'count' for the y-axis
         )
 
+        # Calculate the median for the current category
+        median_value = gdf.loc[gdf['DCA_ID'] == category, 'centroid_shift_m'].median()
+
+        # Calculate the 90th percentile for the current category
+        percentile_90_value = gdf.loc[gdf['DCA_ID'] == category, 'centroid_shift_m'].quantile(0.9)
+
+        # Print the median and 90th percentile values
+        # print(f"Median for category {category}: {median_value} m")
+        # print(f"90th Percentile for category {category}: {percentile_90_value} m")
+        # Format the median value (e.g., round to nearest integer)
+        formatted_median = f"{int(round(median_value))}"  # Rounds to nearest integer, removes decimals
+
+        # Get the histogram count and bin edges
+        hist_data = ax.patches  # This gives us all the histogram bars
+        bin_edges = [patch.get_x() for patch in hist_data] + [hist_data[-1].get_x() + hist_data[-1].get_width()]
+        bin_width = bin_edges[1] - bin_edges[0]  # Assuming uniform bin widths
+
+        # Calculate the KDE for the current category
+        kde = gaussian_kde(gdf.loc[gdf['DCA_ID'] == category, 'centroid_shift_m'])
+        kde_at_median = kde(median_value)[0]  # KDE value at median
+
+        # Scale the KDE to the histogram's count scale
+        n_total = len(gdf.loc[gdf['DCA_ID'] == category])  # Total number of data points
+        hist_max = max([patch.get_height() for patch in hist_data])  # Maximum histogram height (count)
+
+        # Adjust the KDE value based on histogram's maximum count and total data points
+        scaled_kde = kde_at_median * n_total * bin_width
+
+        # Plot the median line and adjust to the histogram's count scale
+        ax.plot(
+            [median_value, median_value], [0, scaled_kde],  # Extend only up to the scaled KDE value
+            color=custom_palette[category],
+            linestyle='--',
+            linewidth=4,
+            label=f"M: {formatted_median} m"
+        )
+
+        # Add a dot at the upper limit of the median line (on the scaled KDE curve)
+        ax.plot(median_value, scaled_kde, 'o', color=custom_palette[category], markersize=20)
+
+
         if i == len(category_order) - 1:
-            ax.set_xlabel('Centroid Shift (m)', fontsize=fontsize_label, labelpad=padding_label)
+            ax.set_xlabel(r"${\Delta_{\text{Centroid}} \text{ (m)} }$", fontsize=fontsize_label, labelpad=padding_label)
         else:
             ax.set_xlabel(' ', fontsize=fontsize_label, labelpad=padding_label)
 
         ax.tick_params(axis='x', labelsize=fontsize_tick)
         ax.tick_params(axis='y', labelsize=fontsize_tick)
-        ax.set_xlim(0, 2600)
+        #ax.set_xlim(0,)
 
         ax.set_ylabel(' ', fontsize=fontsize_label, labelpad=padding_label)
 
@@ -614,20 +814,30 @@ def plot_area_size_shift_per_disturbances(gdf, ids, custom_colors, save_path):
         ax.yaxis.set_major_locator(ticker.MaxNLocator(nbins=3, prune='lower')) 
         
         # Add the custom legend
-        ax.legend(handles=[mpatches.Patch(color=custom_palette[category], label=format_label(category))],
-                  loc='upper right', fontsize=fontsize_legend, frameon=True, fancybox=True, facecolor='white', edgecolor='black')
+        ax.legend(handles=[
+                        mpatches.Patch(color=custom_palette[category], label=format_label(category)),  # Main category label
+                        Line2D([0], [0], color=custom_palette[category], linestyle='--', linewidth=2, label=f"M: {formatted_median} m")  # Median line legend
+                    ],
+                  loc='upper right', fontsize=fontsize_legend, frameon=True, fancybox=True, facecolor='white', edgecolor='black', 
+                    handlelength=1,   
+                    handleheight=0.5)
 
-        axs[i, 1].axis('off')
+ 
 
     # Add common y-axis labels for the plots
-    fig.text(0.05, 0.5, 'PDF', va='center', rotation='vertical', fontsize=fontsize_label)
-    fig.text(0.63, 0.5, 'Number of Events', va='center', rotation='vertical', fontsize=fontsize_label)
+    fig.text(0.07, 0.5, r"${PDF}$", va='center', rotation='vertical', fontsize=fontsize_label)
+    fig.text(0.39, 0.5, r"${PDF}$", va='center', rotation='vertical', fontsize=fontsize_label)
+    fig.text(0.69, 0.5, r"${N_{\text{Events}}}$", va='center', rotation='vertical', fontsize=fontsize_label)
 
-    plt.tight_layout(rect=[0.05, 0.05, 1, 0.95])
+    fig.text(0.24, 0.9, "a)", va='center', rotation='horizontal', fontsize=fontsize_label)
+    fig.text(0.55, 0.9, "b)", va='center', rotation='horizontal', fontsize=fontsize_label)
+    fig.text(0.8, 0.9, "c)", va='center', rotation='horizontal', fontsize=fontsize_label)
+
+    # Adjust layout for better alignment
+    #plt.tight_layout(rect=[0.05, 0.05, 0.95, 0.95])  # Adjust margins (left, bottom, right, top)
+
     plt.savefig(save_path, dpi=400, bbox_inches='tight')
     plt.show()
-
-
 
 
 def plot_disturbance_signal_duration(refdm_dissolved, save_path):
@@ -713,77 +923,93 @@ def plot_disturbance_signal_duration(refdm_dissolved, save_path):
     plt.show()
 
 
-
-def plot_signal_counts_by_diff_year(gdf, custom_colors, save_path):
+def plot_signal_counts_by_diff_year_combined(gdf1, gdf2, custom_colors, save_path):
     """
-    Plot a line plot showing the counts of disturbances for each difference in years (SURVEY_Y - S1_YEAR),
-    grouped by DCA_ID, and add a median line for each disturbance type, with custom colors.
-    
+    Create two side-by-side line plots showing the counts of disturbances for each difference in years (SURVEY_Y - S1_YEAR),
+    grouped by DCA_ID, with custom colors.
+
     Parameters:
-    - gdf (GeoDataFrame): GeoDataFrame containing 'SURVEY_Y', 'S1_YEAR', and 'DCA_ID' columns.
+    - gdf1 (GeoDataFrame): First GeoDataFrame containing 'SURVEY_Y', 'S1_YEAR', and 'DCA_ID' columns.
+    - gdf2 (GeoDataFrame): Second GeoDataFrame containing 'SURVEY_Y', 'S1_YEAR', and 'DCA_ID' columns.
+    - custom_colors (dict): A dictionary mapping DCA_IDs to colors.
+    - save_path (str): Path to save the output figure.
     """
-    
-    # Ensure the columns are in the correct type for calculations
-    gdf.loc[:, 'SURVEY_Y'] = gdf['SURVEY_Y'].astype(int)
-    gdf.loc[:, 'S1_YEAR'] = gdf['S1_YEAR'].astype(int)
 
-    # Calculate the difference in years between survey and disturbance using .loc[]
-    gdf.loc[:, 'diff_year'] = gdf['SURVEY_Y'] - gdf['S1_YEAR']
+    def preprocess_and_count(gdf):
+        # Ensure the columns are in the correct type for calculations
+        gdf.loc[:, 'SURVEY_Y'] = gdf['SURVEY_Y'].astype(int)
+        gdf.loc[:, 'S1_YEAR'] = gdf['S1_YEAR'].astype(int)
 
-    # Count the occurrences of each combination of 'diff_year' and 'DCA_ID'
-    count_by_diff_year_dca = gdf.groupby(['diff_year', 'DCA_ID']).size().reset_index(name='Count')
+        # Calculate the difference in years between survey and disturbance
+        gdf.loc[:, 'diff_year'] = gdf['SURVEY_Y'] - gdf['S1_YEAR']
 
-    # Create the figure for the plot
-    plt.figure(figsize=(10, 5))  # Adjusted figure size to ensure elements fit well
+        # Count the occurrences of each combination of 'diff_year' and 'DCA_ID'
+        return gdf.groupby(['diff_year', 'DCA_ID']).size().reset_index(name='Count')
 
-    # Loop through each 'DCA_ID' and plot its respective line
-    for dca_id in count_by_diff_year_dca['DCA_ID'].unique():
-        # Get the data for the current DCA_ID using .loc[] to avoid SettingWithCopyWarning
-        dca_data = count_by_diff_year_dca.loc[count_by_diff_year_dca['DCA_ID'] == dca_id]
-        
-        # Plot the line for the current DCA_ID with the custom color
-        sns.lineplot(
-            data=dca_data,
-            x="diff_year", 
-            y="Count", 
-            label=dca_id,  # Use DCA_ID directly as the label
-            color=custom_colors.get(dca_id, '#000000'),  # Default to black if DCA_ID is not in custom_colors
-            marker="o", 
-            linewidth=2
-        )
-    
-    # Set labels and title for the plot with appropriate padding
-    plt.xlabel("Year Lag (IDS - S1CD)", fontsize=18, labelpad=15)
-    plt.ylabel("Count of Disturbances", fontsize=18, labelpad=15)
+    # Preprocess and count occurrences for both GeoDataFrames
+    count_by_diff_year_dca1 = preprocess_and_count(gdf1)
+    count_by_diff_year_dca2 = preprocess_and_count(gdf2)
 
-    # Customize x-ticks and labels
-    plt.xticks(ticks=range(-2, 3), labels=["-2", "-1", "0", "+1", "+2"], fontsize=15)
+    # Create subplots with 1 row and 2 columns
+    fig, axes = plt.subplots(1, 2, figsize=(16, 6), sharey=True)  # Shared y-axis for comparison
 
-    # Customize y-ticks
-    plt.tick_params(axis='y', labelsize=15)
-    plt.tick_params(axis='x', labelsize=15)
+    # Helper function to plot each dataset on the given axis
+    def plot_single_dataset(ax, data, title, show_legend=False):
+        for dca_id in data['DCA_ID'].unique():
+            # Get the data for the current DCA_ID
+            dca_data = data.loc[data['DCA_ID'] == dca_id]
 
-    # Remove the top and right spines (keeping the left and bottom spines)
-    plt.gca().spines['top'].set_visible(False)
-    plt.gca().spines['right'].set_visible(False)
+            # Plot the line for the current DCA_ID with the custom color
+            sns.lineplot(
+                data=dca_data,
+                x="diff_year",
+                y="Count",
+                label=dca_id if show_legend else None,  # Only show labels in the legend for one plot
+                color=custom_colors.get(dca_id, '#000000'),  # Default to black if DCA_ID is not in custom_colors
+                marker="o",
+                markersize=10, 
+                linewidth=4,
+                ax=ax,
+            )
 
-    # Get the current legend and modify the labels if necessary
-    handles, labels = plt.gca().get_legend_handles_labels()
-    formatted_labels = [format_label(label) for label in labels]  # If you want to format them, add logic here
+        # Set labels and title
+        ax.set_title(title, fontsize=18, pad=10)
+        ax.set_xlabel(r"${Lag_{\text{(IDS-S1DM)}}}$", fontsize=20, labelpad=10)
+        ax.set_ylabel(r"${N_{\text{Annual Signals}}}$", fontsize=20, labelpad=10)
+        ax.set_xticks(range(-2, 3))  # Fixed x-ticks
+        ax.set_xticklabels(["-2", "-1", "0", "+1", "+2"], fontsize=14)
+        ax.tick_params(axis='both', labelsize=18)
+        ax.grid(color='lightgray', linestyle='-', linewidth=0.5)
 
-    # Update the legend with custom positions and labels
-    plt.legend(handles, formatted_labels, fontsize=15, title_fontsize=16, loc='center right', labelspacing=1)
+        # Remove the top and right spines
+        ax.spines['top'].set_visible(False)
+        ax.spines['right'].set_visible(False)
 
-    # Adjust layout to avoid cutting off labels and ticks
+        # Add legend if specified
+        if show_legend:
+            handles, labels = ax.get_legend_handles_labels()
+            formatted_labels = [format_label(label) for label in labels]  # If you want to format them, add logic here
+            ax.legend(
+                handles, formatted_labels, fontsize=18, loc='upper right', title="", title_fontsize=1
+            )
+
+    # Plot the first dataset on the first axis
+    plot_single_dataset(axes[0], count_by_diff_year_dca1, "", show_legend=False)
+
+    # Plot the second dataset on the second axis
+    plot_single_dataset(axes[1], count_by_diff_year_dca2, "", show_legend=True)
+
+   
+    # Adjust layout to avoid overlap
     plt.tight_layout()
-    # Save the figure with a specific DPI to fit an A4 page
+
+    # Save the combined figure
     plt.savefig(save_path, dpi=400, bbox_inches='tight')
 
     # Show the plot
     plt.show()
 
-
-def calculate_plot_overlap_percentage(ids, s1dm,custom_colors, save_path):
+def calculate_plot_overlap_percentage_kde(ids, s1dm,custom_colors, save_path):
 
     # Ensure both datasets have the same coordinate reference system (CRS)
     if ids.crs != s1dm.crs:
@@ -852,8 +1078,11 @@ def calculate_plot_overlap_percentage(ids, s1dm,custom_colors, save_path):
             kde_at_median = kde(median)
             
             # Plot the KDE for the current DCA_ID
-            sns.kdeplot(dca_id_df['percentage_ids'], fill=False, label=f"{format_label(dca_id)} ({median:.2f})", color=custom_colors[dca_id], ax=axes[0])
-            
+            #sns.kdeplot(dca_id_df['percentage_ids'], fill=False, label=f"{format_label(dca_id)} ({median:.1f}%)", color=custom_colors[dca_id], ax=axes[0])
+            sns.histplot(dca_id_df['percentage_ids'], bins=10, cumulative=False, multiple="dodge", stat="density", 
+                    element="bars", color=custom_colors[dca_id], label=f"{format_label(dca_id)}", 
+                    linewidth=2, alpha=0.7, ax=axes[0])
+
             # Get y-axis limits
             y_min, y_max = axes[0].get_ylim()
             
@@ -889,8 +1118,13 @@ def calculate_plot_overlap_percentage(ids, s1dm,custom_colors, save_path):
             kde_at_median = kde(median)
             
             # Plot the KDE for the current DCA_ID
-            sns.kdeplot(dca_id_df['percentage_s1cd'], fill=False, label=f"{format_label(dca_id)} ({median:.2f})", color=custom_colors[dca_id], ax=axes[1])
+            # sns.kdeplot(dca_id_df['percentage_s1cd'], fill=False, label=f"{format_label(dca_id)} ({median:.1f}%)", color=custom_colors[dca_id], ax=axes[1])
             
+            # Plot cumulative histogram
+            sns.histplot(dca_id_df['percentage_s1cd'], bins=10, cumulative=False, multiple="dodge", stat="density", 
+                    element="bars", color=custom_colors[dca_id], label=f"{format_label(dca_id)}", 
+                    linewidth=2, alpha=0.7, ax=axes[1])
+
             # Get y-axis limits
             y_min, y_max = axes[1].get_ylim()
             
@@ -901,27 +1135,353 @@ def calculate_plot_overlap_percentage(ids, s1dm,custom_colors, save_path):
             axes[1].plot(median, kde_at_median[0], 'o', color=custom_colors[dca_id], markersize=6)
 
     # Customize both plots
-    axes[0].set_title('S1DM Coverage of IDS Polygons', fontsize=16)
-    axes[0].set_xlabel('Percentage of S1DM Covering IDS', fontsize=14)
-    axes[0].set_ylabel('KDE', fontsize=14)
+    # Customize both plots
+    axes[0].set_xlabel(r"$\frac{A_{\text{IDS} \bigcap \text{S1DM}}}{A_{\text{IDS}}}$", fontsize=24, labelpad=10)  # Added labelpad
+    axes[0].set_ylabel('KDE', fontsize=20, labelpad=10)  # Added labelpad
+    axes[0].yaxis.set_major_locator(MaxNLocator(nbins=4))
     axes[0].set_xlim(0, 100)  # Cut off the x-axis at 100 and avoid negative values
-    axes[0].tick_params(axis='both', labelsize=12)
-    axes[0].legend(loc='upper right', fontsize=12)
+    axes[0].tick_params(axis='both', labelsize=18)
+    axes[0].legend(loc='upper right', fontsize=18)
 
-    axes[1].set_title('IDS Coverage of S1DM Polygons', fontsize=16)
-    axes[1].set_xlabel('Percentage of IDS Covering S1DM', fontsize=14)
-    axes[1].set_ylabel('KDE', fontsize=14)
+    axes[1].set_xlabel(r"$\frac{A_{\text{IDS} \bigcap \text{S1DM}}}{A_{\text{S1DM}}}$", fontsize=24, labelpad=10)  # Added labelpad
+    axes[1].set_ylabel('KDE', fontsize=20, labelpad=10)  # Added labelpad
+    axes[1].yaxis.set_major_locator(MaxNLocator(nbins=4))
     axes[1].set_xlim(0, 100)  # Cut off the x-axis at 100 and avoid negative values
-    axes[1].tick_params(axis='both', labelsize=12)
-    axes[1].legend(loc='upper right', fontsize=12)
+    axes[1].tick_params(axis='both', labelsize=18)
+    axes[1].legend(loc='upper right', fontsize=18)
 
-    # Display grid
+    # Format y-axis tick labels to 2 decimal places
     for ax in axes:
-        ax.grid(True)
+        ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda y, _: f'{y:.2f}'))
+        # Remove the upper and right spines
+        # ax.spines['top'].set_visible(False)
+        # ax.spines['right'].set_visible(False)
+        # Set the grid color to light gray
+        ax.grid(color='lightgray', linestyle='-', linewidth=0.5)
 
     # Adjust layout to prevent overlap
     plt.tight_layout()
+
     # Save the figure with a specific DPI to fit an A4 page
-    plt.savefig(save_path, dpi=400, bbox_inches='tight')
+    plt.savefig(save_path, dpi=300, bbox_inches='tight')
+
     # Show the plot
     plt.show()
+
+def calculate_plot_overlap_percentage(ids, s1dm, custom_colors, save_path):
+    # Ensure CRS matches
+    if ids.crs != s1dm.crs:
+        s1dm = s1dm.to_crs(ids.crs)
+
+    # Filter for common IDX_D values
+    common_idx_d = set(ids["IDX_D"]).intersection(s1dm["IDX_D"])
+    ids_common = ids[ids["IDX_D"].isin(common_idx_d)]
+    s1cd_common = s1dm[s1dm["IDX_D"].isin(common_idx_d)]
+
+    # Store results
+    results = []
+    for idx_d in common_idx_d:
+        ids_poly = ids_common[ids_common["IDX_D"] == idx_d].geometry.unary_union
+        s1cd_poly = s1cd_common[s1cd_common["IDX_D"] == idx_d].geometry.unary_union
+        
+        ids_area = ids_poly.area
+        s1cd_area = s1cd_poly.area
+        intersection_area = ids_poly.intersection(s1cd_poly).area
+        
+        percentage_ids = (intersection_area / ids_area) * 100 if ids_area > 0 else 0
+        percentage_s1cd = (intersection_area / s1cd_area) * 100 if s1cd_area > 0 else 0
+        
+        dca_id = ids_common[ids_common["IDX_D"] == idx_d]["DCA_ID"].iloc[0]
+        results.append({"DCA_ID": dca_id, "percentage_ids": percentage_ids, "percentage_s1cd": percentage_s1cd})
+
+    results_df = pd.DataFrame(results)
+    
+    # Plot histograms
+    fig, axes = plt.subplots(1, 2, figsize=(16, 6))
+    
+    # Plot IDS coverage with custom colors
+    sns.kdeplot(
+        data=results_df, x="percentage_ids", hue="DCA_ID", hue_order=["bark_beetle", "wind", "fire", "defoliators"],
+        log_scale=True, element="step", fill=False,
+        cumulative=True, stat="density", common_norm=False, ax=axes[0], palette=custom_colors
+    )
+
+    # Plot S1CD coverage with custom colors
+    sns.kdeplot(
+        data=results_df, x="percentage_s1cd", hue="DCA_ID", hue_order=["bark_beetle", "wind", "fire", "defoliators"],
+        log_scale=True, element="step", fill=False,
+        cumulative=True, stat="density", common_norm=False, ax=axes[1], palette=custom_colors
+    )
+    
+    # Customize plots
+    axes[0].set_xlabel("IDS Coverage (%)", fontsize=16)
+    axes[1].set_xlabel("S1CD Coverage (%)", fontsize=16)
+    
+    for ax in axes:
+        ax.set_ylabel("Density", fontsize=16)  # Change to "Density"
+        ax.set_xlim(0, 100)  # Ensure percentages are within 0 to 100
+        ax.tick_params(axis='both', labelsize=14)
+        ax.legend(title="DCA_ID", fontsize=12)
+    
+    # Tight layout and save the plot
+    plt.tight_layout()
+    plt.savefig(save_path, dpi=300, bbox_inches='tight')
+    plt.show()
+    
+
+
+def plot_percentages_histograms(ids_gdf, s1dm_gdf, custom_colors, save_path=None):
+    """
+    Plots stacked histograms for percentage_ids and percentage_s1cd with customized bins, formatting, and legends.
+
+    Parameters:
+        ids_gdf (GeoDataFrame): The IDS dataset containing disturbance data.
+        s1dm_gdf (GeoDataFrame): The S1DM dataset containing disturbance data.
+        custom_colors (dict): Dictionary mapping DCA_ID values to colors.
+        save_path (str, optional): File path to save the plot (e.g., "output.png" or "figures/histogram.pdf").
+    """
+
+    results_df = calculate_overlap_percentages(ids_gdf, s1dm_gdf)
+
+       # Set bin edges: first bin is from -10 to 0, then 1-10, 11-20, etc.
+    bins = [-10] + list(np.arange(1, 101, 10))  
+
+    # Create figure with two subplots (stacked horizontally)
+    fig, axes = plt.subplots(1, 2, figsize=(15, 5))  
+
+    # Remove drought disturbances
+    results_df = results_df[results_df["DCA_ID"] != "drought"]
+
+    # Initialize lists to store legend handles
+    legend_handles = []
+    legend_handles_s1dm = []
+
+    # Highlight the area around 0
+    axes[0].axvspan(-10, 0, color='grey', alpha=0.3)  # Grey shaded area for 0 range
+    axes[1].axvspan(-10, 0, color='grey', alpha=0.3)  # Grey shaded area for 0 range
+
+
+    # Plot stacked histogram for percentage_ids
+    sns.histplot(
+        data=results_df, 
+        x="percentage_ids", 
+        bins=bins, 
+        element='bars',
+        kde=False, 
+        ax=axes[0], 
+        hue="DCA_ID",  
+        multiple="dodge", 
+        shrink=.8, 
+        stat="probability",
+        palette=custom_colors,  
+        legend=False  
+    )
+
+    # Plot stacked histogram for percentage_s1cd
+    sns.histplot(
+        data=results_df, 
+        x="percentage_s1cd", 
+        bins=bins, 
+        element='bars',
+        kde=False, 
+        ax=axes[1], 
+        hue="DCA_ID",  
+        multiple="dodge", 
+        shrink=.8, 
+        stat="probability",
+        palette=custom_colors,  
+        legend=False  
+    )
+
+    # Add median values to the legend, excluding 'drought'
+    for dca_id, color in custom_colors.items():
+        if dca_id in results_df["DCA_ID"].unique():
+            dca_df = results_df[results_df["DCA_ID"] == dca_id]
+
+            # Compute median
+            median_value = np.median(dca_df["percentage_ids"])
+            median_value_s1dm = np.median(dca_df["percentage_s1cd"])
+
+            # Format median values
+            median_value = 0 if np.isclose(median_value, 0, atol=1e-10) else median_value
+            median_value_s1dm = 0 if np.isclose(median_value_s1dm, 0, atol=1e-10) else median_value_s1dm
+
+            # Format the label correctly: Show decimal places only if the number is not 0
+            median_label = f"{median_value:.2f}" if median_value != 0 else "0"
+            median_label_s1dm = f"{median_value_s1dm:.2f}" if median_value_s1dm != 0 else "0"
+
+            legend_handles.append(Line2D([0], [0], color=color, lw=3, 
+                                        label=f"{format_label(dca_id)} (Median: {median_label})"))
+            legend_handles_s1dm.append(Line2D([0], [0], color=color, lw=3, 
+                                            label=f"{format_label(dca_id)} (Median: {median_label_s1dm})"))
+
+    # Formatting for the first subplot (percentage_ids)
+    axes[0].set_xlabel(r"$\frac{A_{\text{IDS} \bigcap \text{S1DM}}}{A_{\text{IDS}}}$", fontsize=26, labelpad=15)
+    axes[0].set_ylabel("Probability", fontsize=18, labelpad=15)
+    axes[0].tick_params(axis='both', which='major', labelsize=16)
+    axes[0].grid(True, linestyle="--", alpha=0.8)
+    axes[0].set_yticks([0.1, 0.2, 0.3, 0.4, 0.5])
+    axes[0].set_xlim(left=-10, right=101)
+
+    # Set x-ticks to start from 0 and increment by 10
+    axes[0].set_xticks(np.arange(0, 101, 10))  # Ticks from 0, 10, 20, 30, 40, 50, ...
+
+    # Formatting for the second subplot (percentage_s1cd)
+    axes[1].set_xlabel(r"$\frac{A_{\text{IDS} \bigcap \text{S1DM}}}{A_{\text{S1DM}}}$", fontsize=26, labelpad=15)
+    axes[1].tick_params(axis='both', which='major', labelsize=16)
+    axes[1].grid(True, linestyle="--", alpha=0.8)
+    axes[1].set_yticks([0.0, 0.2, 0.3, 0.4, 0.5])
+    axes[1].set_xlim(left=-10, right=101)
+
+    # Remove y-label and y-ticks for the second subplot
+    axes[1].set_ylabel('')
+    axes[1].tick_params(left=False)
+
+    # Set x-ticks to start from 0 and increment by 10, shifting them to the right by 0.5
+    #tick_positions = np.arange(0, 101, 10) - 5  # Shifted by 0.5 to the right
+    tick_positions = np.array([0, 20, 40, 60, 80, 100]) - 5  
+    #tick_labels = np.arange(0, 101, 10)  # Keep the original labels
+    tick_labels = [0, 20, 40, 60, 80, 100]  # Desired labels
+
+    axes[0].set_xticks(tick_positions)
+    axes[0].set_xticklabels(tick_labels)  # Ensure labels stay correct
+
+    axes[1].set_xticks(tick_positions)
+    axes[1].set_xticklabels(tick_labels)
+
+    # Add legends
+    axes[0].legend(handles=legend_handles, loc='upper right', fontsize=16, title_fontsize=18)
+    axes[1].legend(handles=legend_handles_s1dm, loc='upper right', fontsize=16, title_fontsize=18)
+
+    # Adjust layout
+    plt.tight_layout()
+
+    # Save the plot if save_path is provided
+    if save_path:
+        plt.savefig(save_path, dpi=300, bbox_inches="tight")
+
+    # Show the plot
+    plt.show()
+
+def plot_study_area(area_path, region_id, tcc_nc_path, s1_tiles_boundary_path, ids, custom_colors, save_path, logging):
+    logging.info("Load the USA Mainland and Region 8 Shape ...")
+    mainland = get_mainland(area_path)
+    region_8 = load_and_extract_region(area_path, region_id=region_id)
+
+    logging.info("Load the TCC Region 8 Map ...")
+    tcc_dataset = load_tcc_nc_dataset(tcc_nc_path)
+    logging.info("Plot Study area figure ...")
+    combine_study_area_plots(tcc_dataset, s1_tiles_boundary_path, mainland, region_8, ids, region_id, custom_colors, save_path, logging)
+
+def combine_study_area_plots(cropped_forest, s1_tiles_boundary_path, usa_mainland, r8, gdf, region_id, custom_colors, save_path, logging):
+    """
+    Plot the TCC map with disturbance types and save the figure.
+    """
+    # Normalize the TCC values
+    cropped_forest = normalize_tcc(cropped_forest)
+    s1_tiles = load_data(s1_tiles_boundary_path)
+    logging.info(f"s1_tiles contains {len(s1_tiles)} features")
+    if s1_tiles.crs != cropped_forest.rio.crs:
+        s1_tiles = s1_tiles.to_crs('EPSG:4326')
+
+    # Set Seaborn style
+    sns.set(style="whitegrid")
+    
+    fig, ax = plt.subplots(1, 1, figsize=(14, 10))
+    
+    # Plot the entire USA in grey in the upper left corner
+    sub_ax = fig.add_axes([-0.05, 0.78, 0.25, 0.25])  # [left, bottom, width, height]
+    plot_mainland_map(sub_ax, usa_mainland, region_id)
+    
+    # Create a custom colormap
+    custom_cmap = create_custom_colormap()
+    
+    # Plot the TCC map within Region 8 boundaries
+    plot_tcc_map(ax, cropped_forest, custom_cmap)
+    
+    # Plot the region outline
+    r8.boundary.plot(ax=ax, linewidth=1, color='#000000')
+    
+     # Add a label in the center of Region 8
+    ax.text(
+        0.5, 0.97, "S1CD Tiles",  # Centered in x, slightly lower than before
+        fontsize=16, fontweight='normal', color="black",  # Not bold
+        ha='center', va='center',
+        transform=ax.transAxes,  # Position relative to axis
+        bbox=dict(facecolor='white', edgecolor='black')
+    )
+
+    # Plot disturbance types
+    plot_disturbance_types(ax, gdf, custom_colors)
+    
+    # Customize the plot
+    ax.axis('off')  # Remove axis and frame
+    
+    # Create legend for disturbance types
+    legend_patches = [mpatches.Patch(color=color, label=format_label(disturbance)) for disturbance, color in custom_colors.items()]
+    ax.legend(handles=legend_patches, fontsize=18, title="Disturbance Type", title_fontsize=20, loc='center left', facecolor='white', framealpha=1)
+    
+    s1_tiles.boundary.plot(ax=ax, edgecolor="black", linewidth=2)
+
+    plt.savefig(save_path, bbox_inches='tight')
+    plt.show()
+
+def normalize_tcc(cropped_forest):
+    """
+    Normalize the 'tcc' values in the cropped forest data to range between 0 and 100.
+    """
+    cropped_forest['tcc'] = (cropped_forest['tcc'] / cropped_forest['tcc'].max()) * 100
+    cropped_forest['tcc'] = cropped_forest['tcc'].clip(min=0, max=100)
+    return cropped_forest
+
+def plot_mainland_map(ax, usa_mainland, region_id):
+    """
+    Plot the entire USA mainland with Region 8 highlighted.
+    """
+    usa_mainland[usa_mainland['REGION'] != region_id].plot(ax=ax, color='grey', edgecolor='grey')
+    usa_mainland[usa_mainland['REGION'] == region_id].plot(ax=ax, color='black', edgecolor='black')
+    ax.set_xlabel('Longitude', fontsize=18)
+    ax.set_ylabel('Latitude', fontsize=18)
+    ax.tick_params(axis='both', which='major', labelsize=16)
+    ax.grid(True)
+    ax.axis('on')
+
+def create_custom_colormap():
+    """
+    Create a custom colormap for the TCC plot.
+    """
+    cmap = plt.colormaps['Greens']
+    new_colors = cmap(np.linspace(0, 1, 100))
+    new_colors[0, :] = [1, 1, 1, 1]  # Set the first color (corresponding to 0) to white
+    return LinearSegmentedColormap.from_list('CustomGreens', new_colors)
+
+def plot_tcc_map(ax, cropped_forest, custom_cmap):
+    """
+    Plot the TCC map within Region 8 boundaries.
+    """
+    plot = cropped_forest['tcc'].plot(ax=ax, cmap=custom_cmap, add_colorbar=False, add_labels=False)
+    cbar = plt.colorbar(plot, ax=ax, orientation='horizontal', pad=0.05, aspect=10, shrink=0.8)
+    cbar.mappable.set_cmap(custom_cmap)
+    #cbar.ax.set_position([0.15, 0.2, 0., 0.03])  # [left, bottom, width, height]
+    cbar.ax.set_position([0.35, 0.31, 0.35, 0.03])  # [left, bottom, width, height]
+    cbar.set_ticks([0, 25, 50, 75, 100])
+    cbar.set_ticklabels(['0', '25', '50', '75', '100'])
+    cbar.ax.tick_params(labelsize=16)
+    cbar.set_label('Tree Canopy Cover (%)', fontsize=16, labelpad=6)
+    cbar.ax.xaxis.set_label_position('top')
+    cbar.ax.xaxis.label.set_size(16)
+    cbar.ax.xaxis.labelpad = 10
+
+def plot_disturbance_types(ax, refdm_dissolved, custom_colors):
+    """
+    Plot disturbance types within Region 8 with corresponding colors and white edges.
+    """
+    for disturbance, color in custom_colors.items():
+        # Plot with white edge first
+        refdm_dissolved[refdm_dissolved['DCA_ID'] == disturbance].plot(
+            ax=ax, linewidth=3.5, color=color, edgecolor='white'
+        )
+        # Then plot with actual color and thinner edge
+        refdm_dissolved[refdm_dissolved['DCA_ID'] == disturbance].plot(
+            ax=ax, linewidth=2.5, color=color, edgecolor=color
+        )
