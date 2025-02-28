@@ -593,9 +593,15 @@ def plot_d_area_ch_area_centroid_disturbances(gdf, ids, s1dm_convex, ids_convex,
             linestyle='-'
         )
 
-        # # Calculate the 90th percentile for disturbance area
-        # percentile_90_refdm = np.percentile(data_refdm['area_km2'], 90)
-        # percentile_90_ids = np.percentile(data_ids['area_km2'], 90)
+        # Calculate the 90th percentile for disturbance area
+        percentile_90_refdm = np.percentile(data_refdm['area_km2'], 90)
+        percentile_90_ids = np.percentile(data_ids['area_km2'], 90)
+
+
+        print(f"Median IDS for category {category}: {median_ids} km²")
+        print(f"Median S1DM for category {category}: {median_refdm} km²")
+        print(f"90th Percentile IDS for category {category}: {percentile_90_ids} km²")
+        print(f"90th Percentile S1DM for category {category}: {percentile_90_refdm} km²")
 
         # # Add vertical lines at the 90th percentile
         # ax.axvline(x=percentile_90_ids, color='black', linestyle=':', linewidth=3, alpha=0.8, label=f'IDS 90th: {percentile_90_ids:.2f}', marker='o', markersize=16)
@@ -656,6 +662,7 @@ def plot_d_area_ch_area_centroid_disturbances(gdf, ids, s1dm_convex, ids_convex,
 
         median_refdm = np.median(data_refdm['area_km2'])
         median_ids = np.median(data_ids['area_km2'])
+        
 
         ax.axvline(x=0, color='black', linestyle='-', linewidth=2)
         
@@ -684,8 +691,14 @@ def plot_d_area_ch_area_centroid_disturbances(gdf, ids, s1dm_convex, ids_convex,
         )
 
         #  # Calculate the 90th percentile for disturbance area
-        # percentile_90_refdm = np.percentile(data_refdm['area_km2'], 90)
-        # percentile_90_ids = np.percentile(data_ids['area_km2'], 90)
+        percentile_90_refdm = np.percentile(data_refdm['area_km2'], 90)
+        percentile_90_ids = np.percentile(data_ids['area_km2'], 90)
+
+
+        print(f"Median IDS for category {category}: {median_ids} km²")
+        print(f"Median S1DM for category {category}: {median_refdm} km²")
+        print(f"90th Percentile IDS for category {category}: {percentile_90_ids} km²")
+        print(f"90th Percentile S1DM for category {category}: {percentile_90_refdm} km²")
 
         # # Add vertical lines at the 90th percentile
         # ax.axvline(x=percentile_90_ids, color='black', linestyle=':', linewidth=3, alpha=0.8, label=f'IDS 90th: {percentile_90_ids:.2f}', marker='o', markersize=16)
@@ -764,8 +777,8 @@ def plot_d_area_ch_area_centroid_disturbances(gdf, ids, s1dm_convex, ids_convex,
         percentile_90_value = gdf.loc[gdf['DCA_ID'] == category, 'centroid_shift_m'].quantile(0.9)
 
         # Print the median and 90th percentile values
-        # print(f"Median for category {category}: {median_value} m")
-        # print(f"90th Percentile for category {category}: {percentile_90_value} m")
+        print(f"Median for category {category}: {median_value} m")
+        print(f"90th Percentile for category {category}: {percentile_90_value} m")
         # Format the median value (e.g., round to nearest integer)
         formatted_median = f"{int(round(median_value))}"  # Rounds to nearest integer, removes decimals
 
@@ -1227,7 +1240,6 @@ def calculate_plot_overlap_percentage(ids, s1dm, custom_colors, save_path):
     plt.savefig(save_path, dpi=300, bbox_inches='tight')
     plt.show()
     
-
 def plot_percentages_histograms(ids_gdf, s1dm_gdf, custom_colors, save_path=None):
     """
     Plots stacked histograms for percentage_ids and percentage_s1cd with customized bins, formatting, and legends.
@@ -1328,7 +1340,7 @@ def plot_percentages_histograms(ids_gdf, s1dm_gdf, custom_colors, save_path=None
     axes[1].set_xlabel(r"$\frac{A_{\text{IDS} \bigcap \text{S1DM}}}{A_{\text{S1DM}}}$", fontsize=26, labelpad=15)
     axes[1].tick_params(axis='both', which='major', labelsize=16)
     axes[1].grid(True, linestyle="--", alpha=0.8)
-    axes[1].set_yticks([0.0, 0.2, 0.3, 0.4, 0.5])
+    axes[1].set_yticks([0.1, 0.2, 0.3, 0.4, 0.5])
     axes[1].set_xlim(left=-10, right=101)
 
     # Remove y-label and y-ticks for the second subplot
