@@ -13,96 +13,157 @@ import rioxarray
 from func_file_io import load_data
 
 
-def process_and_merge_disturbances(gdf, max_iterations=10):
+def rename_columns_and_process_data(gdf):
     """
-    Iteratively merges intersecting polygons with matching attributes until no further changes.
+    Rename columns to ensure no column name exceeds 10 characters, filter and process data.
+    
+    Parameters:
+    - gdf (GeoDataFrame): The input geospatial dataframe.
+    
+    Returns:
+    - GeoDataFrame: Processed and filtered GeoDataFrame.
     """
-    gdf = gdf[gdf['PERCENT_AFFECTED'].isna() | gdf['PERCENT_AFFECTED'].str.contains("Severe", case=False, na=False)]
-    gdf = gdf.drop(columns=['PERCENT_AFFECTED', 'HOST', 'HOST_CODE', 'DCA_CODE', 'DAMAGE_TYPE_CODE', 'DAMAGE_TYPE', 'cluster_id'])
+    gdf = gdf.rename(columns={col: col[:10] for col in gdf.columns})  # Truncate column names to 10 chars
+    gdf = gdf[gdf['PERCENT_AF'].isna() | gdf['PERCENT_AF'].str.contains("Severe", case=False, na=False)]
+    gdf = gdf.drop(columns=['PERCENT_AF', 'HOST', 'HOST_CODE', 'DCA_CODE', 'DAMAGE_TYP', 'DAMAGE_T_1', 'cluster_id'])
+    gdf = gdf[gdf['SURVEY_YEA'] > 2009]  # Filter data based on SURVEY_YEA
     gdf['geometry'] = gdf.geometry.apply(lambda geom: geom if geom.is_valid else geom.buffer(0))
-    gdf = gdf.rename(columns={'Unnamed: 0': 'ID_E'})
+    return gdf
 
+def merge_and_iterate(gdf, max_iterations=10):
+    """
+    Iteratively merges intersecting geometries with the same DCA_ID and SURVEY_YEA
+    until no further merges occur.
+    
+    Parameters:
+    - gdf (GeoDataFrame): The input GeoDataFrame with geometries to merge.
+    - max_iterations (int): Maximum iterations to attempt.
+    
+    Returns:
+    - GeoDataFrame: The fully merged GeoDataFrame.
+    """
+    prev_len = len(gdf)
     for iteration in range(max_iterations):
         print(f"> Iteration {iteration + 1}")
-        spatial_intersections_att = gpd.sjoin(gdf, gdf, how="left", predicate="intersects", lsuffix="left", rsuffix="right",
-            on_attribute=['DCA_ID', 'SURVEY_YEAR', 'REGION_ID', 'DA_Code_USDA'])
-        #print(spatial_intersections_att.columns)
-        merged_data = spatial_intersections_att.dissolve(by="ID_E_right", aggfunc="min").dissolve(by="ID_E_left", aggfunc="min").reset_index(drop=True)
-        merged_data = merged_data.drop(columns=['index_right'])
-        merged_data = merged_data.rename(columns={'ID_E_left': 'ID_E'})
-        merged_data['ID_E'] = range(len(merged_data))
-        merged_data = merged_data.reset_index(drop=True)
-
-        if len(merged_data) == len(gdf):
+        gdf = merge_intersecting_geometries(gdf)
+        if len(gdf) == prev_len:
             print(">> No more changes detected, stopping iterations.")
             break
-        gdf = merged_data
-
-    #print(f"Columns: {gdf.columns}")
+        prev_len = len(gdf)
     print(f"   Final number of merged records: {len(gdf)}")
     return gdf
 
-def remove_overlapping_entries(df, year_column='SURVEY_YEAR', geometry_column='geometry', year_range=5):
+def merge_intersecting_geometries(gdf):
     """
-    Remove overlapping entries within a specified temporal window.
+    Merge geometries that spatially intersect and share the same DCA_ID & SURVEY_YEA.
+    
+    Parameters:
+    - gdf (GeoDataFrame): Input GeoDataFrame.
+    
+    Returns:
+    - GeoDataFrame: GeoDataFrame with merged intersecting geometries.
     """
-    df = df.copy()
+    gdf = gdf.reset_index(drop=True)
+    spatial_intersections = gpd.sjoin(gdf, gdf, how="inner", predicate="intersects", lsuffix="left", rsuffix="right")
+    spatial_intersections = spatial_intersections[
+        (spatial_intersections["SURVEY_YEA_left"] == spatial_intersections["SURVEY_YEA_right"]) &
+        (spatial_intersections["DCA_ID_left"] == spatial_intersections["DCA_ID_right"])
+    ]
+    spatial_intersections = spatial_intersections.loc[:, ~spatial_intersections.columns.str.endswith('_right')]
+    spatial_intersections.columns = spatial_intersections.columns.str.replace('_left', '', regex=False)
+    
+    gdf["group"] = -1
+    group_id = 0
+    for idx, row in spatial_intersections.iterrows():
+        if gdf.at[row.name, "group"] == -1:
+            gdf.at[row.name, "group"] = group_id
+        intersecting_idx = spatial_intersections.index[spatial_intersections.index == row.name]
+        gdf.loc[intersecting_idx, "group"] = gdf.at[row.name, "group"]
+        group_id += 1
+
+    return gdf.dissolve(by=["group"], aggfunc="first").reset_index(drop=True)
+
+def remove_temporal_overlaps(gdf, year_column='SURVEY_YEA', geometry_column='geometry', year_range=5):
+    """
+    Remove entries that overlap temporally and spatially within the specified year range.
+    
+    Parameters:
+    - gdf (GeoDataFrame): Input GeoDataFrame.
+    - year_column (str): Column name for the survey year.
+    - geometry_column (str): Column name for geometry.
+    - year_range (int): Temporal window to consider overlaps.
+    
+    Returns:
+    - GeoDataFrame: GeoDataFrame with overlapping entries removed.
+    """
     overlapping_indices = set()
-    for index, row in tqdm(df.iterrows(), total=df.shape[0], desc=f"Removing overlaps within ±{year_range} years"):
-        time_window = (df[year_column].between(row[year_column] - year_range, row[year_column] + year_range))
-        overlaps = df[time_window & df[geometry_column].intersects(row[geometry_column])]
+    for index, row in tqdm(gdf.iterrows(), total=gdf.shape[0], desc=f"Removing overlaps within ±{year_range} years"):
+        time_window = gdf[year_column].between(row[year_column] - year_range, row[year_column] + year_range)
+        overlaps = gdf[time_window & gdf[geometry_column].intersects(row[geometry_column])]
         if len(overlaps) > 1:
             overlapping_indices.update(overlaps.index)
+    return gdf.drop(index=overlapping_indices)
 
-    return df.drop(index=overlapping_indices)
-
-def keep_overlapping_entries(df, id_column='ID_E', year_column='SURVEY_YEAR', geometry_column='geometry', year_range=2):
+def keep_and_analyze_overlaps(gdf, id_column='ID_E', year_column='SURVEY_YEA', geometry_column='geometry', year_range=2):
     """
-    Keep entries that overlap spatially within a specified temporal window, adding 'ID_O' for overlapping IDs.
+    Keep spatially overlapping entries, analyze overlaps, and add ID_O for overlapping IDs.
+    
+    Parameters:
+    - gdf (GeoDataFrame): Input GeoDataFrame.
+    - id_column (str): ID column to use for overlap analysis.
+    - year_column (str): Survey year column.
+    - geometry_column (str): Geometry column for spatial analysis.
+    - year_range (int): Year range within which overlaps are considered.
+    
+    Returns:
+    - GeoDataFrame: Filtered and analyzed GeoDataFrame with overlap information.
     """
-    df = df.copy()
-    df['ID_O'] = None
-    for index, row in tqdm(df.iterrows(), total=df.shape[0], desc=f"Finding overlaps within ±{year_range} years"):
-        time_window = df[year_column].between(row[year_column] - year_range, row[year_column] + year_range)
-        overlaps = df.loc[time_window & df[geometry_column].intersects(row[geometry_column])]
+    gdf['ID_O'] = None
+    for index, row in tqdm(gdf.iterrows(), total=gdf.shape[0], desc=f"Finding overlaps within ±{year_range} years"):
+        time_window = gdf[year_column].between(row[year_column] - year_range, row[year_column] + year_range)
+        overlaps = gdf.loc[time_window & gdf[geometry_column].intersects(row[geometry_column]) & (gdf[id_column] != row[id_column])]
         if not overlaps.empty:
-            df.at[index, 'ID_O'] = overlaps[id_column].tolist()
+            gdf.at[index, 'ID_O'] = overlaps[id_column].tolist()
 
-    return df.dropna(subset=['ID_O'])
-
-def analyze_overlaps(gdf_overlap, id_col='ID_E', year_col='SURVEY_YEAR', dca_id_col='DCA_ID'):
-    """
-    Analyze overlapping entries to determine the longest duration of overlap 
-    and count the unique DCA_IDs for each entry.
-    """
-    gdf_overlap['Longest_Duration'] = None
-    gdf_overlap['DCA_ID_Count'] = None
-    gdf_overlap['DCA_ID_List'] = None
-
-    for idx, row in tqdm(gdf_overlap.iterrows(), total=gdf_overlap.shape[0], desc="Analyzing overlaps"):
+    gdf_overlap_analyzed = gdf.dropna(subset=['ID_O'])
+    gdf_overlap_analyzed['Longest_Duration'] = None
+    gdf_overlap_analyzed['DCA_ID_Count'] = None
+    gdf_overlap_analyzed['DCA_ID_List'] = None
+    for idx, row in tqdm(gdf_overlap_analyzed.iterrows(), total=gdf_overlap_analyzed.shape[0], desc="Analyzing overlaps"):
         overlap_ids = row['ID_O']
         if overlap_ids:
-            overlap_data = gdf_overlap[gdf_overlap[id_col].isin(overlap_ids)]
-            gdf_overlap.at[idx, 'Longest_Duration'] = overlap_data[year_col].max() - overlap_data[year_col].min() + 1
-            dca_ids = overlap_data[dca_id_col].tolist()
-            gdf_overlap.at[idx, 'DCA_ID_Count'] = len(dca_ids)
-            gdf_overlap.at[idx, 'DCA_ID_List'] = dca_ids
+            overlap_data = gdf_overlap_analyzed[gdf_overlap_analyzed[id_column].isin(overlap_ids)]
+            gdf_overlap_analyzed.at[idx, 'Longest_Duration'] = overlap_data[year_column].max() - overlap_data[year_column].min() + 1
+            dca_ids = overlap_data['DCA_ID'].tolist()
+            gdf_overlap_analyzed.at[idx, 'DCA_ID_Count'] = len(dca_ids)
+            gdf_overlap_analyzed.at[idx, 'DCA_ID_List'] = dca_ids
 
-    return gdf_overlap
+    return gdf_overlap_analyzed[gdf_overlap_analyzed.apply(lambda row: row['DCA_ID_List'] == [row['DCA_ID']], axis=1)]
 
-def analyze_and_enrich_overlaps(df, year_col='SURVEY_YEAR', id_col='ID_E', dca_col='DCA_ID'):
+
+def filter_and_enrich_overlaps(gdf, year_col='SURVEY_YEA', id_col='ID_E', dca_col='DCA_ID'):
     """
-    Explode the 'ID_O' column and enrich with 'O_Year', 'O_DCA_ID', and year differences.
+    Filter and enrich overlaps based on DCA_ID match, and explode overlap IDs.
+    
+    Parameters:
+    - gdf (GeoDataFrame): Input GeoDataFrame.
+    - year_col (str): Survey year column.
+    - id_col (str): ID column.
+    - dca_col (str): DCA_ID column.
+    
+    Returns:
+    - GeoDataFrame: Filtered and enriched GeoDataFrame.
     """
-    exploded_df = df.explode('ID_O').drop(columns=['Longest_Duration', 'DCA_ID_Count', 'DCA_ID_List'])
-    year_lookup = df.set_index(id_col)[year_col].to_dict()
-    dca_lookup = df.set_index(id_col)[dca_col].to_dict()
-
+    exploded_df = gdf.explode('ID_O').drop(columns=['Longest_Duration', 'DCA_ID_Count', 'DCA_ID_List'])
+    year_lookup = gdf.set_index(id_col)[year_col].to_dict()
+    dca_lookup = gdf.set_index(id_col)[dca_col].to_dict()
+    
     exploded_df['O_Year'] = exploded_df['ID_O'].map(year_lookup)
     exploded_df['O_DCA_ID'] = exploded_df['ID_O'].map(dca_lookup)
     exploded_df['O_Y_diff'] = exploded_df['O_Year'] - exploded_df[year_col]
-
+    
     return exploded_df
+
 
 def filter_disturbance_data(data, excluded_dca_types, start_year=2015, end_year=2021):
     """
