@@ -4,34 +4,32 @@
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="Yp7T7Jn_KGCYI-EO29Ko-141" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;strokeWidth=3;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="Yp7T7Jn_KGCYI-EO29Ko-5" target="Yp7T7Jn_KGCYI-EO29Ko-148">
+        <mxCell id="Yp7T7Jn_KGCYI-EO29Ko-141" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;strokeWidth=3;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" target="Yp7T7Jn_KGCYI-EO29Ko-148">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="810" y="339.66666666666674" as="targetPoint" />
+            <mxPoint x="669.9999999999998" y="340" as="sourcePoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="Yp7T7Jn_KGCYI-EO29Ko-150" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" parent="1" source="Yp7T7Jn_KGCYI-EO29Ko-152" target="Yp7T7Jn_KGCYI-EO29Ko-149">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="Yp7T7Jn_KGCYI-EO29Ko-23" value="&lt;div&gt;&lt;font data-font-src=&quot;https://fonts.googleapis.com/css?family=Arimo&quot; face=&quot;Arimo&quot;&gt;- Smoothing&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font data-font-src=&quot;https://fonts.googleapis.com/css?family=Arimo&quot; face=&quot;Arimo&quot;&gt;- Vegetation Indecies &lt;br&gt;&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font data-font-src=&quot;https://fonts.googleapis.com/css?family=Arimo&quot; face=&quot;Arimo&quot;&gt;- Outlier Detection&lt;/font&gt;&lt;/div&gt;" style="shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;align=left;spacingLeft=4;spacingRight=4;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
-          <mxGeometry x="470" y="540" width="180" height="53" as="geometry" />
-        </mxCell>
         <mxCell id="Yp7T7Jn_KGCYI-EO29Ko-1" value="&lt;font style=&quot;font-size: 17px;&quot;&gt;Source Datasets&lt;/font&gt;" style="swimlane;whiteSpace=wrap;html=1;strokeColor=light-dark(#b5835a, #ededed);" vertex="1" parent="1">
-          <mxGeometry x="260" y="269" width="190" height="350" as="geometry" />
+          <mxGeometry x="250" y="269" width="200" height="350" as="geometry" />
         </mxCell>
-        <mxCell id="Yp7T7Jn_KGCYI-EO29Ko-6" value="&lt;font data-font-src=&quot;https://fonts.googleapis.com/css?family=Arimo&quot; face=&quot;Arimo&quot;&gt;Sentinel-1 Backscatter Datacubes&lt;/font&gt;" style="shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fixedSize=1;spacingLeft=18;align=left;spacingRight=18;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="Yp7T7Jn_KGCYI-EO29Ko-1">
-          <mxGeometry x="10" y="50" width="160" height="40" as="geometry" />
+        <mxCell id="Yp7T7Jn_KGCYI-EO29Ko-6" value="&lt;font style=&quot;font-size: 14px;&quot; data-font-src=&quot;https://fonts.googleapis.com/css?family=Arimo&quot; face=&quot;Arimo&quot;&gt;Sentinel-1 Backscatter Datacubes&lt;/font&gt;" style="shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fixedSize=1;spacingLeft=18;align=left;spacingRight=18;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="Yp7T7Jn_KGCYI-EO29Ko-1">
+          <mxGeometry x="10" y="45" width="180" height="50" as="geometry" />
         </mxCell>
-        <mxCell id="Yp7T7Jn_KGCYI-EO29Ko-7" value="&lt;font data-font-src=&quot;https://fonts.googleapis.com/css?family=Arimo&quot; face=&quot;Arimo&quot;&gt;Tree Canopy Cover (TCC)&lt;/font&gt;" style="shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fixedSize=1;align=left;spacingLeft=18;spacingRight=18;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="Yp7T7Jn_KGCYI-EO29Ko-1">
-          <mxGeometry x="10" y="118" width="160" height="40" as="geometry" />
+        <mxCell id="Yp7T7Jn_KGCYI-EO29Ko-7" value="&lt;font style=&quot;font-size: 14px;&quot; data-font-src=&quot;https://fonts.googleapis.com/css?family=Arimo&quot; face=&quot;Arimo&quot;&gt;Tree Canopy Cover (TCC)&lt;/font&gt;" style="shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fixedSize=1;align=left;spacingLeft=18;spacingRight=18;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="Yp7T7Jn_KGCYI-EO29Ko-1">
+          <mxGeometry x="10" y="118" width="180" height="40" as="geometry" />
         </mxCell>
-        <mxCell id="Yp7T7Jn_KGCYI-EO29Ko-8" value="&lt;font data-font-src=&quot;https://fonts.googleapis.com/css?family=Arimo&quot; face=&quot;Arimo&quot;&gt;Insect and Disease Detection Survey (IDS)&lt;/font&gt;" style="shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fixedSize=1;align=left;spacingLeft=18;spacingRight=18;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="Yp7T7Jn_KGCYI-EO29Ko-1">
-          <mxGeometry x="10" y="190" width="160" height="53" as="geometry" />
+        <mxCell id="Yp7T7Jn_KGCYI-EO29Ko-8" value="&lt;font style=&quot;font-size: 14px;&quot; data-font-src=&quot;https://fonts.googleapis.com/css?family=Arimo&quot; face=&quot;Arimo&quot;&gt;Insect and Disease Detection Survey (IDS)&lt;/font&gt;" style="shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fixedSize=1;align=left;spacingLeft=18;spacingRight=18;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="Yp7T7Jn_KGCYI-EO29Ko-1">
+          <mxGeometry x="10" y="191" width="180" height="53" as="geometry" />
         </mxCell>
-        <mxCell id="Yp7T7Jn_KGCYI-EO29Ko-9" value="&lt;font data-font-src=&quot;https://fonts.googleapis.com/css?family=Arimo&quot; face=&quot;Arimo&quot;&gt;Sentinel-2 Minicubes&lt;/font&gt;" style="shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="Yp7T7Jn_KGCYI-EO29Ko-1">
+        <mxCell id="Yp7T7Jn_KGCYI-EO29Ko-9" value="&lt;font style=&quot;font-size: 14px;&quot; data-font-src=&quot;https://fonts.googleapis.com/css?family=Arimo&quot; face=&quot;Arimo&quot;&gt;Sentinel-2 Minicubes&lt;/font&gt;" style="shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="Yp7T7Jn_KGCYI-EO29Ko-1">
           <mxGeometry x="10" y="283" width="160" height="27" as="geometry" />
         </mxCell>
         <mxCell id="Yp7T7Jn_KGCYI-EO29Ko-10" value="&lt;font data-font-src=&quot;https://fonts.googleapis.com/css?family=Arimo&quot; face=&quot;Arimo&quot;&gt;&lt;i&gt;&lt;font style=&quot;font-size: 11px;&quot;&gt;* Wagner et al. (2021)&lt;/font&gt;&lt;/i&gt;&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="Yp7T7Jn_KGCYI-EO29Ko-1">
-          <mxGeometry x="29.5" y="88" width="110.5" height="21" as="geometry" />
+          <mxGeometry x="29.5" y="92" width="110.5" height="21" as="geometry" />
         </mxCell>
         <mxCell id="Yp7T7Jn_KGCYI-EO29Ko-11" value="&lt;font data-font-src=&quot;https://fonts.googleapis.com/css?family=Arimo&quot; face=&quot;Arimo&quot;&gt;&lt;i&gt;&lt;font style=&quot;font-size: 11px;&quot;&gt;* Year 2017&lt;/font&gt;&lt;/i&gt;&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;labelPosition=center;verticalLabelPosition=middle;" vertex="1" parent="Yp7T7Jn_KGCYI-EO29Ko-1">
           <mxGeometry x="29" y="155" width="121" height="23" as="geometry" />
@@ -45,26 +43,10 @@
         <mxCell id="Yp7T7Jn_KGCYI-EO29Ko-2" value="&lt;font style=&quot;font-size: 17px;&quot;&gt;Data Preprocessing&lt;/font&gt;" style="swimlane;whiteSpace=wrap;html=1;strokeWidth=2;strokeColor=light-dark(#62a0ea, #ededed);" vertex="1" parent="1">
           <mxGeometry x="460" y="270" width="320" height="350" as="geometry" />
         </mxCell>
-        <mxCell id="Yp7T7Jn_KGCYI-EO29Ko-5" value="&lt;div align=&quot;left&quot;&gt;&lt;font data-font-src=&quot;https://fonts.googleapis.com/css?family=Arimo&quot; face=&quot;Arimo&quot;&gt;&lt;b&gt;Change Detection Algorithm:&amp;nbsp;&lt;/b&gt;&lt;/font&gt;&lt;/div&gt;&lt;div align=&quot;left&quot;&gt;&lt;font data-font-src=&quot;https://fonts.googleapis.com/css?family=Arimo&quot; face=&quot;Arimo&quot;&gt;Recurrence Quantification Analysis (RQA) Trend&lt;/font&gt;&lt;/div&gt;" style="shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;align=left;spacingLeft=4;spacingRight=4;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="Yp7T7Jn_KGCYI-EO29Ko-2">
-          <mxGeometry x="10" y="30" width="180" height="80" as="geometry" />
-        </mxCell>
-        <mxCell id="Yp7T7Jn_KGCYI-EO29Ko-174" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;strokeWidth=2;" edge="1" parent="Yp7T7Jn_KGCYI-EO29Ko-2" source="Yp7T7Jn_KGCYI-EO29Ko-21" target="Yp7T7Jn_KGCYI-EO29Ko-139">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="Yp7T7Jn_KGCYI-EO29Ko-21" value="&lt;div align=&quot;left&quot;&gt;&lt;font data-font-src=&quot;https://fonts.googleapis.com/css?family=Arimo&quot; face=&quot;Arimo&quot;&gt;TCC Rescaling + Normalization&lt;/font&gt;&lt;/div&gt;" style="shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;align=left;spacingLeft=4;spacingRight=4;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="Yp7T7Jn_KGCYI-EO29Ko-2">
-          <mxGeometry x="10" y="117" width="180" height="40" as="geometry" />
-        </mxCell>
-        <mxCell id="Yp7T7Jn_KGCYI-EO29Ko-22" value="&lt;div&gt;&lt;font data-font-src=&quot;https://fonts.googleapis.com/css?family=Arimo&quot; face=&quot;Arimo&quot;&gt;- Disturbance Type filter&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font data-font-src=&quot;https://fonts.googleapis.com/css?family=Arimo&quot; face=&quot;Arimo&quot;&gt;- Temporal filter&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font data-font-src=&quot;https://fonts.googleapis.com/css?family=Arimo&quot; face=&quot;Arimo&quot;&gt;- Spatial filter&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font data-font-src=&quot;https://fonts.googleapis.com/css?family=Arimo&quot; face=&quot;Arimo&quot;&gt;- Area size &amp;lt; 15 km²&lt;/font&gt;&lt;/div&gt;" style="shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;align=left;spacingLeft=4;spacingRight=4;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="Yp7T7Jn_KGCYI-EO29Ko-2">
-          <mxGeometry x="10" y="182" width="180" height="69" as="geometry" />
-        </mxCell>
-        <mxCell id="Yp7T7Jn_KGCYI-EO29Ko-32" value="&lt;b&gt;&lt;font style=&quot;font-size: 18px;&quot; face=&quot;Arimo&quot;&gt;C&lt;/font&gt;&lt;/b&gt;" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;strokeWidth=3;perimeterSpacing=6;strokeColor=light-dark(#62a0ea, #ededed);" vertex="1" parent="Yp7T7Jn_KGCYI-EO29Ko-2">
-          <mxGeometry x="179" y="27" width="30" height="30" as="geometry" />
-        </mxCell>
-        <mxCell id="Yp7T7Jn_KGCYI-EO29Ko-34" value="&lt;font style=&quot;font-size: 18px;&quot;&gt;A&lt;/font&gt;" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;strokeWidth=3;perimeterSpacing=6;strokeColor=light-dark(#ffa348, #ededed);" vertex="1" parent="Yp7T7Jn_KGCYI-EO29Ko-2">
-          <mxGeometry x="179" y="170" width="30" height="30" as="geometry" />
-        </mxCell>
-        <mxCell id="Yp7T7Jn_KGCYI-EO29Ko-35" value="&lt;font style=&quot;font-size: 18px;&quot;&gt;E&lt;/font&gt;" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;strokeWidth=3;perimeterSpacing=6;strokeColor=light-dark(#ed333b, #ededed);" vertex="1" parent="Yp7T7Jn_KGCYI-EO29Ko-2">
-          <mxGeometry x="179" y="262" width="30" height="30" as="geometry" />
+        <mxCell id="Yp7T7Jn_KGCYI-EO29Ko-174" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;strokeWidth=2;" edge="1" parent="Yp7T7Jn_KGCYI-EO29Ko-2" target="Yp7T7Jn_KGCYI-EO29Ko-139">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="209.99999999999977" y="137" as="sourcePoint" />
+          </mxGeometry>
         </mxCell>
         <mxCell id="Yp7T7Jn_KGCYI-EO29Ko-152" value="" style="html=1;whiteSpace=wrap;shape=isoCube2;backgroundOutline=1;isoAngle=15;" vertex="1" parent="Yp7T7Jn_KGCYI-EO29Ko-2">
           <mxGeometry x="232.76" y="260.5" width="60" height="70" as="geometry" />
@@ -72,91 +54,127 @@
         <mxCell id="Yp7T7Jn_KGCYI-EO29Ko-139" value="" style="shape=image;verticalLabelPosition=bottom;labelBackgroundColor=default;verticalAlign=top;aspect=fixed;imageAspect=0;image=data:image/png,iVBORw0KGgoAAAANSUhEUgAAAHEAAABmCAYAAAD8rX7zAAAAiXpUWHRSYXcgcHJvZmlsZSB0eXBlIGV4aWYAAHjaVY7dDcQwCIPfmaIj8BcTxjlVrXQb3PglTU9RvwewEbJMx+970jYQdvIWHQlw4empnxKdJ8YsyjJ2zcmzTUpp2ceT6RTIHuzr0Z1fNEPHGR6Bhh27VroeZvcUc7q/Rtiokiso/g3sfZ/dF3QB9ncs6x/jpZMAAAoGaVRYdFhNTDpjb20uYWRvYmUueG1wAAAAAAA8P3hwYWNrZXQgYmVnaW49Iu+7vyIgaWQ9Ilc1TTBNcENlaGlIenJlU3pOVGN6a2M5ZCI/Pgo8eDp4bXBtZXRhIHhtbG5zOng9ImFkb2JlOm5zOm1ldGEvIiB4OnhtcHRrPSJYTVAgQ29yZSA0LjQuMC1FeGl2MiI+CiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPgogIDxyZGY6RGVzY3JpcHRpb24gcmRmOmFib3V0PSIiCiAgICB4bWxuczpleGlmPSJodHRwOi8vbnMuYWRvYmUuY29tL2V4aWYvMS4wLyIKICAgIHhtbG5zOnRpZmY9Imh0dHA6Ly9ucy5hZG9iZS5jb20vdGlmZi8xLjAvIgogICBleGlmOlBpeGVsWERpbWVuc2lvbj0iMTEzIgogICBleGlmOlBpeGVsWURpbWVuc2lvbj0iMTAyIgogICB0aWZmOkltYWdlV2lkdGg9IjExMyIKICAgdGlmZjpJbWFnZUhlaWdodD0iMTAyIgogICB0aWZmOk9yaWVudGF0aW9uPSIxIi8+CiA8L3JkZjpSREY+CjwveDp4bXBtZXRhPgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg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;clipPath=inset(70.59% 5.75% 0.98% 66.81%);" vertex="1" parent="Yp7T7Jn_KGCYI-EO29Ko-2">
           <mxGeometry x="220" y="30" width="85.52" height="80" as="geometry" />
         </mxCell>
+        <mxCell id="Yp7T7Jn_KGCYI-EO29Ko-180" value="&lt;div align=&quot;left&quot;&gt;&lt;font style=&quot;font-size: 14px;&quot; data-font-src=&quot;https://fonts.googleapis.com/css?family=Arimo&quot; face=&quot;Arimo&quot;&gt;&lt;b&gt;Change Detection Algorithm:&amp;nbsp;&lt;/b&gt;&lt;/font&gt;&lt;/div&gt;&lt;div align=&quot;left&quot;&gt;&lt;font style=&quot;font-size: 14px;&quot; data-font-src=&quot;https://fonts.googleapis.com/css?family=Arimo&quot; face=&quot;Arimo&quot;&gt;Recurrence Quantification Analysis (RQA) Trend&lt;/font&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;spacingLeft=4;spacingRight=4;" vertex="1" parent="Yp7T7Jn_KGCYI-EO29Ko-2">
+          <mxGeometry x="10" y="30" width="200" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="Yp7T7Jn_KGCYI-EO29Ko-32" value="&lt;b&gt;&lt;font style=&quot;font-size: 18px;&quot; face=&quot;Arimo&quot;&gt;C&lt;/font&gt;&lt;/b&gt;" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;strokeWidth=3;perimeterSpacing=6;strokeColor=light-dark(#62a0ea, #ededed);" vertex="1" parent="Yp7T7Jn_KGCYI-EO29Ko-2">
+          <mxGeometry x="197" y="54" width="30" height="30" as="geometry" />
+        </mxCell>
+        <UserObject label="&lt;div align=&quot;left&quot;&gt;&lt;font style=&quot;font-size: 14px;&quot; data-font-src=&quot;https://fonts.googleapis.com/css?family=Arimo&quot; face=&quot;Arimo&quot;&gt;TCC Rescaling + Normalization&lt;/font&gt;&lt;/div&gt;" link="&lt;div align=&quot;left&quot;&gt;&lt;font style=&quot;font-size: 14px;&quot; data-font-src=&quot;https://fonts.googleapis.com/css?family=Arimo&quot; face=&quot;Arimo&quot;&gt;TCC Rescaling + Normalization&lt;/font&gt;&lt;/div&gt;" id="Yp7T7Jn_KGCYI-EO29Ko-181">
+          <mxCell style="rounded=0;whiteSpace=wrap;html=1;spacingLeft=4;spacingRight=4;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="Yp7T7Jn_KGCYI-EO29Ko-2">
+            <mxGeometry x="10" y="117" width="200" height="49" as="geometry" />
+          </mxCell>
+        </UserObject>
         <mxCell id="Yp7T7Jn_KGCYI-EO29Ko-33" value="&lt;font style=&quot;font-size: 18px;&quot;&gt;B&lt;/font&gt;" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;strokeWidth=3;perimeterSpacing=6;strokeColor=light-dark(#57e389, #ededed);" vertex="1" parent="Yp7T7Jn_KGCYI-EO29Ko-2">
-          <mxGeometry x="180" y="110" width="30" height="30" as="geometry" />
+          <mxGeometry x="197" y="122" width="30" height="30" as="geometry" />
+        </mxCell>
+        <UserObject label="&lt;div&gt;&lt;font face=&quot;Arimo&quot; data-font-src=&quot;https://fonts.googleapis.com/css?family=Arimo&quot; style=&quot;font-size: 14px;&quot;&gt;- Disturbance Type filter&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font face=&quot;Arimo&quot; data-font-src=&quot;https://fonts.googleapis.com/css?family=Arimo&quot; style=&quot;font-size: 14px;&quot;&gt;- Temporal filter&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font face=&quot;Arimo&quot; data-font-src=&quot;https://fonts.googleapis.com/css?family=Arimo&quot; style=&quot;font-size: 14px;&quot;&gt;- Spatial filter&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font face=&quot;Arimo&quot; data-font-src=&quot;https://fonts.googleapis.com/css?family=Arimo&quot; style=&quot;font-size: 14px;&quot;&gt;- Area size &amp;lt; 15 km²&lt;/font&gt;&lt;/div&gt;" link="&lt;div&gt;&lt;font style=&quot;font-size: 14px;&quot; data-font-src=&quot;https://fonts.googleapis.com/css?family=Arimo&quot; face=&quot;Arimo&quot;&gt;- Disturbance Type filter&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font style=&quot;font-size: 14px;&quot; data-font-src=&quot;https://fonts.googleapis.com/css?family=Arimo&quot; face=&quot;Arimo&quot;&gt;- Temporal filter&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font style=&quot;font-size: 14px;&quot; data-font-src=&quot;https://fonts.googleapis.com/css?family=Arimo&quot; face=&quot;Arimo&quot;&gt;- Spatial filter&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font style=&quot;font-size: 14px;&quot; data-font-src=&quot;https://fonts.googleapis.com/css?family=Arimo&quot; face=&quot;Arimo&quot;&gt;- Area size &amp;lt; 15 km²&lt;/font&gt;&lt;/div&gt;" id="Yp7T7Jn_KGCYI-EO29Ko-183">
+          <mxCell style="rounded=0;whiteSpace=wrap;html=1;align=left;spacingLeft=4;spacingRight=4;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="Yp7T7Jn_KGCYI-EO29Ko-2">
+            <mxGeometry x="10" y="177" width="200" height="80" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <mxCell id="Yp7T7Jn_KGCYI-EO29Ko-34" value="&lt;font style=&quot;font-size: 18px;&quot;&gt;A&lt;/font&gt;" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;strokeWidth=3;perimeterSpacing=6;strokeColor=light-dark(#ffa348, #ededed);" vertex="1" parent="Yp7T7Jn_KGCYI-EO29Ko-2">
+          <mxGeometry x="196" y="170" width="30" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Yp7T7Jn_KGCYI-EO29Ko-187" value="&lt;div align=&quot;left&quot;&gt;&lt;font face=&quot;Arimo&quot; style=&quot;font-size: 14px;&quot; data-font-src=&quot;https://fonts.googleapis.com/css?family=Arimo&quot;&gt;- Smoothing&lt;/font&gt;&lt;/div&gt;&lt;div align=&quot;left&quot;&gt;&lt;font face=&quot;Arimo&quot; style=&quot;font-size: 14px;&quot; data-font-src=&quot;https://fonts.googleapis.com/css?family=Arimo&quot;&gt;- Vegetation Indecies &lt;br&gt;&lt;/font&gt;&lt;/div&gt;&lt;div align=&quot;left&quot;&gt;&lt;font face=&quot;Arimo&quot; style=&quot;font-size: 14px;&quot; data-font-src=&quot;https://fonts.googleapis.com/css?family=Arimo&quot;&gt;- Outlier Detection&lt;/font&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;align=left;fillColor=#f8cecc;strokeColor=#b85450;spacingLeft=4;spacingRight=4;" vertex="1" parent="Yp7T7Jn_KGCYI-EO29Ko-2">
+          <mxGeometry x="10" y="266" width="200" height="59.5" as="geometry" />
+        </mxCell>
+        <mxCell id="Yp7T7Jn_KGCYI-EO29Ko-35" value="&lt;font style=&quot;font-size: 18px;&quot;&gt;E&lt;/font&gt;" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;strokeWidth=3;perimeterSpacing=6;strokeColor=light-dark(#ed333b, #ededed);" vertex="1" parent="Yp7T7Jn_KGCYI-EO29Ko-2">
+          <mxGeometry x="196" y="263" width="30" height="30" as="geometry" />
         </mxCell>
         <mxCell id="Yp7T7Jn_KGCYI-EO29Ko-4" value="&lt;font style=&quot;font-size: 17px;&quot;&gt;Combining&lt;/font&gt;" style="swimlane;whiteSpace=wrap;html=1;strokeColor=light-dark(#33d17a, #ededed);" vertex="1" parent="1">
-          <mxGeometry x="960" y="269" width="150" height="270" as="geometry" />
+          <mxGeometry x="971" y="269" width="159" height="261" as="geometry" />
         </mxCell>
-        <mxCell id="Yp7T7Jn_KGCYI-EO29Ko-166" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" parent="Yp7T7Jn_KGCYI-EO29Ko-4" source="Yp7T7Jn_KGCYI-EO29Ko-160" target="Yp7T7Jn_KGCYI-EO29Ko-161">
+        <mxCell id="Yp7T7Jn_KGCYI-EO29Ko-166" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.502;entryY=0.073;entryDx=0;entryDy=0;strokeWidth=2;entryPerimeter=0;" edge="1" parent="Yp7T7Jn_KGCYI-EO29Ko-4" source="Yp7T7Jn_KGCYI-EO29Ko-190" target="Yp7T7Jn_KGCYI-EO29Ko-191">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="75" y="123.25000000000023" as="sourcePoint" />
+            <mxPoint x="75" y="141" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <UserObject label="&lt;div align=&quot;left&quot;&gt;&lt;font style=&quot;font-size: 14px;&quot; data-font-src=&quot;https://fonts.googleapis.com/css?family=Arimo&quot; face=&quot;Arimo&quot;&gt;Polygon Extraction&lt;/font&gt;&lt;/div&gt;" link="&lt;div align=&quot;left&quot;&gt;&lt;font style=&quot;font-size: 14px;&quot; data-font-src=&quot;https://fonts.googleapis.com/css?family=Arimo&quot; face=&quot;Arimo&quot;&gt;TCC Rescaling + Normalization&lt;/font&gt;&lt;/div&gt;" id="Yp7T7Jn_KGCYI-EO29Ko-190">
+          <mxCell style="rounded=0;whiteSpace=wrap;html=1;spacingLeft=4;spacingRight=4;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="Yp7T7Jn_KGCYI-EO29Ko-4">
+            <mxGeometry x="7.5" y="91" width="142.5" height="30.5" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <mxCell id="Yp7T7Jn_KGCYI-EO29Ko-197" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" parent="Yp7T7Jn_KGCYI-EO29Ko-4" source="Yp7T7Jn_KGCYI-EO29Ko-191" target="Yp7T7Jn_KGCYI-EO29Ko-192">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="Yp7T7Jn_KGCYI-EO29Ko-160" value="&lt;font data-font-src=&quot;https://fonts.googleapis.com/css?family=Arimo&quot; face=&quot;Arimo&quot;&gt;Polygon Extraction&lt;/font&gt;" style="shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="Yp7T7Jn_KGCYI-EO29Ko-4">
-          <mxGeometry x="7.5" y="94.25" width="135" height="29" as="geometry" />
-        </mxCell>
-        <mxCell id="Yp7T7Jn_KGCYI-EO29Ko-167" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" parent="Yp7T7Jn_KGCYI-EO29Ko-4" source="Yp7T7Jn_KGCYI-EO29Ko-161" target="Yp7T7Jn_KGCYI-EO29Ko-162">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="Yp7T7Jn_KGCYI-EO29Ko-161" value="&lt;font data-font-src=&quot;https://fonts.googleapis.com/css?family=Arimo&quot; face=&quot;Arimo&quot;&gt;Intersecting&lt;/font&gt;" style="shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="Yp7T7Jn_KGCYI-EO29Ko-4">
-          <mxGeometry x="7.5" y="141" width="135" height="29" as="geometry" />
-        </mxCell>
-        <mxCell id="Yp7T7Jn_KGCYI-EO29Ko-162" value="&lt;div&gt;&lt;font data-font-src=&quot;https://fonts.googleapis.com/css?family=Arimo&quot; face=&quot;Arimo&quot;&gt;Combining&amp;nbsp;&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font data-font-src=&quot;https://fonts.googleapis.com/css?family=Arimo&quot; face=&quot;Arimo&quot;&gt;&lt;b&gt;S1CD&lt;/b&gt; Polygons + &lt;b&gt;IDS&lt;/b&gt; Metadata&lt;/font&gt;&lt;/div&gt;" style="shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="Yp7T7Jn_KGCYI-EO29Ko-4">
-          <mxGeometry x="7.5" y="191" width="135" height="59" as="geometry" />
-        </mxCell>
+        <UserObject label="&lt;div align=&quot;left&quot;&gt;&lt;font style=&quot;font-size: 14px;&quot; data-font-src=&quot;https://fonts.googleapis.com/css?family=Arimo&quot; face=&quot;Arimo&quot;&gt;Intersecting&lt;/font&gt;&lt;/div&gt;" link="&lt;div align=&quot;left&quot;&gt;&lt;font style=&quot;font-size: 14px;&quot; data-font-src=&quot;https://fonts.googleapis.com/css?family=Arimo&quot; face=&quot;Arimo&quot;&gt;TCC Rescaling + Normalization&lt;/font&gt;&lt;/div&gt;" id="Yp7T7Jn_KGCYI-EO29Ko-191">
+          <mxCell style="rounded=0;whiteSpace=wrap;html=1;spacingLeft=4;spacingRight=4;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="Yp7T7Jn_KGCYI-EO29Ko-4">
+            <mxGeometry x="7.5" y="141" width="142.5" height="30.5" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="&lt;div&gt;&lt;font style=&quot;font-size: 14px;&quot; data-font-src=&quot;https://fonts.googleapis.com/css?family=Arimo&quot; face=&quot;Arimo&quot;&gt;Combining&amp;nbsp;&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font style=&quot;font-size: 14px;&quot; data-font-src=&quot;https://fonts.googleapis.com/css?family=Arimo&quot; face=&quot;Arimo&quot;&gt;&lt;b&gt;S1CD&lt;/b&gt; Polygons + &lt;b&gt;IDS&lt;/b&gt; Metadata&lt;/font&gt;&lt;/div&gt;" link="&lt;div align=&quot;left&quot;&gt;&lt;font style=&quot;font-size: 14px;&quot; data-font-src=&quot;https://fonts.googleapis.com/css?family=Arimo&quot; face=&quot;Arimo&quot;&gt;TCC Rescaling + Normalization&lt;/font&gt;&lt;/div&gt;" id="Yp7T7Jn_KGCYI-EO29Ko-192">
+          <mxCell style="rounded=0;whiteSpace=wrap;html=1;spacingLeft=4;spacingRight=4;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="Yp7T7Jn_KGCYI-EO29Ko-4">
+            <mxGeometry x="7.5" y="191" width="142.5" height="60" as="geometry" />
+          </mxCell>
+        </UserObject>
         <mxCell id="Yp7T7Jn_KGCYI-EO29Ko-175" value="&lt;font data-font-src=&quot;https://fonts.googleapis.com/css?family=Arimo&quot; face=&quot;Arimo&quot; style=&quot;font-size: 18px;&quot;&gt;D&lt;/font&gt;" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;strokeWidth=3;perimeterSpacing=6;strokeColor=light-dark(#26a269, #ededed);fillColor=none;gradientColor=none;" vertex="1" parent="Yp7T7Jn_KGCYI-EO29Ko-4">
-          <mxGeometry x="80" y="41" width="30" height="30" as="geometry" />
-        </mxCell>
-        <mxCell id="Yp7T7Jn_KGCYI-EO29Ko-27" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" parent="1" source="Yp7T7Jn_KGCYI-EO29Ko-8" target="Yp7T7Jn_KGCYI-EO29Ko-22">
-          <mxGeometry relative="1" as="geometry" />
+          <mxGeometry x="89" y="41" width="30" height="30" as="geometry" />
         </mxCell>
         <mxCell id="Yp7T7Jn_KGCYI-EO29Ko-3" value="&lt;font style=&quot;font-size: 17px;&quot;&gt;Processed Data&lt;/font&gt;" style="swimlane;whiteSpace=wrap;html=1;strokeColor=light-dark(#c061cb, #ededed);startSize=23;" vertex="1" parent="1">
-          <mxGeometry x="789" y="270" width="160" height="350" as="geometry" />
+          <mxGeometry x="789" y="270" width="171" height="350" as="geometry" />
         </mxCell>
-        <mxCell id="Yp7T7Jn_KGCYI-EO29Ko-147" value="&lt;div align=&quot;center&quot;&gt;&lt;font data-font-src=&quot;https://fonts.googleapis.com/css?family=Arimo&quot; face=&quot;Arimo&quot;&gt;Filtered &lt;b&gt;IDS&lt;/b&gt;&lt;/font&gt;&lt;/div&gt;" style="shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fixedSize=1;align=center;spacingLeft=18;spacingRight=18;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="Yp7T7Jn_KGCYI-EO29Ko-3">
-          <mxGeometry x="11.25" y="195" width="138.75" height="43" as="geometry" />
+        <mxCell id="Yp7T7Jn_KGCYI-EO29Ko-147" value="&lt;div align=&quot;center&quot;&gt;&lt;font style=&quot;font-size: 14px;&quot; data-font-src=&quot;https://fonts.googleapis.com/css?family=Arimo&quot; face=&quot;Arimo&quot;&gt;Filtered &lt;b&gt;IDS&lt;/b&gt;&lt;/font&gt;&lt;/div&gt;" style="shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fixedSize=1;align=center;spacingLeft=18;spacingRight=18;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="Yp7T7Jn_KGCYI-EO29Ko-3">
+          <mxGeometry x="11.25" y="200" width="148.75" height="43" as="geometry" />
         </mxCell>
-        <mxCell id="Yp7T7Jn_KGCYI-EO29Ko-148" value="&lt;font data-font-src=&quot;https://fonts.googleapis.com/css?family=Arimo&quot; face=&quot;Arimo&quot;&gt;Sentinel-1 Change Detection &lt;b&gt;(S1CD)&lt;/b&gt;&lt;/font&gt;" style="shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fixedSize=1;align=left;spacingLeft=18;spacingRight=18;fillColor=light-dark(#dc8add, #442724);strokeColor=light-dark(#c061cb, #ec8f82);" vertex="1" parent="Yp7T7Jn_KGCYI-EO29Ko-3">
-          <mxGeometry x="12.5" y="46.75" width="137.5" height="46.5" as="geometry" />
+        <mxCell id="Yp7T7Jn_KGCYI-EO29Ko-148" value="&lt;div align=&quot;center&quot;&gt;&lt;font style=&quot;font-size: 14px;&quot; data-font-src=&quot;https://fonts.googleapis.com/css?family=Arimo&quot; face=&quot;Arimo&quot;&gt;Sentinel-1&amp;nbsp;&lt;/font&gt;&lt;/div&gt;&lt;div align=&quot;center&quot;&gt;&lt;font style=&quot;font-size: 14px;&quot; data-font-src=&quot;https://fonts.googleapis.com/css?family=Arimo&quot; face=&quot;Arimo&quot;&gt;Change Detection &lt;b&gt;&lt;br&gt;&lt;/b&gt;&lt;/font&gt;&lt;/div&gt;&lt;div align=&quot;center&quot;&gt;&lt;font style=&quot;font-size: 14px;&quot; data-font-src=&quot;https://fonts.googleapis.com/css?family=Arimo&quot; face=&quot;Arimo&quot;&gt;&lt;b&gt;(S1CD)&lt;/b&gt;&lt;/font&gt;&lt;/div&gt;" style="shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fixedSize=1;align=center;spacingLeft=18;spacingRight=18;fillColor=light-dark(#dc8add, #442724);strokeColor=light-dark(#c061cb, #ec8f82);" vertex="1" parent="Yp7T7Jn_KGCYI-EO29Ko-3">
+          <mxGeometry x="6" y="30" width="160" height="63.25" as="geometry" />
         </mxCell>
-        <mxCell id="Yp7T7Jn_KGCYI-EO29Ko-149" value="&lt;div align=&quot;center&quot;&gt;&lt;font data-font-src=&quot;https://fonts.googleapis.com/css?family=Arimo&quot; face=&quot;Arimo&quot;&gt;Smoothed &lt;b&gt;S2&lt;/b&gt;&lt;/font&gt;&lt;/div&gt;" style="shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fixedSize=1;align=center;spacingLeft=18;spacingRight=18;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="Yp7T7Jn_KGCYI-EO29Ko-3">
-          <mxGeometry x="12.5" y="274" width="138.75" height="43" as="geometry" />
+        <mxCell id="Yp7T7Jn_KGCYI-EO29Ko-149" value="&lt;div align=&quot;center&quot;&gt;&lt;font style=&quot;font-size: 14px;&quot; data-font-src=&quot;https://fonts.googleapis.com/css?family=Arimo&quot; face=&quot;Arimo&quot;&gt;Smoothed &lt;b&gt;S2&lt;/b&gt;&lt;/font&gt;&lt;/div&gt;" style="shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fixedSize=1;align=center;spacingLeft=18;spacingRight=18;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="Yp7T7Jn_KGCYI-EO29Ko-3">
+          <mxGeometry x="12.5" y="274" width="147.5" height="43" as="geometry" />
         </mxCell>
-        <mxCell id="Yp7T7Jn_KGCYI-EO29Ko-151" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" parent="1" source="Yp7T7Jn_KGCYI-EO29Ko-22" target="Yp7T7Jn_KGCYI-EO29Ko-147">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="Yp7T7Jn_KGCYI-EO29Ko-153" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;endArrow=none;startFill=0;" edge="1" parent="1" source="Yp7T7Jn_KGCYI-EO29Ko-23" target="Yp7T7Jn_KGCYI-EO29Ko-152">
+        <mxCell id="Yp7T7Jn_KGCYI-EO29Ko-151" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" parent="1" target="Yp7T7Jn_KGCYI-EO29Ko-147">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="650" y="566" as="sourcePoint" />
+            <mxPoint x="669.9999999999998" y="491.0000000000002" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Yp7T7Jn_KGCYI-EO29Ko-153" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;endArrow=none;startFill=0;" edge="1" parent="1" target="Yp7T7Jn_KGCYI-EO29Ko-152">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="669.9999999999998" y="570" as="sourcePoint" />
             <mxPoint x="813" y="566" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="Yp7T7Jn_KGCYI-EO29Ko-159" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;strokeWidth=2;" edge="1" parent="1" source="Yp7T7Jn_KGCYI-EO29Ko-9" target="Yp7T7Jn_KGCYI-EO29Ko-23">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
         <mxCell id="Yp7T7Jn_KGCYI-EO29Ko-163" value="&lt;div align=&quot;center&quot;&gt;&lt;font style=&quot;font-size: 14px;&quot; data-font-src=&quot;https://fonts.googleapis.com/css?family=Arimo&quot; face=&quot;Arimo&quot;&gt;Sentinel-1&amp;nbsp;&lt;/font&gt;&lt;/div&gt;&lt;div align=&quot;center&quot;&gt;&lt;font style=&quot;font-size: 14px;&quot; data-font-src=&quot;https://fonts.googleapis.com/css?family=Arimo&quot; face=&quot;Arimo&quot;&gt;Disturbance Mapping&amp;nbsp;&amp;nbsp;&lt;/font&gt;&lt;/div&gt;&lt;div align=&quot;center&quot;&gt;&lt;font style=&quot;font-size: 14px;&quot; data-font-src=&quot;https://fonts.googleapis.com/css?family=Arimo&quot; face=&quot;Arimo&quot;&gt;&lt;b&gt;(S1DM)&lt;/b&gt;&lt;/font&gt;&lt;/div&gt;" style="shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fixedSize=1;align=center;spacingLeft=18;spacingRight=18;fillColor=#ffcd28;strokeColor=#d79b00;gradientColor=none;strokeWidth=2;" vertex="1" parent="1">
-          <mxGeometry x="960" y="550" width="180" height="60" as="geometry" />
+          <mxGeometry x="973" y="550" width="180" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="Yp7T7Jn_KGCYI-EO29Ko-164" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" parent="1" source="Yp7T7Jn_KGCYI-EO29Ko-148" target="Yp7T7Jn_KGCYI-EO29Ko-160">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="Yp7T7Jn_KGCYI-EO29Ko-165" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;strokeWidth=2;" edge="1" parent="1" source="Yp7T7Jn_KGCYI-EO29Ko-147" target="Yp7T7Jn_KGCYI-EO29Ko-160">
+        <mxCell id="Yp7T7Jn_KGCYI-EO29Ko-172" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;strokeWidth=2;" edge="1" parent="1" source="Yp7T7Jn_KGCYI-EO29Ko-7">
           <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="870" y="380" />
-            </Array>
+            <mxPoint x="470" y="407.04761904761904" as="targetPoint" />
           </mxGeometry>
-        </mxCell>
-        <mxCell id="Yp7T7Jn_KGCYI-EO29Ko-168" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;strokeWidth=2;" edge="1" parent="1" source="Yp7T7Jn_KGCYI-EO29Ko-162">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="1034" y="550" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="Yp7T7Jn_KGCYI-EO29Ko-169" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" parent="1" source="Yp7T7Jn_KGCYI-EO29Ko-149" target="Yp7T7Jn_KGCYI-EO29Ko-163">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="871" y="640" />
-              <mxPoint x="1050" y="640" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="Yp7T7Jn_KGCYI-EO29Ko-172" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;strokeWidth=2;" edge="1" parent="1" source="Yp7T7Jn_KGCYI-EO29Ko-7" target="Yp7T7Jn_KGCYI-EO29Ko-21">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="Yp7T7Jn_KGCYI-EO29Ko-173" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;strokeWidth=2;" edge="1" parent="1" source="Yp7T7Jn_KGCYI-EO29Ko-6" target="Yp7T7Jn_KGCYI-EO29Ko-5">
-          <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="Yp7T7Jn_KGCYI-EO29Ko-176" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;&lt;b&gt;Comparison&lt;/b&gt;&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="960" y="616" width="60" height="30" as="geometry" />
+          <mxGeometry x="960" y="616" width="90" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Yp7T7Jn_KGCYI-EO29Ko-177" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;strokeWidth=2;" edge="1" parent="1" source="Yp7T7Jn_KGCYI-EO29Ko-6">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="470" y="340" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Yp7T7Jn_KGCYI-EO29Ko-186" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;strokeWidth=2;" edge="1" parent="1" source="Yp7T7Jn_KGCYI-EO29Ko-8" target="Yp7T7Jn_KGCYI-EO29Ko-183">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Yp7T7Jn_KGCYI-EO29Ko-188" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" parent="1" source="Yp7T7Jn_KGCYI-EO29Ko-9" target="Yp7T7Jn_KGCYI-EO29Ko-187">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Yp7T7Jn_KGCYI-EO29Ko-193" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" parent="1" source="Yp7T7Jn_KGCYI-EO29Ko-148" target="Yp7T7Jn_KGCYI-EO29Ko-190">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Yp7T7Jn_KGCYI-EO29Ko-194" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" parent="1" source="Yp7T7Jn_KGCYI-EO29Ko-147" target="Yp7T7Jn_KGCYI-EO29Ko-190">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Yp7T7Jn_KGCYI-EO29Ko-198" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;strokeWidth=2;" edge="1" parent="1" source="Yp7T7Jn_KGCYI-EO29Ko-192">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1050" y="550" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Yp7T7Jn_KGCYI-EO29Ko-199" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.534;entryY=1.004;entryDx=0;entryDy=0;entryPerimeter=0;strokeWidth=2;" edge="1" parent="1" source="Yp7T7Jn_KGCYI-EO29Ko-149" target="Yp7T7Jn_KGCYI-EO29Ko-163">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="875" y="640" />
+              <mxPoint x="1069" y="640" />
+            </Array>
+          </mxGeometry>
         </mxCell>
       </root>
     </mxGraphModel>
