@@ -93,8 +93,8 @@
         <mxCell id="Yp7T7Jn_KGCYI-EO29Ko-162" value="&lt;div&gt;&lt;font data-font-src=&quot;https://fonts.googleapis.com/css?family=Arimo&quot; face=&quot;Arimo&quot;&gt;Combining&amp;nbsp;&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font data-font-src=&quot;https://fonts.googleapis.com/css?family=Arimo&quot; face=&quot;Arimo&quot;&gt;&lt;b&gt;S1CD&lt;/b&gt; Polygons + &lt;b&gt;IDS&lt;/b&gt; Metadata&lt;/font&gt;&lt;/div&gt;" style="shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="Yp7T7Jn_KGCYI-EO29Ko-4">
           <mxGeometry x="7.5" y="191" width="135" height="59" as="geometry" />
         </mxCell>
-        <mxCell id="Yp7T7Jn_KGCYI-EO29Ko-175" value="&lt;font data-font-src=&quot;https://fonts.googleapis.com/css?family=Arimo&quot; face=&quot;Arimo&quot; style=&quot;font-size: 18px;&quot;&gt;D&lt;/font&gt;" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;strokeWidth=3;perimeterSpacing=6;strokeColor=light-dark(#ed333b, #ededed);" vertex="1" parent="Yp7T7Jn_KGCYI-EO29Ko-4">
-          <mxGeometry x="70" y="31" width="30" height="30" as="geometry" />
+        <mxCell id="Yp7T7Jn_KGCYI-EO29Ko-175" value="&lt;font data-font-src=&quot;https://fonts.googleapis.com/css?family=Arimo&quot; face=&quot;Arimo&quot; style=&quot;font-size: 18px;&quot;&gt;D&lt;/font&gt;" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;strokeWidth=3;perimeterSpacing=6;strokeColor=light-dark(#26a269, #ededed);fillColor=none;gradientColor=none;" vertex="1" parent="Yp7T7Jn_KGCYI-EO29Ko-4">
+          <mxGeometry x="80" y="41" width="30" height="30" as="geometry" />
         </mxCell>
         <mxCell id="Yp7T7Jn_KGCYI-EO29Ko-27" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" parent="1" source="Yp7T7Jn_KGCYI-EO29Ko-8" target="Yp7T7Jn_KGCYI-EO29Ko-22">
           <mxGeometry relative="1" as="geometry" />
