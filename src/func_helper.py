@@ -87,6 +87,36 @@ def load_and_extract_region(path, region_id):
     
     return region_conus
 
+import geopandas as gpd
+
+def load_and_extract_region_crs(path, region_id, target_crs='EPSG:4326'):
+    """
+    Loads the shapefile for the entire USA, extracts the specified region by region ID,
+    reprojects it to the target CRS, and returns only the largest part of the region.
+    
+    Args:
+        path (str): Path to the shapefile.
+        region_id (str or int): The region ID to filter and retrieve.
+        target_crs (str): The CRS to reproject the region to (default is 'EPSG:27705').
+
+    Returns:
+        GeoDataFrame: Extracted region data for the largest part of the specified region ID.
+    """
+    # Load the shapefile data from the specified path
+    usa_shape = gpd.read_file(path)
+    
+    # Filter for the specified region using the region_id
+    region = usa_shape[usa_shape['REGION'] == region_id]
+    
+    # Explode geometries to ensure each part of multi-part geometries is separate,
+    # then select only the largest part (first in the sequence)
+    region_conus = region.explode(index_parts=False).iloc[0:1]
+    
+    # Reproject the region to the target CRS
+    region_conus = region_conus.to_crs(target_crs)
+    
+    return region_conus
+
 
 # def get_mainland(gdf_path, region_id):
 #     """
