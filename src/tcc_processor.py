@@ -13,7 +13,7 @@ import rioxarray
 from matplotlib.patches import Patch
 from func_plots import plot_region_bounds, plot_tcc_region_bounds
 from func_file_io import load_data, save_shapefile, run_command
-from func_helper import load_and_extract_region
+from func_helper import load_and_extract_region_crs
 from func_tcc_application import create_downsampled_tcc_map
 
 class TCCProcessor:
@@ -27,18 +27,21 @@ class TCCProcessor:
         # Load region information
         self.region = os.getenv('REGION')
         self.region_id = str(self.region).zfill(2)
+        self.tcc_year = os.getenv('TCC_YEAR')
+        self.crs = os.getenv('TCC_CRS')
+        self.crs_number = self.crs.split(':')[1]
 
         # Load paths from .env and construct full file paths dynamically
         self.region_shape_path = os.path.join(os.getenv('REGION_SHAPE_DIR'), os.getenv('REGION_SHAPE_FILE'))
-        self.input_raster_file = os.path.join(os.getenv('TCC_DIR'), os.getenv('TCC_INPUT_RASTER'))
-        self.output_file_resampled = os.path.join(os.getenv('TCC_DIR'), os.getenv('TCC_RESAMPLED_RASTER'))
-        self.output_file_epsg4326 = os.path.join(os.getenv('TCC_DIR'), os.getenv('TCC_EPSG4326_RASTER'))
-        self.output_file_cropped_epsg4326 = os.path.join(os.getenv('TCC_DIR'), os.getenv('TCC_CROPPED_RASTER_TEMPLATE').format(region_id=self.region_id))
-        self.normalized_output_file = os.path.join(os.getenv('TCC_DIR'), os.getenv('TCC_NORMALIZED_RASTER_TEMPLATE').format(region_id=self.region_id))
-        self.temp_downsampled_tcc_netcdf = os.path.join(os.getenv('TCC_DIR'), os.getenv('TCC_DOWNSAMPLED_TEMP_RASTER_TEMPLATE').format(region_id=self.region_id))
-        self.downsampled_tcc_netcdf = os.path.join(os.getenv('TCC_DIR'), os.getenv('TCC_DOWNSAMPLED_RASTER_TEMPLATE').format(region_id=self.region_id))
-        self.figure_output_path_bounds = os.path.join(os.getenv('FIGURES_DIR'), os.getenv('FIGURE_TCC_BOUNDS_TEMPLATE').format(region_id=self.region_id))
-        self.figure_output_path_bounds_shape = os.path.join(os.getenv('FIGURES_DIR'), os.getenv('FIGURE_TCC_BOUNDS_SHAPE_TEMPLATE').format(region_id=self.region_id))
+        self.input_raster_file = os.path.join(os.getenv('TCC_DIR'), os.getenv('TCC_INPUT_RASTER').format(tcc_year=self.tcc_year))
+        self.output_file_resampled = os.path.join(os.getenv('TCC_DIR'), os.getenv('TCC_RESAMPLED_RASTER').format(tcc_year=self.tcc_year))
+        self.output_file_epsg4326 = os.path.join(os.getenv('TCC_DIR'), os.getenv('TCC_EPSG_RASTER').format(tcc_year=self.tcc_year, crs=self.crs_number))
+        self.output_file_cropped_epsg4326 = os.path.join(os.getenv('TCC_DIR'), os.getenv('TCC_CROPPED_RASTER_TEMPLATE').format(region_id=self.region_id, tcc_year=self.tcc_year, crs=self.crs_number))
+        self.normalized_output_file = os.path.join(os.getenv('TCC_DIR'), os.getenv('TCC_NORMALIZED_RASTER_TEMPLATE').format(region_id=self.region_id, tcc_year=self.tcc_year, crs=self.crs_number))
+        self.temp_downsampled_tcc_netcdf = os.path.join(os.getenv('TCC_DIR'), os.getenv('TCC_DOWNSAMPLED_TEMP_RASTER_TEMPLATE').format(region_id=self.region_id, tcc_year=self.tcc_year, crs=self.crs_number))
+        self.downsampled_tcc_netcdf = os.path.join(os.getenv('TCC_DIR'), os.getenv('TCC_DOWNSAMPLED_RASTER_TEMPLATE').format(region_id=self.region_id, tcc_year=self.tcc_year, crs=self.crs_number))
+        self.figure_output_path_bounds = os.path.join(os.getenv('FIGURES_DIR'), os.getenv('FIGURE_TCC_BOUNDS_TEMPLATE').format(region_id=self.region_id, tcc_year=self.tcc_year, crs=self.crs_number))
+        self.figure_output_path_bounds_shape = os.path.join(os.getenv('FIGURES_DIR'), os.getenv('FIGURE_TCC_BOUNDS_SHAPE_TEMPLATE').format(region_id=self.region_id, tcc_year=self.tcc_year, crs=self.crs_number))
 
         # Ensure required directories exist
         for path in [
@@ -91,7 +94,7 @@ class TCCProcessor:
     def __get_region_shape_bounds(self, fig_path):
         """Extracts bounds of the region and plots them."""
         logging.info("Extracting region shape bounds...")
-        region = load_and_extract_region(self.region_shape_path, self.region_id)
+        region = load_and_extract_region_crs(self.region_shape_path, self.region_id, self.crs)
         bounds = region.total_bounds
         plot_region_bounds(region, *bounds, self.region_id, fig_path)
         logging.info(f"Region bounds extracted: {bounds}")
@@ -146,7 +149,7 @@ class TCCProcessor:
     def __load_and_plot_tif_with_shape(self, tif_filepath, fig_path):
         """Plots raster data with region boundary overlay."""
         logging.info(f"Plotting raster {tif_filepath} with region boundaries...")
-        region = load_and_extract_region(self.region_shape_path, self.region_id)
+        region = load_and_extract_region_crs(self.region_shape_path, self.region_id, self.crs)
         data = rioxarray.open_rasterio(tif_filepath)
         plot_tcc_region_bounds(data, region, self.region_id, fig_path)
         logging.info(f"Raster plot saved to: {fig_path}")
@@ -159,7 +162,7 @@ class TCCProcessor:
 
         logging.info(f"Reprojecting the file to EPSG:4326...")
         # Step 2: Reproject to EPSG:4326
-        self.__reproject_to_crs(self.output_file_resampled, self.output_file_epsg4326, 'EPSG:4326')
+        self.__reproject_to_crs(self.output_file_resampled, self.output_file_epsg4326, self.crs)
         
         logging.info(f"Extract region bounds")
         # Step 3: Extract region bounds

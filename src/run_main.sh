@@ -14,4 +14,4 @@
 ENV_PATH="/work/sy58xupo-cleaning/sy58xupo-CleaningSpace-1736389214/ForExD-WP1-P1/environment/.env"
 
 # Run Python script (region is now loaded from .env)
-python main.py --env "$ENV_PATH" --start-year 2016 --end-year 2021 --buffer-years 2 --spatial-buffer 500 --max-jobs 10 --run-plotter
+python main.py --env "/net/projects/forexd/WP1/02_ImprovedLabels/Scripts/ForExD-WP1-P1/environment/.env" --start-year 2016 --end-year 2021 --buffer-years 2 --spatial-buffer 500 --max-jobs 10 --run-plotter

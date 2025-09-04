@@ -9549,3 +9549,427 @@ https://docs.xarray.dev/en/stable/user-guide/io.html
 2025-02-28 19:26:43,814 - INFO - Plot signal counts
 2025-02-28 19:26:45,515 - INFO - Calculate and plot overlap percentages
 2025-02-28 19:27:14,817 - INFO - Plot generation completed.
+2025-03-05 15:31:34,397 - INFO - Loading environment variables...
+2025-03-05 15:31:34,397 - INFO - Starting IDS processing pipeline for region 8...
+2025-03-05 15:31:34,411 - INFO - --------------------------------------------
+2025-03-05 15:31:34,414 - INFO - Running TCCProcessor...
+2025-03-05 15:31:34,414 - INFO - --------------------------------------------
+2025-03-05 15:31:34,417 - ERROR - Error in TCC processing: expected str, bytes or os.PathLike object, not NoneType
+2025-03-05 15:34:31,454 - INFO - Loading environment variables...
+2025-03-05 15:34:31,459 - INFO - Starting IDS processing pipeline for region 8...
+2025-03-05 15:34:31,459 - INFO - --------------------------------------------
+2025-03-05 15:34:31,459 - INFO - Running TCCProcessor...
+2025-03-05 15:34:31,464 - INFO - --------------------------------------------
+2025-03-05 15:34:31,473 - INFO - Processing USDA Region 8...
+2025-03-05 15:34:31,473 - INFO - Changing resolution of /net/projects/forexd/WP1/Data/CONUS/tcc/nlcd_tcc_conus_2016_v2021-4.tif to (20, 20) -> /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2016_v2021_4_20m.tif
+2025-03-05 15:43:00,842 - INFO - Resolution change completed: /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2016_v2021_4_20m.tif
+2025-03-05 15:43:00,842 - INFO - Reprojecting the file to EPSG:4326...
+2025-03-05 15:43:00,842 - INFO - Reprojecting /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2016_v2021_4_20m.tif to EPSG:4326 -> /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2016_v2021_4_20m_EPSG_4326.tif
+2025-03-05 15:54:17,846 - INFO - Reprojection completed: /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2016_v2021_4_20m_EPSG_4326.tif
+2025-03-05 15:54:17,847 - INFO - Extract region bounds
+2025-03-05 15:54:17,847 - INFO - Extracting region shape bounds...
+2025-03-05 15:54:18,902 - INFO - Region bounds extracted: [-106.645646     25.12068714  -75.71740719   39.46601202]
+2025-03-05 15:54:18,902 - INFO - Crop raster to region bounds
+2025-03-05 15:54:18,908 - INFO - Cropping /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2016_v2021_4_20m_EPSG_4326.tif to bounds -106.645646, 25.120687139999973, -75.71740719000002, 39.466012019999994 -> /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2016_v2021_4_20m_EPSG_4326_cropped_region_08.tif
+2025-03-05 15:57:53,738 - INFO - Cropping completed: /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2016_v2021_4_20m_EPSG_4326_cropped_region_08.tif
+2025-03-05 15:57:53,738 - INFO - Normalize raster
+2025-03-05 15:57:53,835 - INFO - Step 1: Calculating global min and max for /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2016_v2021_4_20m_EPSG_4326_cropped_region_08.tif
+2025-03-05 15:58:33,549 - INFO - Global Min: 0, Global Max: 255
+2025-03-05 15:58:33,549 - INFO - Step 2: Normalizing raster /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2016_v2021_4_20m_EPSG_4326_cropped_region_08.tif -> /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2016_v2021_4_20m_EPSG_4326_cropped_normalized_region_08.tif
+2025-03-05 16:00:08,221 - INFO - Normalization completed. Saved to /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2016_v2021_4_20m_EPSG_4326_cropped_normalized_region_08.tif.
+2025-03-05 16:00:09,552 - INFO - Downsample normalized raster for plotting
+2025-03-05 16:00:09,553 - INFO - Starting the downsampling and cropping process
+2025-03-05 16:09:56,555 - INFO - Successfully saved the final NetCDF file to /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2016_v2021_4_20m_EPSG_4326_cropped_normalized_downsampled_region_08.nc
+2025-03-05 16:09:56,556 - INFO - Deleted intermediate file: /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2016_v2021_4_20m_EPSG_4326_cropped_normalized_downsampled_temp_region_08.nc
+2025-03-05 16:09:56,560 - INFO - Plot raster with region boundaries
+2025-03-05 16:09:56,563 - INFO - Plotting raster /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2016_v2021_4_20m_EPSG_4326_cropped_normalized_region_08.tif with region boundaries...
+2025-03-05 16:22:22,653 - INFO - Raster plot saved to: /net/projects/forexd/WP1/02_ImprovedLabels/Scripts/ForExD-WP1-P1//figures/tcc_2016_bounds_shape_epsg4326_region_08.png
+2025-03-05 16:22:22,654 - INFO - Processing completed successfully.
+2025-03-05 16:22:22,654 - INFO - TCC processing completed.
+2025-03-05 16:35:24,134 - INFO - Loading environment variables...
+2025-03-05 16:35:24,139 - INFO - Starting IDS processing pipeline for region 8...
+2025-03-05 16:35:24,159 - INFO - --------------------------------------------
+2025-03-05 16:35:24,159 - INFO - Running TCCProcessor...
+2025-03-05 16:35:24,163 - INFO - --------------------------------------------
+2025-03-05 16:35:24,172 - INFO - Processing USDA Region 8...
+2025-03-05 16:35:24,172 - INFO - Changing resolution of /net/projects/forexd/WP1/Data/CONUS/tcc/nlcd_tcc_conus_2017_v2021-4.tif to (20, 20) -> /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2017_v2021_4_20m.tif
+2025-03-05 16:35:24,172 - INFO - Deleting existing file: /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2017_v2021_4_20m.tif
+2025-03-05 16:43:36,909 - INFO - Resolution change completed: /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2017_v2021_4_20m.tif
+2025-03-05 16:43:36,910 - INFO - Reprojecting the file to EPSG:4326...
+2025-03-05 16:43:36,910 - INFO - Reprojecting /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2017_v2021_4_20m.tif to EPSG:4326 -> /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2017_v2021_4_20m_EPSG_4326.tif
+2025-03-05 16:43:36,911 - INFO - Deleting existing file: /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2017_v2021_4_20m_EPSG_4326.tif
+2025-03-05 16:55:07,769 - INFO - Reprojection completed: /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2017_v2021_4_20m_EPSG_4326.tif
+2025-03-05 16:55:08,124 - INFO - Extract region bounds
+2025-03-05 16:55:08,124 - INFO - Extracting region shape bounds...
+2025-03-05 16:55:09,165 - INFO - Region bounds extracted: [-106.645646     25.12068714  -75.71740719   39.46601202]
+2025-03-05 16:55:09,165 - INFO - Crop raster to region bounds
+2025-03-05 16:55:09,165 - INFO - Cropping /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2017_v2021_4_20m_EPSG_4326.tif to bounds -106.645646, 25.120687139999973, -75.71740719000002, 39.466012019999994 -> /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2017_v2021_4_20m_EPSG_4326_cropped_region_08.tif
+2025-03-05 16:55:09,186 - INFO - Deleting existing file: /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2017_v2021_4_20m_EPSG_4326_cropped_region_08.tif
+2025-03-05 16:58:46,128 - INFO - Cropping completed: /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2017_v2021_4_20m_EPSG_4326_cropped_region_08.tif
+2025-03-05 16:58:46,129 - INFO - Normalize raster
+2025-03-05 16:58:46,130 - INFO - Deleting existing file: /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2017_v2021_4_20m_EPSG_4326_cropped_normalized_region_08.tif
+2025-03-05 16:58:46,178 - INFO - Step 1: Calculating global min and max for /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2017_v2021_4_20m_EPSG_4326_cropped_region_08.tif
+2025-03-05 16:59:29,045 - INFO - Global Min: 0, Global Max: 255
+2025-03-05 16:59:29,045 - INFO - Step 2: Normalizing raster /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2017_v2021_4_20m_EPSG_4326_cropped_region_08.tif -> /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2017_v2021_4_20m_EPSG_4326_cropped_normalized_region_08.tif
+2025-03-05 17:01:00,425 - INFO - Normalization completed. Saved to /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2017_v2021_4_20m_EPSG_4326_cropped_normalized_region_08.tif.
+2025-03-05 17:01:01,777 - INFO - Downsample normalized raster for plotting
+2025-03-05 17:01:01,777 - INFO - Starting the downsampling and cropping process
+2025-03-05 17:05:50,367 - INFO - Successfully saved the final NetCDF file to /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2017_v2021_4_20m_EPSG_4326_cropped_normalized_downsampled_region_08.nc
+2025-03-05 17:05:50,368 - INFO - Deleted intermediate file: /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2017_v2021_4_20m_EPSG_4326_cropped_normalized_downsampled_temp_region_08.nc
+2025-03-05 17:05:50,372 - INFO - Plot raster with region boundaries
+2025-03-05 17:05:50,373 - INFO - Plotting raster /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2017_v2021_4_20m_EPSG_4326_cropped_normalized_region_08.tif with region boundaries...
+2025-03-05 17:19:35,225 - INFO - Raster plot saved to: /net/projects/forexd/WP1/02_ImprovedLabels/Scripts/ForExD-WP1-P1//figures/tcc_2017_bounds_shape_epsg4326_region_08.png
+2025-03-05 17:19:35,226 - INFO - Processing completed successfully.
+2025-03-05 17:19:35,226 - INFO - TCC processing completed.
+2025-03-05 17:30:05,380 - INFO - Loading environment variables...
+2025-03-05 17:30:05,385 - INFO - Starting IDS processing pipeline for region 8...
+2025-03-05 17:30:05,385 - INFO - --------------------------------------------
+2025-03-05 17:30:05,385 - INFO - Running TCCProcessor...
+2025-03-05 17:30:05,385 - INFO - --------------------------------------------
+2025-03-05 17:30:05,397 - INFO - Processing USDA Region 8...
+2025-03-05 17:30:05,397 - INFO - Changing resolution of /net/projects/forexd/WP1/Data/CONUS/tcc/nlcd_tcc_conus_2018_v2021-4.tif to (20, 20) -> /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2018_v2021_4_20m.tif
+2025-03-05 17:38:20,876 - INFO - Resolution change completed: /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2018_v2021_4_20m.tif
+2025-03-05 17:38:20,877 - INFO - Reprojecting the file to EPSG:4326...
+2025-03-05 17:38:20,877 - INFO - Reprojecting /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2018_v2021_4_20m.tif to EPSG:4326 -> /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2018_v2021_4_20m_EPSG_4326.tif
+2025-03-05 17:49:21,916 - INFO - Reprojection completed: /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2018_v2021_4_20m_EPSG_4326.tif
+2025-03-05 17:49:21,916 - INFO - Extract region bounds
+2025-03-05 17:49:21,917 - INFO - Extracting region shape bounds...
+2025-03-05 17:49:22,593 - INFO - Region bounds extracted: [-106.645646     25.12068714  -75.71740719   39.46601202]
+2025-03-05 17:49:22,593 - INFO - Crop raster to region bounds
+2025-03-05 17:49:22,593 - INFO - Cropping /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2018_v2021_4_20m_EPSG_4326.tif to bounds -106.645646, 25.120687139999973, -75.71740719000002, 39.466012019999994 -> /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2018_v2021_4_20m_EPSG_4326_cropped_region_08.tif
+2025-03-05 17:52:53,739 - INFO - Cropping completed: /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2018_v2021_4_20m_EPSG_4326_cropped_region_08.tif
+2025-03-05 17:52:53,739 - INFO - Normalize raster
+2025-03-05 17:52:53,740 - INFO - Step 1: Calculating global min and max for /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2018_v2021_4_20m_EPSG_4326_cropped_region_08.tif
+2025-03-05 17:53:33,115 - INFO - Global Min: 0, Global Max: 255
+2025-03-05 17:53:33,115 - INFO - Step 2: Normalizing raster /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2018_v2021_4_20m_EPSG_4326_cropped_region_08.tif -> /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2018_v2021_4_20m_EPSG_4326_cropped_normalized_region_08.tif
+2025-03-05 17:55:05,042 - INFO - Normalization completed. Saved to /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2018_v2021_4_20m_EPSG_4326_cropped_normalized_region_08.tif.
+2025-03-05 17:55:06,309 - INFO - Downsample normalized raster for plotting
+2025-03-05 17:55:06,309 - INFO - Starting the downsampling and cropping process
+2025-03-05 18:03:37,434 - INFO - Successfully saved the final NetCDF file to /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2018_v2021_4_20m_EPSG_4326_cropped_normalized_downsampled_region_08.nc
+2025-03-05 18:03:37,435 - INFO - Deleted intermediate file: /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2018_v2021_4_20m_EPSG_4326_cropped_normalized_downsampled_temp_region_08.nc
+2025-03-05 18:03:37,439 - INFO - Plot raster with region boundaries
+2025-03-05 18:03:37,441 - INFO - Plotting raster /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2018_v2021_4_20m_EPSG_4326_cropped_normalized_region_08.tif with region boundaries...
+2025-03-05 18:19:14,775 - INFO - Raster plot saved to: /net/projects/forexd/WP1/02_ImprovedLabels/Scripts/ForExD-WP1-P1//figures/tcc_2018_bounds_shape_epsg4326_region_08.png
+2025-03-05 18:19:14,775 - INFO - Processing completed successfully.
+2025-03-05 18:19:14,775 - INFO - TCC processing completed.
+2025-03-05 19:00:51,722 - INFO - Loading environment variables...
+2025-03-05 19:00:51,727 - INFO - Starting IDS processing pipeline for region 8...
+2025-03-05 19:00:51,727 - INFO - --------------------------------------------
+2025-03-05 19:00:51,727 - INFO - Running TCCProcessor...
+2025-03-05 19:00:51,727 - INFO - --------------------------------------------
+2025-03-05 19:00:51,739 - INFO - Processing USDA Region 8...
+2025-03-05 19:00:51,739 - INFO - Changing resolution of /net/projects/forexd/WP1/Data/CONUS/tcc/nlcd_tcc_conus_2019_v2021-4.tif to (20, 20) -> /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2019_v2021_4_20m.tif
+2025-03-05 19:09:03,391 - INFO - Resolution change completed: /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2019_v2021_4_20m.tif
+2025-03-05 19:09:03,391 - INFO - Reprojecting the file to EPSG:4326...
+2025-03-05 19:09:03,391 - INFO - Reprojecting /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2019_v2021_4_20m.tif to EPSG:4326 -> /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2019_v2021_4_20m_EPSG_4326.tif
+2025-03-05 19:20:00,898 - INFO - Reprojection completed: /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2019_v2021_4_20m_EPSG_4326.tif
+2025-03-05 19:20:00,898 - INFO - Extract region bounds
+2025-03-05 19:20:00,898 - INFO - Extracting region shape bounds...
+2025-03-05 19:20:01,549 - INFO - Region bounds extracted: [-106.645646     25.12068714  -75.71740719   39.46601202]
+2025-03-05 19:20:01,549 - INFO - Crop raster to region bounds
+2025-03-05 19:20:01,550 - INFO - Cropping /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2019_v2021_4_20m_EPSG_4326.tif to bounds -106.645646, 25.120687139999973, -75.71740719000002, 39.466012019999994 -> /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2019_v2021_4_20m_EPSG_4326_cropped_region_08.tif
+2025-03-05 19:23:33,318 - INFO - Cropping completed: /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2019_v2021_4_20m_EPSG_4326_cropped_region_08.tif
+2025-03-05 19:23:33,318 - INFO - Normalize raster
+2025-03-05 19:23:33,319 - INFO - Step 1: Calculating global min and max for /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2019_v2021_4_20m_EPSG_4326_cropped_region_08.tif
+2025-03-05 19:24:13,147 - INFO - Global Min: 0, Global Max: 255
+2025-03-05 19:24:13,147 - INFO - Step 2: Normalizing raster /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2019_v2021_4_20m_EPSG_4326_cropped_region_08.tif -> /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2019_v2021_4_20m_EPSG_4326_cropped_normalized_region_08.tif
+2025-03-05 19:25:43,013 - INFO - Normalization completed. Saved to /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2019_v2021_4_20m_EPSG_4326_cropped_normalized_region_08.tif.
+2025-03-05 19:25:44,270 - INFO - Downsample normalized raster for plotting
+2025-03-05 19:25:44,270 - INFO - Starting the downsampling and cropping process
+2025-03-05 19:34:24,809 - INFO - Successfully saved the final NetCDF file to /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2019_v2021_4_20m_EPSG_4326_cropped_normalized_downsampled_region_08.nc
+2025-03-05 19:34:24,810 - INFO - Deleted intermediate file: /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2019_v2021_4_20m_EPSG_4326_cropped_normalized_downsampled_temp_region_08.nc
+2025-03-05 19:34:24,814 - INFO - Plot raster with region boundaries
+2025-03-05 19:34:24,815 - INFO - Plotting raster /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2019_v2021_4_20m_EPSG_4326_cropped_normalized_region_08.tif with region boundaries...
+2025-03-05 19:48:51,488 - INFO - Raster plot saved to: /net/projects/forexd/WP1/02_ImprovedLabels/Scripts/ForExD-WP1-P1//figures/tcc_2019_bounds_shape_epsg4326_region_08.png
+2025-03-05 19:48:51,488 - INFO - Processing completed successfully.
+2025-03-05 19:48:51,488 - INFO - TCC processing completed.
+2025-03-05 19:52:12,600 - INFO - Loading environment variables...
+2025-03-05 19:52:12,605 - INFO - Starting IDS processing pipeline for region 8...
+2025-03-05 19:52:12,606 - INFO - --------------------------------------------
+2025-03-05 19:52:12,606 - INFO - Running TCCProcessor...
+2025-03-05 19:52:12,609 - INFO - --------------------------------------------
+2025-03-05 19:52:12,617 - INFO - Processing USDA Region 8...
+2025-03-05 19:52:12,617 - INFO - Changing resolution of /net/projects/forexd/WP1/Data/CONUS/tcc/nlcd_tcc_conus_2020_v2021-4.tif to (20, 20) -> /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2020_v2021_4_20m.tif
+2025-03-05 20:00:25,545 - INFO - Resolution change completed: /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2020_v2021_4_20m.tif
+2025-03-05 20:00:25,546 - INFO - Reprojecting the file to EPSG:4326...
+2025-03-05 20:00:25,546 - INFO - Reprojecting /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2020_v2021_4_20m.tif to EPSG:4326 -> /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2020_v2021_4_20m_EPSG_4326.tif
+2025-03-05 20:11:26,062 - INFO - Reprojection completed: /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2020_v2021_4_20m_EPSG_4326.tif
+2025-03-05 20:11:26,063 - INFO - Extract region bounds
+2025-03-05 20:11:26,063 - INFO - Extracting region shape bounds...
+2025-03-05 20:11:26,732 - INFO - Region bounds extracted: [-106.645646     25.12068714  -75.71740719   39.46601202]
+2025-03-05 20:11:26,732 - INFO - Crop raster to region bounds
+2025-03-05 20:11:26,732 - INFO - Cropping /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2020_v2021_4_20m_EPSG_4326.tif to bounds -106.645646, 25.120687139999973, -75.71740719000002, 39.466012019999994 -> /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2020_v2021_4_20m_EPSG_4326_cropped_region_08.tif
+2025-03-05 20:15:07,507 - INFO - Cropping completed: /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2020_v2021_4_20m_EPSG_4326_cropped_region_08.tif
+2025-03-05 20:15:07,508 - INFO - Normalize raster
+2025-03-05 20:15:07,510 - INFO - Step 1: Calculating global min and max for /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2020_v2021_4_20m_EPSG_4326_cropped_region_08.tif
+2025-03-05 20:15:47,804 - INFO - Global Min: 0, Global Max: 255
+2025-03-05 20:15:47,804 - INFO - Step 2: Normalizing raster /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2020_v2021_4_20m_EPSG_4326_cropped_region_08.tif -> /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2020_v2021_4_20m_EPSG_4326_cropped_normalized_region_08.tif
+2025-03-05 20:17:17,795 - INFO - Normalization completed. Saved to /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2020_v2021_4_20m_EPSG_4326_cropped_normalized_region_08.tif.
+2025-03-05 20:17:19,057 - INFO - Downsample normalized raster for plotting
+2025-03-05 20:17:19,057 - INFO - Starting the downsampling and cropping process
+2025-03-05 20:25:07,448 - INFO - Successfully saved the final NetCDF file to /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2020_v2021_4_20m_EPSG_4326_cropped_normalized_downsampled_region_08.nc
+2025-03-05 20:25:07,448 - INFO - Deleted intermediate file: /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2020_v2021_4_20m_EPSG_4326_cropped_normalized_downsampled_temp_region_08.nc
+2025-03-05 20:25:07,452 - INFO - Plot raster with region boundaries
+2025-03-05 20:25:07,454 - INFO - Plotting raster /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2020_v2021_4_20m_EPSG_4326_cropped_normalized_region_08.tif with region boundaries...
+2025-03-05 20:39:20,915 - INFO - Raster plot saved to: /net/projects/forexd/WP1/02_ImprovedLabels/Scripts/ForExD-WP1-P1//figures/tcc_2020_bounds_shape_epsg4326_region_08.png
+2025-03-05 20:39:20,915 - INFO - Processing completed successfully.
+2025-03-05 20:39:20,915 - INFO - TCC processing completed.
+2025-03-05 21:46:24,171 - INFO - Loading environment variables...
+2025-03-05 21:46:24,177 - INFO - Starting IDS processing pipeline for region 8...
+2025-03-05 21:46:24,177 - INFO - --------------------------------------------
+2025-03-05 21:46:24,177 - INFO - Running TCCProcessor...
+2025-03-05 21:46:24,177 - INFO - --------------------------------------------
+2025-03-05 21:46:24,189 - INFO - Processing USDA Region 8...
+2025-03-05 21:46:24,189 - INFO - Changing resolution of /net/projects/forexd/WP1/Data/CONUS/tcc/nlcd_tcc_conus_2021_v2021-4.tif to (20, 20) -> /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2021_v2021_4_20m.tif
+2025-03-05 21:54:42,208 - INFO - Resolution change completed: /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2021_v2021_4_20m.tif
+2025-03-05 21:54:42,209 - INFO - Reprojecting the file to EPSG:4326...
+2025-03-05 21:54:42,209 - INFO - Reprojecting /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2021_v2021_4_20m.tif to EPSG:4326 -> /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2021_v2021_4_20m_EPSG_4326.tif
+2025-03-05 22:05:40,484 - INFO - Reprojection completed: /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2021_v2021_4_20m_EPSG_4326.tif
+2025-03-05 22:05:40,485 - INFO - Extract region bounds
+2025-03-05 22:05:40,485 - INFO - Extracting region shape bounds...
+2025-03-05 22:05:41,192 - INFO - Region bounds extracted: [-106.645646     25.12068714  -75.71740719   39.46601202]
+2025-03-05 22:05:41,192 - INFO - Crop raster to region bounds
+2025-03-05 22:05:41,192 - INFO - Cropping /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2021_v2021_4_20m_EPSG_4326.tif to bounds -106.645646, 25.120687139999973, -75.71740719000002, 39.466012019999994 -> /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2021_v2021_4_20m_EPSG_4326_cropped_region_08.tif
+2025-03-05 22:09:13,769 - INFO - Cropping completed: /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2021_v2021_4_20m_EPSG_4326_cropped_region_08.tif
+2025-03-05 22:09:13,770 - INFO - Normalize raster
+2025-03-05 22:09:13,771 - INFO - Step 1: Calculating global min and max for /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2021_v2021_4_20m_EPSG_4326_cropped_region_08.tif
+2025-03-05 22:09:52,876 - INFO - Global Min: 0, Global Max: 255
+2025-03-05 22:09:52,876 - INFO - Step 2: Normalizing raster /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2021_v2021_4_20m_EPSG_4326_cropped_region_08.tif -> /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2021_v2021_4_20m_EPSG_4326_cropped_normalized_region_08.tif
+2025-03-05 22:11:21,836 - INFO - Normalization completed. Saved to /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2021_v2021_4_20m_EPSG_4326_cropped_normalized_region_08.tif.
+2025-03-05 22:11:23,085 - INFO - Downsample normalized raster for plotting
+2025-03-05 22:11:23,085 - INFO - Starting the downsampling and cropping process
+2025-03-05 22:19:12,325 - INFO - Successfully saved the final NetCDF file to /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2021_v2021_4_20m_EPSG_4326_cropped_normalized_downsampled_region_08.nc
+2025-03-05 22:19:12,326 - INFO - Deleted intermediate file: /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2021_v2021_4_20m_EPSG_4326_cropped_normalized_downsampled_temp_region_08.nc
+2025-03-05 22:19:12,330 - INFO - Plot raster with region boundaries
+2025-03-05 22:19:12,332 - INFO - Plotting raster /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2021_v2021_4_20m_EPSG_4326_cropped_normalized_region_08.tif with region boundaries...
+2025-03-05 22:33:07,548 - INFO - Raster plot saved to: /net/projects/forexd/WP1/02_ImprovedLabels/Scripts/ForExD-WP1-P1//figures/tcc_2021_bounds_shape_epsg4326_region_08.png
+2025-03-05 22:33:07,549 - INFO - Processing completed successfully.
+2025-03-05 22:33:07,549 - INFO - TCC processing completed.
+2025-03-06 12:22:46,060 - INFO - Loading environment variables...
+2025-03-06 12:22:46,066 - INFO - Starting IDS processing pipeline for region 8...
+2025-03-06 12:22:46,091 - INFO - --------------------------------------------
+2025-03-06 12:22:46,094 - INFO - Running TCCProcessor...
+2025-03-06 12:22:46,097 - INFO - --------------------------------------------
+2025-03-06 12:22:46,109 - INFO - Processing USDA Region 8...
+2025-03-06 12:22:46,109 - INFO - Changing resolution of /net/projects/forexd/WP1/Data/CONUS/tcc/nlcd_tcc_conus_2016_v2021-4.tif to (20, 20) -> /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2016_v2021_4_20m.tif
+2025-03-06 12:22:46,112 - INFO - Deleting existing file: /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2016_v2021_4_20m.tif
+2025-03-06 12:31:04,863 - INFO - Resolution change completed: /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2016_v2021_4_20m.tif
+2025-03-06 12:31:04,864 - INFO - Reprojecting the file to EPSG:4326...
+2025-03-06 12:31:04,864 - INFO - Reprojecting /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2016_v2021_4_20m.tif to None -> /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2016_v2021_4_20m_EPSG_None.tif
+2025-03-06 12:31:05,026 - INFO - Reprojection completed: /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2016_v2021_4_20m_EPSG_None.tif
+2025-03-06 12:31:05,026 - INFO - Extract region bounds
+2025-03-06 12:31:05,026 - INFO - Extracting region shape bounds...
+2025-03-06 12:31:06,608 - INFO - Region bounds extracted: [-106.645646     25.12068714  -75.71740719   39.46601202]
+2025-03-06 12:31:06,608 - INFO - Crop raster to region bounds
+2025-03-06 12:31:06,608 - INFO - Cropping /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2016_v2021_4_20m_EPSG_None.tif to bounds -106.645646, 25.120687139999973, -75.71740719000002, 39.466012019999994 -> /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2016_v2021_4_20m_EPSG_None_cropped_region_08.tif
+2025-03-06 12:31:06,682 - INFO - Cropping completed: /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2016_v2021_4_20m_EPSG_None_cropped_region_08.tif
+2025-03-06 12:31:06,682 - INFO - Normalize raster
+2025-03-06 12:31:06,682 - INFO - Step 1: Calculating global min and max for /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2016_v2021_4_20m_EPSG_None_cropped_region_08.tif
+2025-03-06 12:31:06,698 - INFO - GDAL signalled an error: err_no=4, msg='/net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2016_v2021_4_20m_EPSG_None_cropped_region_08.tif: No such file or directory'
+2025-03-06 12:31:06,698 - ERROR - Error in TCC processing: /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2016_v2021_4_20m_EPSG_None_cropped_region_08.tif: No such file or directory
+2025-03-06 12:37:06,301 - INFO - Loading environment variables...
+2025-03-06 12:37:06,307 - INFO - Starting IDS processing pipeline for region 8...
+2025-03-06 12:37:06,319 - INFO - --------------------------------------------
+2025-03-06 12:37:06,319 - INFO - Running TCCProcessor...
+2025-03-06 12:37:06,323 - INFO - --------------------------------------------
+2025-03-06 12:37:06,332 - INFO - Processing USDA Region 8...
+2025-03-06 12:37:06,332 - INFO - Changing resolution of /net/projects/forexd/WP1/Data/CONUS/tcc/nlcd_tcc_conus_2016_v2021-4.tif to (20, 20) -> /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2016_v2021_4_20m.tif
+2025-03-06 12:37:06,332 - INFO - Deleting existing file: /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2016_v2021_4_20m.tif
+2025-03-06 12:45:17,770 - INFO - Resolution change completed: /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2016_v2021_4_20m.tif
+2025-03-06 12:45:17,770 - INFO - Reprojecting the file to EPSG:4326...
+2025-03-06 12:45:17,770 - INFO - Reprojecting /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2016_v2021_4_20m.tif to None -> /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2016_v2021_4_20m_EPSG_None.tif
+2025-03-06 12:45:17,847 - INFO - Reprojection completed: /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2016_v2021_4_20m_EPSG_None.tif
+2025-03-06 12:45:17,847 - INFO - Extract region bounds
+2025-03-06 12:45:17,847 - INFO - Extracting region shape bounds...
+2025-03-06 12:45:17,971 - ERROR - Error in TCC processing: Must pass either crs or epsg.
+2025-03-06 12:54:29,634 - INFO - Loading environment variables...
+2025-03-06 12:54:29,639 - INFO - Starting IDS processing pipeline for region 8...
+2025-03-06 12:54:29,639 - INFO - --------------------------------------------
+2025-03-06 12:54:29,639 - INFO - Running TCCProcessor...
+2025-03-06 12:54:29,639 - INFO - --------------------------------------------
+2025-03-06 12:54:29,649 - INFO - Processing USDA Region 8...
+2025-03-06 12:54:29,649 - INFO - Changing resolution of /net/projects/forexd/WP1/Data/CONUS/tcc/nlcd_tcc_conus_2016_v2021-4.tif to (20, 20) -> /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2016_v2021_4_20m.tif
+2025-03-06 12:54:29,649 - INFO - Deleting existing file: /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2016_v2021_4_20m.tif
+2025-03-06 13:02:43,411 - INFO - Resolution change completed: /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2016_v2021_4_20m.tif
+2025-03-06 13:02:43,412 - INFO - Reprojecting the file to EPSG:4326...
+2025-03-06 13:02:43,412 - INFO - Reprojecting /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2016_v2021_4_20m.tif to EPSG:27705 -> /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2016_v2021_4_20m_EPSG_EPSG:27705.tif
+2025-03-06 13:14:57,763 - INFO - Reprojection completed: /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2016_v2021_4_20m_EPSG_EPSG:27705.tif
+2025-03-06 13:14:57,763 - INFO - Extract region bounds
+2025-03-06 13:14:57,763 - INFO - Extracting region shape bounds...
+2025-03-06 13:15:10,085 - INFO - Region bounds extracted: [ 7383334.80954076  1962975.96267917 10239785.09001602  3680631.04305054]
+2025-03-06 13:15:10,085 - INFO - Crop raster to region bounds
+2025-03-06 13:15:10,085 - INFO - Cropping /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2016_v2021_4_20m_EPSG_EPSG:27705.tif to bounds 7383334.809540761, 1962975.9626791724, 10239785.09001602, 3680631.043050536 -> /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2016_v2021_4_20m_EPSG_EPSG:27705_cropped_region_08.tif
+2025-03-06 13:19:20,591 - INFO - Cropping completed: /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2016_v2021_4_20m_EPSG_EPSG:27705_cropped_region_08.tif
+2025-03-06 13:19:20,591 - INFO - Normalize raster
+2025-03-06 13:19:20,591 - INFO - Step 1: Calculating global min and max for /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2016_v2021_4_20m_EPSG_EPSG:27705_cropped_region_08.tif
+2025-03-06 13:20:11,711 - INFO - Global Min: 0, Global Max: 255
+2025-03-06 13:20:11,712 - INFO - Step 2: Normalizing raster /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2016_v2021_4_20m_EPSG_EPSG:27705_cropped_region_08.tif -> /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2016_v2021_4_20m_EPSG_EPSG:27705_cropped_normalized_region_08.tif
+2025-03-06 13:22:02,174 - INFO - Normalization completed. Saved to /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2016_v2021_4_20m_EPSG_EPSG:27705_cropped_normalized_region_08.tif.
+2025-03-06 13:22:03,799 - INFO - Downsample normalized raster for plotting
+2025-03-06 13:22:03,799 - INFO - Starting the downsampling and cropping process
+2025-03-06 13:31:51,485 - INFO - Loading environment variables...
+2025-03-06 13:31:51,490 - INFO - Starting IDS processing pipeline for region 8...
+2025-03-06 13:31:51,534 - INFO - --------------------------------------------
+2025-03-06 13:31:51,586 - INFO - Running TCCProcessor...
+2025-03-06 13:31:51,586 - INFO - --------------------------------------------
+2025-03-06 13:31:51,612 - INFO - Processing USDA Region 8...
+2025-03-06 13:31:51,612 - INFO - Changing resolution of /net/projects/forexd/WP1/Data/CONUS/tcc/nlcd_tcc_conus_2017_v2021-4.tif to (20, 20) -> /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2017_v2021_4_20m.tif
+2025-03-06 13:31:51,612 - INFO - Deleting existing file: /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2017_v2021_4_20m.tif
+2025-03-06 13:32:27,875 - INFO - Loading environment variables...
+2025-03-06 13:32:27,880 - INFO - Starting IDS processing pipeline for region 8...
+2025-03-06 13:32:27,880 - INFO - --------------------------------------------
+2025-03-06 13:32:27,880 - INFO - Running TCCProcessor...
+2025-03-06 13:32:27,883 - INFO - --------------------------------------------
+2025-03-06 13:32:27,892 - INFO - Processing USDA Region 8...
+2025-03-06 13:32:27,893 - INFO - Changing resolution of /net/projects/forexd/WP1/Data/CONUS/tcc/nlcd_tcc_conus_2018_v2021-4.tif to (20, 20) -> /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2018_v2021_4_20m.tif
+2025-03-06 13:32:27,893 - INFO - Deleting existing file: /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2018_v2021_4_20m.tif
+2025-03-06 13:32:59,004 - INFO - Loading environment variables...
+2025-03-06 13:32:59,009 - INFO - Starting IDS processing pipeline for region 8...
+2025-03-06 13:32:59,009 - INFO - --------------------------------------------
+2025-03-06 13:32:59,009 - INFO - Running TCCProcessor...
+2025-03-06 13:32:59,012 - INFO - --------------------------------------------
+2025-03-06 13:32:59,019 - INFO - Processing USDA Region 8...
+2025-03-06 13:32:59,019 - INFO - Changing resolution of /net/projects/forexd/WP1/Data/CONUS/tcc/nlcd_tcc_conus_2019_v2021-4.tif to (20, 20) -> /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2019_v2021_4_20m.tif
+2025-03-06 13:32:59,019 - INFO - Deleting existing file: /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2019_v2021_4_20m.tif
+2025-03-06 13:35:35,849 - ERROR - Error during processing: No data found in bounds.
+2025-03-06 13:35:35,850 - INFO - Plot raster with region boundaries
+2025-03-06 13:35:35,859 - INFO - Plotting raster /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2016_v2021_4_20m_EPSG_EPSG:27705_cropped_normalized_region_08.tif with region boundaries...
+2025-03-06 13:35:36,170 - INFO - GDAL signalled an error: err_no=4, msg='/net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2016_v2021_4_20m_EPSG_EPSG:27705_cropped_normalized_region_08.tif: No such file or directory'
+2025-03-06 13:35:36,170 - ERROR - Error in TCC processing: /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2016_v2021_4_20m_EPSG_EPSG:27705_cropped_normalized_region_08.tif: No such file or directory
+2025-03-06 13:40:26,141 - INFO - Resolution change completed: /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2017_v2021_4_20m.tif
+2025-03-06 13:40:26,141 - INFO - Reprojecting the file to EPSG:4326...
+2025-03-06 13:40:26,141 - INFO - Reprojecting /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2017_v2021_4_20m.tif to EPSG:27705 -> /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2017_v2021_4_20m_EPSG_27705.tif
+2025-03-06 13:40:26,142 - INFO - Deleting existing file: /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2017_v2021_4_20m_EPSG_27705.tif
+2025-03-06 13:41:05,023 - INFO - Resolution change completed: /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2018_v2021_4_20m.tif
+2025-03-06 13:41:05,023 - INFO - Reprojecting the file to EPSG:4326...
+2025-03-06 13:41:05,023 - INFO - Reprojecting /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2018_v2021_4_20m.tif to EPSG:27705 -> /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2018_v2021_4_20m_EPSG_27705.tif
+2025-03-06 13:41:31,452 - INFO - Resolution change completed: /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2019_v2021_4_20m.tif
+2025-03-06 13:41:31,452 - INFO - Reprojecting the file to EPSG:4326...
+2025-03-06 13:41:31,452 - INFO - Reprojecting /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2019_v2021_4_20m.tif to EPSG:27705 -> /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2019_v2021_4_20m_EPSG_27705.tif
+2025-03-06 13:54:33,450 - INFO - Reprojection completed: /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2017_v2021_4_20m_EPSG_27705.tif
+2025-03-06 13:54:33,450 - INFO - Extract region bounds
+2025-03-06 13:54:33,450 - INFO - Extracting region shape bounds...
+2025-03-06 13:54:36,657 - INFO - Region bounds extracted: [ 7383334.80954076  1962975.96267917 10239785.09001602  3680631.04305054]
+2025-03-06 13:54:36,658 - INFO - Crop raster to region bounds
+2025-03-06 13:54:36,658 - INFO - Cropping /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2017_v2021_4_20m_EPSG_27705.tif to bounds 7383334.809540761, 1962975.9626791724, 10239785.09001602, 3680631.043050536 -> /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2017_v2021_4_20m_EPSG_27705_cropped_region_08.tif
+2025-03-06 13:54:36,668 - INFO - Deleting existing file: /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2017_v2021_4_20m_EPSG_27705_cropped_region_08.tif
+2025-03-06 13:55:09,491 - INFO - Reprojection completed: /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2018_v2021_4_20m_EPSG_27705.tif
+2025-03-06 13:55:09,491 - INFO - Extract region bounds
+2025-03-06 13:55:09,491 - INFO - Extracting region shape bounds...
+2025-03-06 13:55:12,976 - INFO - Region bounds extracted: [ 7383334.80954076  1962975.96267917 10239785.09001602  3680631.04305054]
+2025-03-06 13:55:12,976 - INFO - Crop raster to region bounds
+2025-03-06 13:55:12,976 - INFO - Cropping /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2018_v2021_4_20m_EPSG_27705.tif to bounds 7383334.809540761, 1962975.9626791724, 10239785.09001602, 3680631.043050536 -> /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2018_v2021_4_20m_EPSG_27705_cropped_region_08.tif
+2025-03-06 13:55:18,547 - INFO - Reprojection completed: /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2019_v2021_4_20m_EPSG_27705.tif
+2025-03-06 13:55:18,547 - INFO - Extract region bounds
+2025-03-06 13:55:18,547 - INFO - Extracting region shape bounds...
+2025-03-06 13:55:21,209 - INFO - Region bounds extracted: [ 7383334.80954076  1962975.96267917 10239785.09001602  3680631.04305054]
+2025-03-06 13:55:21,209 - INFO - Crop raster to region bounds
+2025-03-06 13:55:21,209 - INFO - Cropping /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2019_v2021_4_20m_EPSG_27705.tif to bounds 7383334.809540761, 1962975.9626791724, 10239785.09001602, 3680631.043050536 -> /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2019_v2021_4_20m_EPSG_27705_cropped_region_08.tif
+2025-03-06 13:59:51,050 - INFO - Cropping completed: /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2017_v2021_4_20m_EPSG_27705_cropped_region_08.tif
+2025-03-06 13:59:51,053 - INFO - Normalize raster
+2025-03-06 13:59:51,062 - INFO - Step 1: Calculating global min and max for /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2017_v2021_4_20m_EPSG_27705_cropped_region_08.tif
+2025-03-06 14:00:06,916 - INFO - Cropping completed: /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2018_v2021_4_20m_EPSG_27705_cropped_region_08.tif
+2025-03-06 14:00:06,916 - INFO - Normalize raster
+2025-03-06 14:00:06,919 - INFO - Step 1: Calculating global min and max for /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2018_v2021_4_20m_EPSG_27705_cropped_region_08.tif
+2025-03-06 14:00:26,236 - INFO - Cropping completed: /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2019_v2021_4_20m_EPSG_27705_cropped_region_08.tif
+2025-03-06 14:00:26,236 - INFO - Normalize raster
+2025-03-06 14:00:26,237 - INFO - Step 1: Calculating global min and max for /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2019_v2021_4_20m_EPSG_27705_cropped_region_08.tif
+2025-03-06 14:01:39,965 - INFO - Global Min: 0, Global Max: 255
+2025-03-06 14:01:39,965 - INFO - Step 2: Normalizing raster /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2017_v2021_4_20m_EPSG_27705_cropped_region_08.tif -> /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2017_v2021_4_20m_EPSG_27705_cropped_normalized_region_08.tif
+2025-03-06 14:01:53,583 - INFO - Global Min: 0, Global Max: 255
+2025-03-06 14:01:53,583 - INFO - Step 2: Normalizing raster /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2018_v2021_4_20m_EPSG_27705_cropped_region_08.tif -> /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2018_v2021_4_20m_EPSG_27705_cropped_normalized_region_08.tif
+2025-03-06 14:01:59,495 - INFO - Global Min: 0, Global Max: 255
+2025-03-06 14:01:59,496 - INFO - Step 2: Normalizing raster /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2019_v2021_4_20m_EPSG_27705_cropped_region_08.tif -> /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2019_v2021_4_20m_EPSG_27705_cropped_normalized_region_08.tif
+2025-03-06 14:03:06,789 - INFO - Loading environment variables...
+2025-03-06 14:03:06,794 - INFO - Starting IDS processing pipeline for region 8...
+2025-03-06 14:03:06,824 - INFO - --------------------------------------------
+2025-03-06 14:03:06,853 - INFO - Running TCCProcessor...
+2025-03-06 14:03:06,876 - INFO - --------------------------------------------
+2025-03-06 14:03:06,945 - INFO - Processing USDA Region 8...
+2025-03-06 14:03:06,949 - INFO - Changing resolution of /net/projects/forexd/WP1/Data/CONUS/tcc/nlcd_tcc_conus_2020_v2021-4.tif to (20, 20) -> /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2020_v2021_4_20m.tif
+2025-03-06 14:03:06,953 - INFO - Deleting existing file: /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2020_v2021_4_20m.tif
+2025-03-06 14:04:46,029 - INFO - Normalization completed. Saved to /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2017_v2021_4_20m_EPSG_27705_cropped_normalized_region_08.tif.
+2025-03-06 14:04:47,797 - INFO - Downsample normalized raster for plotting
+2025-03-06 14:04:47,797 - INFO - Starting the downsampling and cropping process
+2025-03-06 14:05:04,401 - INFO - Normalization completed. Saved to /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2018_v2021_4_20m_EPSG_27705_cropped_normalized_region_08.tif.
+2025-03-06 14:05:06,130 - INFO - Downsample normalized raster for plotting
+2025-03-06 14:05:06,130 - INFO - Starting the downsampling and cropping process
+2025-03-06 14:05:30,927 - INFO - Normalization completed. Saved to /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2019_v2021_4_20m_EPSG_27705_cropped_normalized_region_08.tif.
+2025-03-06 14:05:32,675 - INFO - Downsample normalized raster for plotting
+2025-03-06 14:05:32,675 - INFO - Starting the downsampling and cropping process
+2025-03-06 14:12:01,615 - INFO - Resolution change completed: /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2020_v2021_4_20m.tif
+2025-03-06 14:12:01,636 - INFO - Reprojecting the file to EPSG:4326...
+2025-03-06 14:12:01,636 - INFO - Reprojecting /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2020_v2021_4_20m.tif to EPSG:27705 -> /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2020_v2021_4_20m_EPSG_27705.tif
+2025-03-06 14:25:08,755 - INFO - Reprojection completed: /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2020_v2021_4_20m_EPSG_27705.tif
+2025-03-06 14:25:08,777 - INFO - Extract region bounds
+2025-03-06 14:25:08,777 - INFO - Extracting region shape bounds...
+2025-03-06 14:25:12,000 - INFO - Region bounds extracted: [ 7383334.80954076  1962975.96267917 10239785.09001602  3680631.04305054]
+2025-03-06 14:25:12,001 - INFO - Crop raster to region bounds
+2025-03-06 14:25:12,001 - INFO - Cropping /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2020_v2021_4_20m_EPSG_27705.tif to bounds 7383334.809540761, 1962975.9626791724, 10239785.09001602, 3680631.043050536 -> /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2020_v2021_4_20m_EPSG_27705_cropped_region_08.tif
+2025-03-06 14:26:50,292 - ERROR - Error during processing: No data found in bounds.
+2025-03-06 14:26:50,296 - INFO - Plot raster with region boundaries
+2025-03-06 14:26:50,296 - INFO - Plotting raster /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2019_v2021_4_20m_EPSG_27705_cropped_normalized_region_08.tif with region boundaries...
+2025-03-06 14:30:02,292 - INFO - Cropping completed: /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2020_v2021_4_20m_EPSG_27705_cropped_region_08.tif
+2025-03-06 14:30:02,292 - INFO - Normalize raster
+2025-03-06 14:30:02,294 - INFO - Step 1: Calculating global min and max for /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2020_v2021_4_20m_EPSG_27705_cropped_region_08.tif
+2025-03-06 14:31:14,861 - INFO - Global Min: 0, Global Max: 255
+2025-03-06 14:31:14,861 - INFO - Step 2: Normalizing raster /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2020_v2021_4_20m_EPSG_27705_cropped_region_08.tif -> /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2020_v2021_4_20m_EPSG_27705_cropped_normalized_region_08.tif
+2025-03-06 14:32:55,129 - INFO - Normalization completed. Saved to /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2020_v2021_4_20m_EPSG_27705_cropped_normalized_region_08.tif.
+2025-03-06 14:32:56,843 - INFO - Downsample normalized raster for plotting
+2025-03-06 14:32:56,843 - INFO - Starting the downsampling and cropping process
+2025-03-06 14:40:14,544 - ERROR - Error during processing: No data found in bounds.
+2025-03-06 14:40:14,546 - INFO - Plot raster with region boundaries
+2025-03-06 14:40:14,549 - INFO - Plotting raster /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2020_v2021_4_20m_EPSG_27705_cropped_normalized_region_08.tif with region boundaries...
+2025-03-06 14:48:49,108 - INFO - Raster plot saved to: /net/projects/forexd/WP1/02_ImprovedLabels/Scripts/ForExD-WP1-P1//figures/tcc_2019_bounds_shape_epsg_27705_region_08.png
+2025-03-06 14:48:49,109 - INFO - Processing completed successfully.
+2025-03-06 14:48:49,156 - INFO - TCC processing completed.
+2025-03-06 14:49:00,010 - INFO - Loading environment variables...
+2025-03-06 14:49:00,016 - INFO - Starting IDS processing pipeline for region 8...
+2025-03-06 14:49:00,016 - INFO - --------------------------------------------
+2025-03-06 14:49:00,019 - INFO - Running TCCProcessor...
+2025-03-06 14:49:00,023 - INFO - --------------------------------------------
+2025-03-06 14:49:00,037 - INFO - Processing USDA Region 8...
+2025-03-06 14:49:00,037 - INFO - Changing resolution of /net/projects/forexd/WP1/Data/CONUS/tcc/nlcd_tcc_conus_2021_v2021-4.tif to (20, 20) -> /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2021_v2021_4_20m.tif
+2025-03-06 14:49:00,042 - INFO - Deleting existing file: /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2021_v2021_4_20m.tif
+2025-03-06 14:57:15,582 - INFO - Resolution change completed: /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2021_v2021_4_20m.tif
+2025-03-06 14:57:15,583 - INFO - Reprojecting the file to EPSG:4326...
+2025-03-06 14:57:15,583 - INFO - Reprojecting /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2021_v2021_4_20m.tif to EPSG:27705 -> /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2021_v2021_4_20m_EPSG_27705.tif
+2025-03-06 14:58:11,998 - INFO - Raster plot saved to: /net/projects/forexd/WP1/02_ImprovedLabels/Scripts/ForExD-WP1-P1//figures/tcc_2020_bounds_shape_epsg_27705_region_08.png
+2025-03-06 14:58:11,998 - INFO - Processing completed successfully.
+2025-03-06 14:58:12,013 - INFO - TCC processing completed.
+2025-03-06 15:09:35,577 - INFO - Reprojection completed: /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2021_v2021_4_20m_EPSG_27705.tif
+2025-03-06 15:09:35,577 - INFO - Extract region bounds
+2025-03-06 15:09:35,577 - INFO - Extracting region shape bounds...
+2025-03-06 15:09:37,675 - INFO - Region bounds extracted: [ 7383334.80954076  1962975.96267917 10239785.09001602  3680631.04305054]
+2025-03-06 15:09:37,675 - INFO - Crop raster to region bounds
+2025-03-06 15:09:37,675 - INFO - Cropping /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2021_v2021_4_20m_EPSG_27705.tif to bounds 7383334.809540761, 1962975.9626791724, 10239785.09001602, 3680631.043050536 -> /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2021_v2021_4_20m_EPSG_27705_cropped_region_08.tif
+2025-03-06 15:13:52,075 - INFO - Cropping completed: /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2021_v2021_4_20m_EPSG_27705_cropped_region_08.tif
+2025-03-06 15:13:52,075 - INFO - Normalize raster
+2025-03-06 15:13:52,076 - INFO - Step 1: Calculating global min and max for /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2021_v2021_4_20m_EPSG_27705_cropped_region_08.tif
+2025-03-06 15:14:44,969 - INFO - Global Min: 0, Global Max: 255
+2025-03-06 15:14:44,970 - INFO - Step 2: Normalizing raster /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2021_v2021_4_20m_EPSG_27705_cropped_region_08.tif -> /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2021_v2021_4_20m_EPSG_27705_cropped_normalized_region_08.tif
+2025-03-06 15:16:35,818 - INFO - Normalization completed. Saved to /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2021_v2021_4_20m_EPSG_27705_cropped_normalized_region_08.tif.
+2025-03-06 15:16:37,454 - INFO - Downsample normalized raster for plotting
+2025-03-06 15:16:37,455 - INFO - Starting the downsampling and cropping process
+2025-03-06 15:22:34,878 - ERROR - Error during processing: No data found in bounds.
+2025-03-06 15:22:34,880 - INFO - Plot raster with region boundaries
+2025-03-06 15:22:34,895 - INFO - Plotting raster /net/projects/forexd/WP1/Data/CONUS/tcc/wp1_nlcd_tcc_conus_2021_v2021_4_20m_EPSG_27705_cropped_normalized_region_08.tif with region boundaries...
+2025-03-06 15:39:03,184 - INFO - Raster plot saved to: /net/projects/forexd/WP1/02_ImprovedLabels/Scripts/ForExD-WP1-P1//figures/tcc_2021_bounds_shape_epsg_27705_region_08.png
+2025-03-06 15:39:03,184 - INFO - Processing completed successfully.
+2025-03-06 15:39:03,185 - INFO - TCC processing completed.
+2025-03-10 16:31:48,591 - INFO - Loading environment variables...
+2025-03-10 16:31:48,596 - INFO - Starting IDS processing pipeline for region 8...
+2025-03-10 16:31:48,611 - INFO - Running Plotter...
+2025-03-10 16:31:48,617 - ERROR - Error in Plotting: 'tcc_year'
+2025-03-10 16:33:53,974 - INFO - Loading environment variables...
+2025-03-10 16:33:53,979 - INFO - Starting IDS processing pipeline for region 8...
+2025-03-10 16:33:54,053 - INFO - Running Plotter...
+2025-03-10 16:33:54,060 - INFO - Processing for buffer: 500
+2025-03-10 16:34:28,370 - INFO - Plot signal counts
+2025-03-10 16:34:30,803 - INFO - Plot generation completed.
+2025-03-10 16:36:12,585 - INFO - Loading environment variables...
+2025-03-10 16:36:12,590 - INFO - Starting IDS processing pipeline for region 8...
+2025-03-10 16:36:12,602 - INFO - Running Plotter...
+2025-03-10 16:36:12,609 - INFO - Processing for buffer: 500
+2025-03-10 16:36:46,826 - INFO - Plot signal counts
+2025-03-10 16:36:48,312 - INFO - Plot generation completed.

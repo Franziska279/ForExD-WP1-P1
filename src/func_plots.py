@@ -961,6 +961,8 @@ def plot_signal_counts_by_diff_year_combined(gdf1, gdf2, custom_colors, save_pat
     # Preprocess and count occurrences for both GeoDataFrames
     count_by_diff_year_dca1 = preprocess_and_count(gdf1)
     count_by_diff_year_dca2 = preprocess_and_count(gdf2)
+    print(count_by_diff_year_dca1.to_string(index=False))
+    print(count_by_diff_year_dca2.to_string(index=False))
 
     # Create subplots with 1 row and 2 columns
     fig, axes = plt.subplots(1, 2, figsize=(16, 6), sharey=True)  # Shared y-axis for comparison

@@ -30,18 +30,18 @@ class Plotter:
         :param data: The processed data to be plotted
         """
 
-        # Get figure file paths from environment variables with dynamic buffer and region ID replacement
-        figure_study_area_path = os.path.join(os.getenv('FIGURES_DIR'), os.getenv('FIGURE_STUDY_AREA').format(region_id=self.region_id))
-        ids_gdf = load_data(self.ids_path)
-        plot_study_area(
-                self.usa_filepath, 
-                self.region_id, 
-                self.tcc_downsampled, 
-                self.s1_tiles_boundary_path,
-                ids_gdf, 
-                self.custom_colors, 
-                figure_study_area_path,
-                logging)
+        # # Get figure file paths from environment variables with dynamic buffer and region ID replacement
+        # figure_study_area_path = os.path.join(os.getenv('FIGURES_DIR'), os.getenv('FIGURE_STUDY_AREA').format(region_id=self.region_id))
+        # ids_gdf = load_data(self.ids_path)
+        # plot_study_area(
+        #         self.usa_filepath, 
+        #         self.region_id, 
+        #         self.tcc_downsampled, 
+        #         self.s1_tiles_boundary_path,
+        #         ids_gdf, 
+        #         self.custom_colors, 
+        #         figure_study_area_path,
+        #         logging)
 
         for buffer in self.spatial_buffer:
             logging.info(f"Processing for buffer: {buffer}")
@@ -60,36 +60,36 @@ class Plotter:
             refdm_gdf_yearly_aggregated = merge_geometries_and_keep_columns(s1dm_gdf)
             s1dm_frequency = add_signal_duration_column(refdm_gdf_yearly_aggregated, self.target_crs)
             s1dm_cleaned = remove_drought(s1dm_frequency)
-            logging.info('Claculate size shift difference')
-            gdf = calculate_size_shift_difference(ids_gdf, s1dm_cleaned)
-            # Minimum outerline areas
-            s1dm_convex = calculate_minimum_outerline_area(s1dm_cleaned)[['geometry', 'area_km2', 'DCA_ID']]
-            ids_convex = calculate_minimum_outerline_area(ids_gdf)[['geometry', 'area_km2', 'DCA_ID']]
+            # logging.info('Claculate size shift difference')
+            # gdf = calculate_size_shift_difference(ids_gdf, s1dm_cleaned)
+            # # Minimum outerline areas
+            # s1dm_convex = calculate_minimum_outerline_area(s1dm_cleaned)[['geometry', 'area_km2', 'DCA_ID']]
+            # ids_convex = calculate_minimum_outerline_area(ids_gdf)[['geometry', 'area_km2', 'DCA_ID']]
             
             # Remove drought disturbances
             s1dm_no_drought = remove_drought(s1dm_cleaned)
             s1dm_no_drought_gdf = remove_drought(s1dm_gdf)
         
 
-            # Plot radar reduction potential
-            logging.info('Plot radar reduction potential')
-            plot_radar_reduction_potential(
-                s1dm_frequency, 
-                ids_gdf, 
-                save_path=figure_radar_reduction_potential_path, 
-                plot_reduction=False
-            )
+            # # Plot radar reduction potential
+            # logging.info('Plot radar reduction potential')
+            # plot_radar_reduction_potential(
+            #     s1dm_frequency, 
+            #     ids_gdf, 
+            #     save_path=figure_radar_reduction_potential_path, 
+            #     plot_reduction=False
+            # )
             
-            # Plot size and position change
-            logging.info('Plot size and position change')
-            plot_d_area_ch_area_centroid_disturbances(
-                gdf, 
-                ids_gdf, 
-                s1dm_convex, 
-                ids_convex, 
-                self.custom_colors, 
-                save_path=figure_size_position_change_path
-            )
+            # # Plot size and position change
+            # logging.info('Plot size and position change')
+            # plot_d_area_ch_area_centroid_disturbances(
+            #     gdf, 
+            #     ids_gdf, 
+            #     s1dm_convex, 
+            #     ids_convex, 
+            #     self.custom_colors, 
+            #     save_path=figure_size_position_change_path
+            # )
             
             # Plot signal counts
             logging.info('Plot signal counts')
@@ -100,14 +100,14 @@ class Plotter:
                 save_path=figure_year_lag_path
             )
             
-            # Calculate and plot overlap percentages
-            logging.info('Calculate and plot overlap percentages')
-            plot_percentages_histograms(
-                ids_gdf, 
-                s1dm_no_drought_gdf, 
-                self.custom_colors, 
-                figure_overlap_percentage_path
-            )
+            # # Calculate and plot overlap percentages
+            # logging.info('Calculate and plot overlap percentages')
+            # plot_percentages_histograms(
+            #     ids_gdf, 
+            #     s1dm_no_drought_gdf, 
+            #     self.custom_colors, 
+            #     figure_overlap_percentage_path
+            # )
 
 
     def _set_up_logging(self):
@@ -140,5 +140,5 @@ class Plotter:
         # Define file paths for shapefiles and output locations
         self.usa_filepath = os.path.join(os.getenv('REGION_SHAPE_DIR'), os.getenv('REGION_SHAPE_FILE'))
         self.ids_path = os.path.join(os.getenv('RESULTS_DIR'), os.getenv('IDS_FILTERED_FILE').format(region_id=self.region_id))
-        self.tcc_downsampled = os.path.join(os.getenv('TCC_DIR'), os.getenv('TCC_DOWNSAMPLED_RASTER_TEMPLATE').format(region_id=self.region_id))
-        self.s1_tiles_boundary_path =  os.path.join(os.getenv('RESULTS_DIR'), os.getenv('S1CD_TILES_BOUNDS_FILE').format(region_id=self.region_id))
+        #self.tcc_downsampled = os.path.join(os.getenv('TCC_DIR'), os.getenv('TCC_DOWNSAMPLED_RASTER_TEMPLATE').format(region_id=self.region_id))
+        #self.s1_tiles_boundary_path =  os.path.join(os.getenv('RESULTS_DIR'), os.getenv('S1CD_TILES_BOUNDS_FILE').format(region_id=self.region_id))
