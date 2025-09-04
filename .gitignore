@@ -1,2 +1,28 @@
 # ignore ALL these files 
 src/logs/
+data/
+results/
+results_clean/
+results/intermediate_results/
+results/timeseries/
+results/radar_results/
+logs/
+figures/
+timeseries/
+grids/
+
+
+# Python cache files
+src/__pycache__/*.pyc
+src/*.pyo
+src/*.pyd
+src/.ipynb_checkpoints/
+
+# Local dev stuff
+.scr/
+.venv/
+.env
+
+# VSCode / PyCharm configs (optional, if you don’t want to track them)
+.vscode/
+.idea/
