@@ -1,5 +1,8 @@
 # ignore ALL these files 
 src/logs/
+src/figures_median/
+src/aggregated_timeseries/
+src/aggregated_timeseries_median/
 data/
 results/
 results_clean/
