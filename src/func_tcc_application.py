@@ -64,36 +64,126 @@ def process_and_filter_polygons(dataset, ids_usda_path, s1_year, year_buffer, ta
 
 
 
-def create_downsampled_tcc_map(input_tiff, region_shapefile_path, region_id, temp_netcdf, final_netcdf):
+# def create_downsampled_tcc_map(input_tiff, region_shapefile_path, region_id, temp_netcdf, final_netcdf):
+#     """
+#     Downsamples and crops a forest canopy cover map to a specified region, saving the result as a NetCDF file.
+#     """
+#     logging.info("Starting the downsampling and cropping process")
+    
+#     try:
+
+#         # Load raster
+#         forest_cover = rioxarray.open_rasterio(input_tiff, masked=True).squeeze()
+
+#         # Ensure CRS
+#         forest_cover = forest_cover.rio.write_crs("EPSG:4326")
+
+#         # Load region geometry
+#         #region_geometry = load_and_extract_region(region_shapefile_path, region_id).unary_union
+#         #region_gdf = region_gdf.to_crs(forest_cover.rio.crs)  # Ensure same CRS
+        
+#         # Load and ensure CRS of forest cover map
+#         #forest_cover = rioxarray.open_rasterio(input_tiff, masked=True).squeeze()
+#         #region_geometry = region_geometry.to_crs(forest_cover.rio.crs)
+
+#         #forest_cover = forest_cover.rio.write_crs("EPSG:4326")
+        
+#         # Downsample the raster data
+#         downsample_factor = 100
+#         forest_cover = forest_cover.coarsen(x=downsample_factor, y=downsample_factor, boundary='trim').mean()
+        
+#         forest_cover.to_netcdf(temp_netcdf)
+
+#         # Optional weiterverarbeiten
+#         processed_data = xr.open_dataset(temp_netcdf).rename({'__xarray_dataarray_variable__': 'tcc'})
+#         if 'spatial_ref' in processed_data:
+#             processed_data = processed_data.drop_vars('spatial_ref')
+
+#         # Alle Werte >= 1 zu NaN machen
+#         processed_data['tcc'] = processed_data['tcc'].where(processed_data['tcc'] < 1, np.nan)
+
+#         # Speichern
+#         processed_data.to_netcdf(final_netcdf, mode='w')
+
+#         print(f"Successfully saved the final NetCDF file to {final_netcdf}")
+    
+#     except Exception as e:
+#         logging.error(f"Error during processing: {e}")
+#         return None
+    
+#     finally:
+#         # Cleanup intermediate file
+#         if os.path.exists(temp_netcdf):
+#             os.remove(temp_netcdf)
+#             logging.info(f"Deleted intermediate file: {temp_netcdf}")
+
+
+import os
+import logging
+import geopandas as gpd
+import rioxarray
+import xarray as xr
+import numpy as np
+
+def create_downsampled_tcc_map(input_tiff, region_shapefile_path, region_id, temp_netcdf, final_netcdf,
+                               target_crs="EPSG:4326", clip_crs="EPSG:27705", downsample_factor=100):
     """
     Downsamples and crops a forest canopy cover map to a specified region, saving the result as a NetCDF file.
+    
+    Parameters:
+    - input_tiff: Path to input raster TIFF
+    - region_shapefile_path: Path to region shapefile
+    - region_id: ID of the region to clip
+    - temp_netcdf: Path to temporary NetCDF file
+    - final_netcdf: Path to final NetCDF file
+    - target_crs: CRS for output NetCDF (default EPSG:4326)
+    - clip_crs: CRS to use for clipping (default EPSG:27705)
+    - downsample_factor: Factor to coarsen raster
     """
     logging.info("Starting the downsampling and cropping process")
     
     try:
-        # Load region geometry
-        region_geometry = load_and_extract_region(region_shapefile_path, region_id).unary_union
-        
-        # Load and ensure CRS of forest cover map
+        # 1️⃣ Load raster
         forest_cover = rioxarray.open_rasterio(input_tiff, masked=True).squeeze()
-        forest_cover = forest_cover.rio.write_crs("EPSG:4326")
-        
-        # Downsample the raster data
-        downsample_factor = 100
+
+        # 2️⃣ Ensure raster CRS
+        forest_cover = forest_cover.rio.write_crs(clip_crs)
+
+        # 3️⃣ Load region and select only desired region
+        region_gdf = gpd.read_file(region_shapefile_path)
+        region = region_gdf[region_gdf['REGION'] == region_id]
+
+        # 4️⃣ Reproject region to raster CRS
+        region_proj = region.to_crs(clip_crs)
+
+        # 5️⃣ Combine all polygons into one
+        region_geometry = region_proj.unary_union
+
+        # 6️⃣ Clip raster to region
+        forest_cover = forest_cover.rio.clip([region_geometry], clip_crs, drop=True, from_disk=True)
+
+        # 7️⃣ Downsample raster
         forest_cover = forest_cover.coarsen(x=downsample_factor, y=downsample_factor, boundary='trim').mean()
-        
-        # Crop to region
-        cropped_forest_cover = forest_cover.rio.clip([region_geometry], forest_cover.rio.crs, drop=True, from_disk=True)
-        cropped_forest_cover.to_netcdf(temp_netcdf)
-        
-        # Load and process the cropped NetCDF file
-        processed_data = xr.open_dataset(temp_netcdf).rename({'__xarray_dataarray_variable__': 'tcc'})
-        processed_data = processed_data.drop_vars('spatial_ref')
-        
-        # Save the final NetCDF file
+
+        # 8️⃣ Convert to Dataset and rename variable
+        processed_data = forest_cover.to_dataset(name='tcc')
+
+        # 9️⃣ Remove spatial_ref if exists
+        if 'spatial_ref' in processed_data:
+            processed_data = processed_data.drop_vars('spatial_ref')
+
+        # 🔟 Set target CRS (EPSG:4326)
+        processed_data = processed_data.rio.write_crs(clip_crs)  # aktuell Meter-CRS
+        processed_data = processed_data.rio.reproject(target_crs)  # reproject to EPSG:4326
+
+        # 1️⃣1️⃣ Replace all values >= 1 with NaN
+        processed_data['tcc'] = processed_data['tcc'].where(processed_data['tcc'] < 1, np.nan)
+
+        # 1️⃣2️⃣ Save final NetCDF
         processed_data.to_netcdf(final_netcdf, mode='w')
-        
         logging.info(f"Successfully saved the final NetCDF file to {final_netcdf}")
+
+        return processed_data
     
     except Exception as e:
         logging.error(f"Error during processing: {e}")

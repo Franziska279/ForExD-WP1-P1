@@ -4,6 +4,8 @@ import xarray as xr
 import numpy as np
 import pandas as pd
 from func_file_io import load_data
+from shapely.validation import make_valid
+from scipy.stats import ttest_rel
 
 ########################################################################################
 #######                             Helper Functions                             #######
@@ -151,38 +153,38 @@ def load_and_extract_region_crs(path, region_id, target_crs='EPSG:4326'):
 
 
 
-def get_mainland(gdf_path):
+def get_mainland(gdf_path, regions_to_clean=['05', '08']):
     """
-    Cleans the mainland parts of specified regions from the given GeoDataFrame.
-    
+    Keep only the largest polygon (mainland) for specified regions in a GeoDataFrame.
+
     Parameters:
         gdf_path (str): Path to the input GeoDataFrame file.
-    
+        regions_to_clean (list): List of region codes to clean (keep only largest polygon).
+
     Returns:
-        GeoDataFrame: Cleaned GeoDataFrame with mainland parts of specified regions.
+        GeoDataFrame: Updated GeoDataFrame with small parts removed from specified regions.
     """
     gdf = gpd.read_file(gdf_path)
-    regions_to_clean = ['05', '10']
+    # Keep all regions except '10'
+    gdf = gdf[gdf['REGION'] != '10']
     cleaned_parts = []
 
     for region in regions_to_clean:
-        region_gdf = gdf[gdf['REGION'] == '08']
+        region_gdf = gdf[gdf['REGION'] == region]
         exploded = region_gdf.explode(index_parts=True)
-        exploded['area'] = exploded.area
-        # Get the mainland part with the maximum area
-        mainland_part = exploded.loc[exploded['area'].idxmax()]
-        cleaned_region = exploded[exploded['area'] == mainland_part['area']]
-        cleaned_parts.append(cleaned_region)
+        exploded['area'] = exploded.geometry.area
 
-    cleaned_parts_gdf = gpd.GeoDataFrame(pd.concat(cleaned_parts, ignore_index=True))
+        # Keep only the largest polygon
+        largest_poly = exploded.loc[exploded['area'].idxmax()]
+        cleaned_parts.append(largest_poly.to_frame().T)  # convert Series to DataFrame
 
     # Combine cleaned parts with the rest of the GeoDataFrame
-    #usa_mainland = gdf[~gdf['REGION'].isin(regions_to_clean)].append(cleaned_parts_gdf, ignore_index=True)
+    remaining = gdf[~gdf['REGION'].isin(regions_to_clean)]
+    updated_gdf = pd.concat([remaining, pd.concat(cleaned_parts, ignore_index=True)], ignore_index=True)
+    updated_gdf = gpd.GeoDataFrame(updated_gdf, geometry='geometry', crs=gdf.crs)
 
-    # Update mainland by removing small parts and adding cleaned parts
-    usa_mainland = pd.concat([gdf[~gdf['REGION'].isin(regions_to_clean)], cleaned_parts_gdf], ignore_index=True)
+    return updated_gdf
 
-    return usa_mainland
 
 
 def calculate_area_in_km2(gdf):
@@ -268,6 +270,27 @@ from shapely.ops import unary_union
 
 def remove_drought(gdf):
     return gdf[gdf['DCA_ID'] != 'drought']
+
+def remove_dca_ids(gdf, ids_to_remove):
+    """
+    Remove rows from a GeoDataFrame based on one or more DCA_ID values.
+
+    Parameters
+    ----------
+    gdf : GeoDataFrame
+        Input GeoDataFrame.
+    ids_to_remove : str or list of str
+        DCA_ID(s) to remove. Can be a single string or a list of strings.
+
+    Returns
+    -------
+    GeoDataFrame
+        Filtered GeoDataFrame with specified DCA_ID(s) removed.
+    """
+    if isinstance(ids_to_remove, str):
+        ids_to_remove = [ids_to_remove]
+    return gdf[~gdf['DCA_ID'].isin(ids_to_remove)]
+
 
 def closest_s1_year(group):
     # Ensure that both 'S1_YEAR' and 'SURVEY_Y' are numeric
@@ -361,3 +384,76 @@ def calculate_overlap_percentages(ids, s1dm):
         results.append({"DCA_ID": dca_id, "percentage_ids": percentage_ids, "percentage_s1cd": percentage_s1cd})
 
     return pd.DataFrame(results)
+
+
+
+
+# ==============================================================
+# HELPER FUNCTIONS SIMILARITY
+# ==============================================================
+
+def compute_overlap_jaccard(geom_candidate, geom_manual):
+    """
+    Compute Overlap (%) and Jaccard index between candidate and manual geometries.
+
+    Parameters
+    ----------
+    geom_candidate : shapely.geometry
+        Candidate geometry (IDS or S1DM)
+    geom_manual : shapely.geometry
+        Reference manual geometry
+
+    Returns
+    -------
+    overlap_pct : float
+        Percent of manual area overlapping with candidate
+    jaccard : float
+        Jaccard index (intersection/union)
+    """
+    geom_candidate = make_valid(geom_candidate)
+    geom_manual = make_valid(geom_manual)
+
+    inter = geom_candidate.intersection(geom_manual)
+    union = geom_candidate.union(geom_manual)
+
+    area_inter = inter.area
+    area_union = union.area
+    area_manual = geom_manual.area
+
+    overlap_pct = (area_inter / area_manual) * 100 if area_manual > 0 else 0
+    jaccard = (area_inter / area_union) if area_union > 0 else 0
+
+    return overlap_pct, jaccard
+
+
+def paired_ttest_significance(x, y, alpha1=0.05, alpha2=0.1, alternative="greater"):
+    """
+    One-sided paired t-test between S1DM and IDS values.
+
+    Parameters
+    ----------
+    x, y : array-like
+        Sample values (e.g., S1DM vs IDS metrics)
+    alpha1 : float
+        Primary significance threshold (default=0.05)
+    alpha2 : float
+        Secondary significance threshold (default=0.1)
+    alternative : {"greater","less"}
+        One-sided test direction
+
+    Returns
+    -------
+    pvalue : float
+        p-value from paired t-test
+    sig_symbol : str
+        "*" if p < alpha1, "+" if p < alpha2, else ""
+    """
+    t_res = ttest_rel(x, y, alternative=alternative)
+    if t_res.pvalue < alpha1:
+        sig = "*"
+    elif t_res.pvalue < alpha2:
+        sig = "+"
+    else:
+        sig = ""
+    return t_res.pvalue, sig
+

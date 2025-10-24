@@ -10,6 +10,7 @@ import pandas as pd
 from tqdm import tqdm
 from func_file_io import load_data
 from affine import Affine
+from pyproj import Transformer
 from func_data_preprocessing import extract_s1cd_filename_part, calculate_area_in_km2_s1cd
 
 def extract_year_from_s1cd_filename(input_path):
@@ -70,7 +71,7 @@ def apply_tcc_mask(dataset, tcc_raster_path):
     - xarray.DataArray: The masked dataset where TCC values are above the threshold.
       Returns `None` if an error occurs at any step.
     """
-    
+    threshold = 0.3
     # Step 1: Load the TCC raster data from the provided file path
     logging.info("Loading TCC raster data from: %s", tcc_raster_path)
     
@@ -80,41 +81,103 @@ def apply_tcc_mask(dataset, tcc_raster_path):
         logging.error("Failed to open TCC raster: %s", e)
         return None
 
-    # Step 2: Extract the spatial bounds of the dataset (longitude and latitude ranges)
-    dataset_lon_min, dataset_lon_max = dataset['x'].min(), dataset['x'].max()
-    dataset_lat_min, dataset_lat_max = dataset['y'].min(), dataset['y'].max()
+      # CRS of both datasets
+    ds_crs = dataset.rio.crs
+    tcc_crs = tcc_data.rio.crs
 
-    logging.info("Dataset spatial bounds - Longitude: [%f, %f], Latitude: [%f, %f]",
-                dataset_lon_min, dataset_lon_max, dataset_lat_min, dataset_lat_max)
-
-    # Step 3: Subset the TCC raster to the region of interest (dataset spatial bounds)
-    logging.info("Extracting TCC data subset within dataset bounds...")
-    tcc_subset = tcc_data.sel(x=slice(dataset_lon_min, dataset_lon_max),
-                              y=slice(dataset_lat_max, dataset_lat_min))
-
-    # Step 4: Check if the subset is valid, return None if empty
-    if tcc_subset.isnull().all():
-        logging.error("TCC data subset is empty for the given bounds.")
+    if ds_crs is None or tcc_crs is None:
+        logging.error("Missing CRS information in dataset or TCC raster.")
         return None
 
-    # Step 5: Interpolate the TCC data to match the dataset's grid (coordinate system)
-    logging.info("Interpolating TCC data to match dataset grid...")
+    # Extract bounds from dataset
+    dataset_lon_min = float(dataset['x'].min())
+    dataset_lon_max = float(dataset['x'].max())
+    dataset_lat_min = float(dataset['y'].min())
+    dataset_lat_max = float(dataset['y'].max())
+
+    logging.info("Dataset bounds (original CRS %s): x=[%f,%f], y=[%f,%f]",
+                 ds_crs, dataset_lon_min, dataset_lon_max,
+                 dataset_lat_min, dataset_lat_max)
+
+    # Transform bounds into TCC CRS
+    transformer = Transformer.from_crs(ds_crs, tcc_crs, always_xy=True)
+
+    x_min_tcc, y_min_tcc = transformer.transform(dataset_lon_min, dataset_lat_min)
+    x_max_tcc, y_max_tcc = transformer.transform(dataset_lon_max, dataset_lat_max)
+    x_min_tcc2, y_max_tcc2 = transformer.transform(dataset_lon_min, dataset_lat_max)
+    x_max_tcc2, y_min_tcc2 = transformer.transform(dataset_lon_max, dataset_lat_min)
+
+    # Get overall bounding box (since reprojection can flip axes)
+    x_min = min(x_min_tcc, x_min_tcc2, x_max_tcc, x_max_tcc2)
+    x_max = max(x_min_tcc, x_min_tcc2, x_max_tcc, x_max_tcc2)
+    y_min = min(y_min_tcc, y_min_tcc2, y_max_tcc, y_max_tcc2)
+    y_max = max(y_min_tcc, y_min_tcc2, y_max_tcc, y_max_tcc2)
+
+    logging.info("Transformed bounds in TCC CRS (%s): x=[%f,%f], y=[%f,%f]",
+                 tcc_crs, x_min, x_max, y_min, y_max)
+
+     # Subset TCC raster in its CRS
     try:
-        interpolated_tcc = tcc_subset.interp(x=dataset.coords['x'], y=dataset.coords['y'], method='nearest')
+        tcc_subset = tcc_data.sel(
+            x=slice(x_min, x_max),
+            y=slice(y_max, y_min)  # note reversed y order
+        )
     except Exception as e:
-        logging.error("Interpolation failed: %s", e)
+        logging.error("Failed to subset TCC raster: %s", e)
         return None
 
-    # Step 6: Apply the TCC mask to the dataset
-    # Only retain values where the TCC is above the specified threshold (0.3 in this case)
-    logging.info("Masking dataset based on TCC values...")
-    threshold = 0.3
-    masked_dataset = dataset.where(interpolated_tcc > threshold, 0).fillna(0)
+    if tcc_subset.rio.bounds() is None or tcc_subset.size == 0:
+        logging.error("TCC subset is empty after reprojection.")
+        return None
 
-    # Step 7: Return the masked dataset
-    logging.info("Masking complete. Returning masked dataset.")
+    # Reproject TCC subset to dataset CRS & grid
+    try:
+        tcc_reproj = tcc_subset.rio.reproject_match(dataset)
+    except Exception as e:
+        logging.error("Failed to reproject TCC subset to dataset grid: %s", e)
+        return None
+
+    # Apply mask
+    mask = tcc_reproj.squeeze() > threshold
+    masked = dataset.where(mask)
+
+    return masked
+
+    # # Step 2: Extract the spatial bounds of the dataset (longitude and latitude ranges)
+    # dataset_lon_min, dataset_lon_max = dataset['x'].min(), dataset['x'].max()
+    # dataset_lat_min, dataset_lat_max = dataset['y'].min(), dataset['y'].max()
+
+    # logging.info("Dataset spatial bounds - Longitude: [%f, %f], Latitude: [%f, %f]",
+    #             dataset_lon_min, dataset_lon_max, dataset_lat_min, dataset_lat_max)
+
+    # # Step 3: Subset the TCC raster to the region of interest (dataset spatial bounds)
+    # logging.info("Extracting TCC data subset within dataset bounds...")
+    # tcc_subset = tcc_data.sel(x=slice(dataset_lon_min, dataset_lon_max),
+    #                           y=slice(dataset_lat_max, dataset_lat_min))
+
+    # # Step 4: Check if the subset is valid, return None if empty
+    # if tcc_subset.isnull().all():
+    #     logging.error("TCC data subset is empty for the given bounds.")
+    #     return None
+
+    # # Step 5: Interpolate the TCC data to match the dataset's grid (coordinate system)
+    # logging.info("Interpolating TCC data to match dataset grid...")
+    # try:
+    #     interpolated_tcc = tcc_subset.interp(x=dataset.coords['x'], y=dataset.coords['y'], method='nearest')
+    # except Exception as e:
+    #     logging.error("Interpolation failed: %s", e)
+    #     return None
+
+    # # Step 6: Apply the TCC mask to the dataset
+    # # Only retain values where the TCC is above the specified threshold (0.3 in this case)
+    # logging.info("Masking dataset based on TCC values...")
+    # threshold = 0.3
+    # masked_dataset = dataset.where(interpolated_tcc > threshold, 0).fillna(0)
+
+    # # Step 7: Return the masked dataset
+    # logging.info("Masking complete. Returning masked dataset.")
     
-    return masked_dataset
+    # return masked_dataset
 
 def extract_polygons_from_mask(filename, masked_data_array):
     """
@@ -144,8 +207,11 @@ def extract_polygons_from_mask(filename, masked_data_array):
     # Step 4: Create a GeoDataFrame to represent the bounding box of the data array
     bounds_gdf = gpd.GeoDataFrame(geometry=[box(min_x, min_y, max_x, max_y)], crs="EPSG:4326")
     
-    # Step 5: Drop any unnecessary 'band' dimension, keeping only the relevant data layer
-    cropped_mask = masked_data_array.squeeze("band")
+    # Step 5: Drop the 'band' dimension only if it exists
+    if "band" in masked_data_array.dims:
+        cropped_mask = masked_data_array.squeeze("band")
+    else:
+        cropped_mask = masked_data_array
     
     # Step 6: Define the affine transformation to map array indices to geospatial coordinates
     transform = (

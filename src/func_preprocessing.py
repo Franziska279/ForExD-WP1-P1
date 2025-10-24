@@ -306,7 +306,7 @@ def calculate_area_and_centroid_meters(gdf):
     # Return the GeoDataFrame with the new area and convex hull columns
     return gdf
 
-def calculate_size_shift_difference(ids_gdf, refdm_gdf_dissolved):
+def calculate_size_shift_difference(ids_gdf, refdm_gdf_dissolved, id_col="IDX_D"):
     """
     Calculate the centroid shift and size differences between polygons in two GeoDataFrames based on USDA_IDX.
 
@@ -336,12 +336,12 @@ def calculate_size_shift_difference(ids_gdf, refdm_gdf_dissolved):
     convex_size_difference_ref_list = []
 
     # Step 3: Loop through unique USDA_IDX values to compare the corresponding polygons
-    unique_usda_idx = ids['ID_E'].unique()
+    unique_usda_idx = ids[id_col].unique()
 
     for usda_idx in unique_usda_idx:
         # Filter rows corresponding to the current USDA_IDX in both GeoDataFrames
-        ids_row = ids[ids['ID_E'] == usda_idx]
-        refdm_row = refdm[refdm['ID_E'] == usda_idx]
+        ids_row = ids[ids[id_col] == usda_idx]
+        refdm_row = refdm[refdm[id_col] == usda_idx]
         
         # Ensure that both rows exist in the GeoDataFrames
         if not ids_row.empty and not refdm_row.empty:
@@ -366,7 +366,7 @@ def calculate_size_shift_difference(ids_gdf, refdm_gdf_dissolved):
 
     # Step 8: Create a DataFrame from the collected results
     results_df = pd.DataFrame({
-        'ID_E': usda_idx_list,
+        f'{id_col}': usda_idx_list,
         'centroid_shift_m': centroid_shift_list,
         'size_difference_km2': size_difference_list,
         'size_difference_ref_km2': size_difference_ref_list,
@@ -375,7 +375,7 @@ def calculate_size_shift_difference(ids_gdf, refdm_gdf_dissolved):
     })
 
     # Step 9: Merge the results with the original GeoDataFrame (`ids_gdf`) to keep the geometry
-    result_gdf = ids_gdf.merge(results_df, on='ID_E')
+    result_gdf = ids_gdf.merge(results_df, on=f'{id_col}')
 
     # Step 10: Convert the merged DataFrame back to a GeoDataFrame, preserving the geometry and CRS
     result_gdf = gpd.GeoDataFrame(result_gdf, geometry='geometry', crs=ids_gdf.crs)
