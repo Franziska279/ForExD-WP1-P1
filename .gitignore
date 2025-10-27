@@ -4,6 +4,7 @@ src/figures_median/
 src/aggregated_timeseries/
 src/aggregated_timeseries_median/
 data/s*
+data/t*
 results/
 results_clean/
 results/intermediate_results/
