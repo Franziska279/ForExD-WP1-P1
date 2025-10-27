@@ -43,8 +43,12 @@ def main(env_path, start_year, end_year, excluded_dca_types, buffer_years, spati
             logging.info(f"--------------------------------------------")
             logging.info("Running TCCProcessor...")
             logging.info(f"--------------------------------------------")
-            tcc_processor = TCCProcessor(env_path)
-            tcc_processor.process()
+            years = [2015, 2016, 2017, 2018, 2019, 2020]
+
+            for year in years:
+                processor = TCCProcessor(env_path, year)
+                processor.process()
+
             logging.info("TCC processing completed.")
         except Exception as e:
             logging.error(f"Error in TCC processing: {e}")
@@ -78,12 +82,12 @@ def main(env_path, start_year, end_year, excluded_dca_types, buffer_years, spati
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run IDS and related processors.")
-    parser.add_argument("--env", required=True, help="Path to the .env file")
+    parser.add_argument("--env",default='/net/projects/forexd/WP1/02_ImprovedLabels/Scripts/ForExD-WP1-P1/environment/.env', help="Path to the .env file")
     parser.add_argument("--start-year", type=int, default=2016, help="Start year for filtering disturbances")
     parser.add_argument("--end-year", type=int, default=2020, help="End year for filtering disturbances")
     parser.add_argument("--excluded-dca-types", nargs='+', default=['other', 'multi_damage', 'other_abiotic', 'other_biotic'], help="List of disturbance types to exclude")
     parser.add_argument("--buffer-years", type=int, default=2, help="Temporal buffer for S1CDProcessor")
-    parser.add_argument("--spatial-buffer", nargs='+', type=int, default=[100, 250, 500, 1000], help="List of spatial buffer distances for processing")
+    parser.add_argument("--spatial-buffer", nargs='+', type=int, default=[500], help="List of spatial buffer distances for processing")
     parser.add_argument("--max-jobs", type=int, default=8, help="Max parallel jobs for processing")
     
     # Flags for optional processes
@@ -96,7 +100,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # Configure logging
-    logging.basicConfig(filename="process.log", level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+    logging.basicConfig(filename="process_1.log", level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
     # Run main function with parsed arguments
     main(

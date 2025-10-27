@@ -63,7 +63,6 @@ class S1CDProcessor:
         # Set directory paths from environment variables
         self.input_dir = os.getenv('SENTINEL1_TILES_DIR')
         self.ids_filtered = os.path.join(os.getenv('RESULTS_DIR'), os.getenv('IDS_FILTERED_FILE').format(region_id=self.region_id))
-        self.tcc_normalized = os.path.join(os.getenv('TCC_DIR'), os.getenv('TCC_NORMALIZED_RASTER_TEMPLATE').format(region_id=self.region_id))
         self.s1_tiles_boundary_path =  os.path.join(os.getenv('RESULTS_DIR'), os.getenv('S1CD_TILES_BOUNDS_FILE').format(region_id=self.region_id))
     
         self.intermediate_dir = os.getenv('INTERMEDIATE_FILES_DIR')
@@ -208,9 +207,8 @@ class S1CDProcessor:
 
         logging.info(f"Extracting polygons from raster for {input_file}.")
         if self._extract_polygons_from_raster(
-            input_path, 
-            self.ids_filtered, 
-            self.tcc_normalized
+            input_path,
+            self.ids_filtered
             ):
             logging.info(f"Extraction successful for {input_file}.")
             return True
@@ -218,7 +216,7 @@ class S1CDProcessor:
             logging.error(f"Extraction failed for {input_file}")
             return False
 
-    def _extract_polygons_from_raster(self, input_file, ids_usda_path, tcc_path):
+    def _extract_polygons_from_raster(self, input_file, ids_usda_path):
         """
         Extract polygons from a raster file and process them by applying a Tree Canopy Cover (TCC) mask, 
         filtering USDA polygons, and calculating areas before and after intersections. 
@@ -241,8 +239,14 @@ class S1CDProcessor:
             # Step 2: Load and preprocess the input raster dataset
             logging.info(f"Loading and preprocessing dataset from {input_file}...")
             dataset = load_and_preprocess_dataset(input_file)
-
+            
             # Step 3: Apply Tree Canopy Cover (TCC) mask if path is provided
+            crs = os.getenv('TCC_CRS')
+            crs_number = crs.split(":")[-1] if crs else None
+            tcc_path = os.path.join(os.getenv('TCC_DIR'),
+                                    os.getenv('TCC_NORMALIZED_RASTER_TEMPLATE').format(region_id=self.region_id,
+                                                                                         crs=crs_number,
+                                                                                         tcc_year=(s1_year-1)))
             if tcc_path:
                 logging.info(f"Applying TCC mask from {tcc_path}...")
                 dataset = apply_tcc_mask(dataset, tcc_path)

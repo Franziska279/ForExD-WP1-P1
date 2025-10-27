@@ -20,23 +20,23 @@ class TCCProcessor:
     """
     TCCProcessor class to handle raster processing tasks such as resolution adjustment, reprojection, and cropping for a specific USDA region.
     """
-    def __init__(self, env_path):
+    def __init__(self, env_path, tcc_year):
         self._set_up_logging()
         load_dotenv(dotenv_path=env_path)
 
         # Load region information
         self.region = os.getenv('REGION')
         self.region_id = str(self.region).zfill(2)
-        self.tcc_year = os.getenv('TCC_YEAR')
+        self.tcc_year = tcc_year # os.getenv('TCC_YEAR')
         self.crs = os.getenv('TCC_CRS')
         self.crs_number = self.crs.split(':')[1]
 
         # Load paths from .env and construct full file paths dynamically
         self.region_shape_path = os.path.join(os.getenv('REGION_SHAPE_DIR'), os.getenv('REGION_SHAPE_FILE'))
-        self.input_raster_file = os.path.join(os.getenv('TCC_DIR'), os.getenv('TCC_INPUT_RASTER').format(tcc_year=self.tcc_year))
-        self.output_file_resampled = os.path.join(os.getenv('TCC_DIR'), os.getenv('TCC_RESAMPLED_RASTER').format(tcc_year=self.tcc_year))
-        self.output_file_epsg4326 = os.path.join(os.getenv('TCC_DIR'), os.getenv('TCC_EPSG_RASTER').format(tcc_year=self.tcc_year, crs=self.crs_number))
-        self.output_file_cropped_epsg4326 = os.path.join(os.getenv('TCC_DIR'), os.getenv('TCC_CROPPED_RASTER_TEMPLATE').format(region_id=self.region_id, tcc_year=self.tcc_year, crs=self.crs_number))
+        self.input_raster_file = os.path.join(os.getenv('TCC_DIR'), f'{self.tcc_year}', os.getenv('TCC_INPUT_RASTER').format(tcc_year=self.tcc_year))
+        self.output_file_resampled = os.path.join(os.getenv('TCC_DIR'), f'{self.tcc_year}', os.getenv('TCC_RESAMPLED_RASTER').format(tcc_year=self.tcc_year))
+        self.output_file_epsg4326 = os.path.join(os.getenv('TCC_DIR'), f'{self.tcc_year}', os.getenv('TCC_EPSG_RASTER').format(tcc_year=self.tcc_year, crs=self.crs_number))
+        self.output_file_cropped_epsg4326 = os.path.join(os.getenv('TCC_DIR'), f'{self.tcc_year}', os.getenv('TCC_CROPPED_RASTER_TEMPLATE').format(region_id=self.region_id, tcc_year=self.tcc_year, crs=self.crs_number))
         self.normalized_output_file = os.path.join(os.getenv('TCC_DIR'), os.getenv('TCC_NORMALIZED_RASTER_TEMPLATE').format(region_id=self.region_id, tcc_year=self.tcc_year, crs=self.crs_number))
         self.temp_downsampled_tcc_netcdf = os.path.join(os.getenv('TCC_DIR'), os.getenv('TCC_DOWNSAMPLED_TEMP_RASTER_TEMPLATE').format(region_id=self.region_id, tcc_year=self.tcc_year, crs=self.crs_number))
         self.downsampled_tcc_netcdf = os.path.join(os.getenv('TCC_DIR'), os.getenv('TCC_DOWNSAMPLED_RASTER_TEMPLATE').format(region_id=self.region_id, tcc_year=self.tcc_year, crs=self.crs_number))
@@ -157,32 +157,32 @@ class TCCProcessor:
     def process(self):
         """Main processing sequence."""
         logging.info(f"Processing USDA Region {self.region}...")
-        # Step 1: Change resolution
-        self.__change_resolution(self.input_raster_file, self.output_file_resampled, (20, 20))
+        # # Step 1: Change resolution
+        # self.__change_resolution(self.input_raster_file, self.output_file_resampled, (20, 20))
 
-        logging.info(f"Reprojecting the file to EPSG:4326...")
-        # Step 2: Reproject to EPSG:4326
-        self.__reproject_to_crs(self.output_file_resampled, self.output_file_epsg4326, self.crs)
+        # logging.info(f"Reprojecting the file to EPSG:4326...")
+        # # Step 2: Reproject to EPSG:4326
+        # self.__reproject_to_crs(self.output_file_resampled, self.output_file_epsg4326, self.crs)
         
-        logging.info(f"Extract region bounds")
-        # Step 3: Extract region bounds
-        minx, miny, maxx, maxy = self.__get_region_shape_bounds(self.figure_output_path_bounds)
+        # logging.info(f"Extract region bounds")
+        # # Step 3: Extract region bounds
+        # minx, miny, maxx, maxy = self.__get_region_shape_bounds(self.figure_output_path_bounds)
 
-        logging.info(f"Crop raster to region bounds")
-        # Step 4: Crop raster to region bounds
-        self.__crop_to_bounds(self.output_file_epsg4326, self.output_file_cropped_epsg4326, minx, miny, maxx, maxy)
+        # logging.info(f"Crop raster to region bounds")
+        # # Step 4: Crop raster to region bounds
+        # self.__crop_to_bounds(self.output_file_epsg4326, self.output_file_cropped_epsg4326, minx, miny, maxx, maxy)
 
-        logging.info(f"Normalize raster")
-        # Step 5: Normalize raster
-        self.__normalize_raster(self.output_file_cropped_epsg4326, self.normalized_output_file)
+        # logging.info(f"Normalize raster")
+        # # Step 5: Normalize raster
+        # self.__normalize_raster(self.output_file_cropped_epsg4326, self.normalized_output_file)
 
         logging.info(f"Downsample normalized raster for plotting")
         # Step 6: Downsample normalized raster for plotting
         create_downsampled_tcc_map(self.normalized_output_file, self.region_shape_path, self.region_id, 
         temp_netcdf=self.temp_downsampled_tcc_netcdf, final_netcdf=self.downsampled_tcc_netcdf)
 
-        logging.info(f"Plot raster with region boundaries")
-        # Step 7: Plot raster with region boundaries
-        self.__load_and_plot_tif_with_shape(self.normalized_output_file, self.figure_output_path_bounds_shape)
+        # logging.info(f"Plot raster with region boundaries")
+        # # Step 7: Plot raster with region boundaries
+        # self.__load_and_plot_tif_with_shape(self.normalized_output_file, self.figure_output_path_bounds_shape)
 
         logging.info("Processing completed successfully.")
