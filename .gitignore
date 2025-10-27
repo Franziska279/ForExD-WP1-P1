@@ -3,7 +3,7 @@ src/logs/
 src/figures_median/
 src/aggregated_timeseries/
 src/aggregated_timeseries_median/
-data/
+data/s*
 results/
 results_clean/
 results/intermediate_results/
@@ -14,7 +14,7 @@ figures/
 timeseries/
 grids/
 
-
+src/
 # Python cache files
 src/__pycache__/*.pyc
 src/*.pyo

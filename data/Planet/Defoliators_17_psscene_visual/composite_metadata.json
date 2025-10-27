@@ -1,0 +1,55 @@
+{
+    "geometry": {
+        "coordinates": [
+            [
+                [
+                    -93.89633363,
+                    32.38019291
+                ],
+                [
+                    -93.89633363,
+                    32.36485066
+                ],
+                [
+                    -93.91351165004609,
+                    32.36485066
+                ],
+                [
+                    -93.91518641,
+                    32.36485066
+                ],
+                [
+                    -93.91518641,
+                    32.3719747365351
+                ],
+                [
+                    -93.91518641,
+                    32.38019291
+                ],
+                [
+                    -93.89633363,
+                    32.38019291
+                ]
+            ]
+        ],
+        "type": "Polygon"
+    },
+    "properties": {
+        "anomalous_pixels": 0.005,
+        "clear_confidence_percent": 99,
+        "clear_percent": 100,
+        "cloud_cover": 0.0,
+        "cloud_percent": 0,
+        "heavy_haze_percent": 0,
+        "item_type": "PSScene",
+        "light_haze_percent": 0,
+        "publishing_stage": "finalized",
+        "quality_category": "standard",
+        "shadow_percent": 0,
+        "snow_ice_percent": 0,
+        "updated": "2025-09-03T06:35:53Z",
+        "visible_confidence_percent": 99,
+        "visible_percent": 100
+    },
+    "type": "Feature"
+}
