@@ -34,15 +34,15 @@ class Plotter:
         figure_study_area_path = os.path.join(os.getenv('FIGURES_DIR'), os.getenv('FIGURE_STUDY_AREA').format(region_id=self.region_id))
         ids_gdf = load_data(self.ids_path)
         ids_clean = remove_dca_ids(ids_gdf, ["drought","fire"])
-        # plot_study_area(
-        #         self.usa_filepath, 
-        #         self.region_id, 
-        #         self.tcc_downsampled, 
-        #         self.s1_tiles_boundary_path,
-        #         ids_clean, 
-        #         self.custom_colors, 
-        #         figure_study_area_path,
-        #         logging)
+        plot_study_area(
+                self.usa_filepath, 
+                self.region_id, 
+                self.tcc_downsampled, 
+                self.s1_tiles_boundary_path,
+                ids_clean, 
+                self.custom_colors, 
+                figure_study_area_path,
+                logging)
 
         for buffer in self.spatial_buffer:
             logging.info(f"Processing for buffer: {buffer}")
@@ -67,68 +67,68 @@ class Plotter:
             #s1dm_cleaned = remove_drought(s1dm_frequency)
             s1dm_cleaned = remove_dca_ids(s1dm_frequency, ["drought","fire"])
             s1dm_cleaned = s1dm_cleaned[s1dm_cleaned["DCA_ID"] != "fire"]
-            # logging.info('Claculate size shift difference')
-            # gdf = calculate_size_shift_difference(ids_gdf, s1dm_cleaned)
-            # # Minimum outerline areas
-            # s1dm_convex = calculate_minimum_outerline_area(s1dm_cleaned)[['geometry', 'area_km2', 'DCA_ID']]
-            # ids_convex = calculate_minimum_outerline_area(ids_gdf)[['geometry', 'area_km2', 'DCA_ID']]
+            logging.info('Claculate size shift difference')
+            gdf = calculate_size_shift_difference(ids_gdf, s1dm_cleaned)
+            # Minimum outerline areas
+            s1dm_convex = calculate_minimum_outerline_area(s1dm_cleaned)[['geometry', 'area_km2', 'DCA_ID']]
+            ids_convex = calculate_minimum_outerline_area(ids_gdf)[['geometry', 'area_km2', 'DCA_ID']]
             
-            # # Remove drought disturbances
-            # s1dm_no_drought = remove_dca_ids(s1dm_cleaned, ["drought","fire"]) #remove_drought(s1dm_cleaned)
-            # s1dm_no_drought_gdf = remove_dca_ids(s1dm_gdf, ["drought","fire"]) #remove_drought(s1dm_gdf)
+            # Remove drought disturbances
+            s1dm_no_drought = remove_dca_ids(s1dm_cleaned, ["drought","fire"]) #remove_drought(s1dm_cleaned)
+            s1dm_no_drought_gdf = remove_dca_ids(s1dm_gdf, ["drought","fire"]) #remove_drought(s1dm_gdf)
         
 
-            # # Plot radar reduction potential
-            # logging.info('Plot radar reduction potential')
-            # plot_radar_reduction_potential(
-            #     s1dm_frequency, 
-            #     ids_gdf, 
-            #     save_path=figure_radar_reduction_potential_path, 
-            #     plot_reduction=False
-            # )
+            # Plot radar reduction potential
+            logging.info('Plot radar reduction potential')
+            plot_radar_reduction_potential(
+                s1dm_frequency, 
+                ids_gdf, 
+                save_path=figure_radar_reduction_potential_path, 
+                plot_reduction=False
+            )
             
 
-            # plot_d_area_ch_area_centroid_disturbances_test(
-            #     gdf, 
-            #     ids_gdf, 
-            #     s1dm_convex, 
-            #     ids_convex, 
-            #     self.custom_colors, 
-            #     save_path=figure_size_position_change_path
-            # )
+            plot_d_area_ch_area_centroid_disturbances_test(
+                gdf, 
+                ids_gdf, 
+                s1dm_convex, 
+                ids_convex, 
+                self.custom_colors, 
+                save_path=figure_size_position_change_path
+            )
             
-            # # Plot signal counts
-            # logging.info('Plot signal counts')
-            # plot_signal_counts_by_diff_year(
-            #     #s1dm_no_drought_gdf,
-            #     s1dm_no_drought,
-            #     self.custom_colors,
-            #     save_path=figure_year_lag_path
-            # )
+            # Plot signal counts
+            logging.info('Plot signal counts')
+            plot_signal_counts_by_diff_year(
+                #s1dm_no_drought_gdf,
+                s1dm_no_drought,
+                self.custom_colors,
+                save_path=figure_year_lag_path
+            )
             
-            # # Calculate and plot overlap percentages
-            # logging.info('Calculate and plot overlap percentages')
-            # plot_percentages_histograms(
-            #     ids_gdf, 
-            #     s1dm_no_drought_gdf, 
-            #     self.custom_colors, 
-            #     figure_overlap_percentage_path
-            # )
+            # Calculate and plot overlap percentages
+            logging.info('Calculate and plot overlap percentages')
+            plot_percentages_histograms(
+                ids_gdf, 
+                s1dm_no_drought_gdf, 
+                self.custom_colors, 
+                figure_overlap_percentage_path
+            )
 
-            # logging.info('Calculate and plot DCA, Year Potential')
-            # plot_disturbance_counts(s1dm_path, self.ids_path, 
-            #                         exclude_types=['fire', 'drought'], 
-            #                         ordered_types=['wind', 'bark_beetle', 'defoliators'],
-            #                         custom_colors=self.custom_colors, 
-            #                         output_file=figure_radar_reduction_potential_year_dca_path)
+            logging.info('Calculate and plot DCA, Year Potential')
+            plot_disturbance_counts(s1dm_path, self.ids_path, 
+                                    exclude_types=['fire', 'drought'], 
+                                    ordered_types=['wind', 'bark_beetle', 'defoliators'],
+                                    custom_colors=self.custom_colors, 
+                                    output_file=figure_radar_reduction_potential_year_dca_path)
             
-            # # # Calculate the significance , manual Plot
-            # logging.info('Calculate the significanc')
-            # analyze_and_plot_manual_significance(self.ids_path, 
-            #                                      s1dm_path, 
-            #                                      manual_base_folder, 
-            #                                      os.getenv('RESULTS_DIR'),
-            #                                      figure_manual_significance_path)
+            # # Calculate the significance , manual Plot
+            logging.info('Calculate the significanc')
+            analyze_and_plot_manual_significance(self.ids_path, 
+                                                 s1dm_path, 
+                                                 manual_base_folder, 
+                                                 os.getenv('RESULTS_DIR'),
+                                                 figure_manual_significance_path)
             
             disturbance_files = {
                                 "wind": {
