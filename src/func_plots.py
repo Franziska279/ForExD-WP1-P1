@@ -428,6 +428,8 @@ def plot_radar_reduction_potential(refdm_gdf, ids_gdf, save_path, plot_reduction
     double_bar_width = bar_width * 2  # Make the bottom bars as wide as the combined width of the top two bars
     bar_offset = 0.2  # Offset to move the lower bars to the right
 
+    refdm_gdf = refdm_gdf[~refdm_gdf["DCA_ID"].isin(["drought","fire"])]
+    ids_gdf = ids_gdf[~ids_gdf["DCA_ID"].isin(["drought","fire"])]
     dca_counts_refdm = refdm_gdf['DCA_ID'].value_counts()
     dca_counts_ids = ids_gdf['DCA_ID'].value_counts()
 
@@ -513,6 +515,10 @@ def plot_radar_reduction_potential(refdm_gdf, ids_gdf, save_path, plot_reduction
         # Rotate x-axis labels for ax2
         ax2.set_xticklabels('', ha='right', fontsize=1)  # Rotate and increase font size
         ax2.grid(False)
+        tick_positions = [pos + group_width / 2 - (bar_width / 2.5) for pos in bar_positions]
+        ax1.set_xticks(tick_positions)
+        ax1.set_xticklabels(dca_labels, fontsize=tick_fontsize, ha='center')
+
 
         # Adjust x-axis ticks and labels
         plt.yticks(fontsize=tick_fontsize)
@@ -706,6 +712,144 @@ import logging
 def format_ticks(x, pos):
     """Format the ticks to always have one decimal place."""
     return f'{x:.1f}'
+
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
+from matplotlib.lines import Line2D
+from scipy.stats import gaussian_kde
+import matplotlib.ticker as ticker
+import logging
+
+def plot_d_area_ch_area_centroid_disturbances_test(
+        gdf, ids, s1dm_convex, ids_convex, custom_colors, save_path
+    ):
+    """
+    Plot comparison between IDS and REFDM disturbance areas and centroid shifts,
+    with legend inside the centroid shift plot. Includes KDE medians and 90th percentile.
+    Transposed: each category is a column, plots stacked vertically.
+    """
+
+    # Determine unique categories
+    unique_dca_ids = gdf['DCA_ID'].unique()
+    category_order = sorted(unique_dca_ids, key=lambda x: custom_colors.get(x, x))
+    
+    default_palette = sns.color_palette('tab10', n_colors=10)
+    default_colors = [c for c in default_palette if c not in custom_colors.values()]
+    custom_palette = {label: custom_colors.get(label, default_colors.pop(0)) for label in category_order}
+
+    # Font sizes
+    fontsize_supertitle = 44
+    fontsize_legend = 40
+    fontsize_title = 46
+    fontsize_label = 50
+    fontsize_tick = 35
+    padding_label = 25
+    padding_title = 25
+
+    n_rows = 3
+    n_cols = len(category_order)
+
+    fig, axs = plt.subplots(
+        n_rows, n_cols,
+        figsize=(12 * n_cols, 10 * n_rows),
+        gridspec_kw={'height_ratios': [1, 1, 1], 'hspace': 0.3, 'wspace': 0.3}
+    )
+
+    if n_cols == 1:
+        axs = np.expand_dims(axs, axis=1)  # ensure 2D for uniform indexing
+
+    for i, category in enumerate(category_order):
+        # -----------------------------
+        # Row 0: area_km2 KDE
+        ax = axs[0, i]
+        combined_data = pd.concat([
+            ids.loc[ids['DCA_ID'] == category, ['DCA_ID', 'area_km2']].copy().assign(Source='IDS'),
+            gdf.loc[gdf['DCA_ID'] == category, ['DCA_ID', 'area_km2']].assign(Source='REFDM')
+        ])
+        data_ids = combined_data[combined_data['Source'] == 'IDS']
+        data_refdm = combined_data[combined_data['Source'] == 'REFDM']
+
+        median_ids = np.median(data_ids['area_km2'])
+        median_refdm = np.median(data_refdm['area_km2'])
+
+        if len(data_ids) > 0:
+            kde_ids = gaussian_kde(data_ids['area_km2'])
+            x_vals_ids = np.linspace(min(data_ids['area_km2']), max(data_ids['area_km2']), 1000)
+            kde_vals_ids = kde_ids(x_vals_ids)
+            kde_at_median_ids = kde_ids(median_ids)[0]
+            sns.kdeplot(data=data_ids['area_km2'], ax=ax, color='black', linewidth=4, label='IDS')
+            ax.plot([median_ids, median_ids], [0, kde_at_median_ids], color='black', linestyle='--', linewidth=3, alpha=0.8)
+            ax.plot(median_ids, kde_at_median_ids, 'o', color='black', markersize=10)
+
+        if len(data_refdm) > 0:
+            kde_refdm = gaussian_kde(data_refdm['area_km2'])
+            x_vals_refdm = np.linspace(min(data_refdm['area_km2']), max(data_refdm['area_km2']), 1000)
+            kde_vals_refdm = kde_refdm(x_vals_refdm)
+            kde_at_median_refdm = kde_refdm(median_refdm)[0]
+            sns.kdeplot(data=data_refdm['area_km2'], ax=ax, color=custom_palette[category], linewidth=4, label='S1DM')
+            ax.plot([median_refdm, median_refdm], [0, kde_at_median_refdm], color=custom_palette[category], linestyle='--', linewidth=3, alpha=1)
+            ax.plot(median_refdm, kde_at_median_refdm, 'o', color=custom_palette[category], markersize=10)
+
+        ax.set_title(category, fontsize=fontsize_label)
+        ax.set_ylabel('PDF', fontsize=fontsize_label)
+        ax.legend(fontsize=fontsize_tick)
+
+        # -----------------------------
+        # Row 1: convex hull KDE
+        ax = axs[1, i]
+        combined_convex = pd.concat([
+            ids_convex.loc[ids_convex['DCA_ID'] == category, ['DCA_ID', 'area_km2']].assign(Source='IDS'),
+            s1dm_convex.loc[s1dm_convex['DCA_ID'] == category, ['DCA_ID', 'area_km2']].assign(Source='REFDM')
+        ])
+        data_ids = combined_convex[combined_convex['Source'] == 'IDS']
+        data_refdm = combined_convex[combined_convex['Source'] == 'REFDM']
+
+        median_ids = np.median(data_ids['area_km2'])
+        median_refdm = np.median(data_refdm['area_km2'])
+
+        if len(data_ids) > 0:
+            kde_ids = gaussian_kde(data_ids['area_km2'])
+            x_vals_ids = np.linspace(min(data_ids['area_km2']), max(data_ids['area_km2']), 1000)
+            kde_vals_ids = kde_ids(x_vals_ids)
+            kde_at_median_ids = kde_ids(median_ids)[0]
+            sns.kdeplot(data=data_ids['area_km2'], ax=ax, color='black', linewidth=4, label='IDS')
+            ax.plot([median_ids, median_ids], [0, kde_at_median_ids], color='black', linestyle='--', linewidth=3, alpha=0.8)
+            ax.plot(median_ids, kde_at_median_ids, 'o', color='black', markersize=10)
+
+        if len(data_refdm) > 0:
+            kde_refdm = gaussian_kde(data_refdm['area_km2'])
+            x_vals_refdm = np.linspace(min(data_refdm['area_km2']), max(data_refdm['area_km2']), 1000)
+            kde_vals_refdm = kde_refdm(x_vals_refdm)
+            kde_at_median_refdm = kde_refdm(median_refdm)[0]
+            sns.kdeplot(data=data_refdm['area_km2'], ax=ax, color=custom_palette[category], linewidth=4, label='S1DM')
+            ax.plot([median_refdm, median_refdm], [0, kde_at_median_refdm], color=custom_palette[category], linestyle='--', linewidth=3, alpha=1)
+            ax.plot(median_refdm, kde_at_median_refdm, 'o', color=custom_palette[category], markersize=10)
+
+        ax.set_ylabel('PDF', fontsize=fontsize_label)
+        ax.legend(fontsize=fontsize_tick)
+
+        # -----------------------------
+        # Row 2: centroid shift histogram
+        ax = axs[2, i]
+        data = gdf[gdf['DCA_ID'] == category]
+        sns.histplot(data=data, x='centroid_shift_m', kde=True, ax=ax, color=custom_palette[category], stat='count')
+
+        median_value = data['centroid_shift_m'].median()
+        ax.axvline(median_value, color=custom_palette[category], linestyle='--', linewidth=3)
+        ax.set_ylabel('N_Events', fontsize=fontsize_label)
+        ax.set_xlabel(r"${\Delta_{\text{Centroid}} \text{ (m)} }$", fontsize=fontsize_label)
+        ax.legend(handles=[
+            mpatches.Patch(color=custom_palette[category], label=category),
+            Line2D([0], [0], color=custom_palette[category], linestyle='--', label=f"M: {int(round(median_value))} m")
+        ], fontsize=fontsize_legend, loc='upper right')
+
+    fig.tight_layout()
+    plt.savefig(save_path, dpi=400, bbox_inches='tight')
+    plt.show()
+
 
 def plot_d_area_ch_area_centroid_disturbances_test(
         gdf, ids, s1dm_convex, ids_convex, custom_colors, save_path
@@ -2252,6 +2396,8 @@ def plot_disturbance_layers(
 # ==============================================================
 # HELPER FUNCTIONS
 # ==============================================================
+from matplotlib.markers import MarkerStyle
+from scipy.stats import ttest_rel
 
 def compute_overlap_jaccard(geom_candidate, geom_manual):
     """Compute Overlap (%) and Jaccard index between candidate and manual geometries."""
@@ -2354,7 +2500,7 @@ def analyze_and_plot_manual_significance(ids_file, s1dm_file, manual_base_folder
     # ==============================================================
 
     sns.set_theme(style="whitegrid", font="DejaVu Sans", font_scale=1.3)
-    palette_custom = {"IDS": "#BCB6FF", "S1DM": "#AF42AE"}
+    #palette_custom = {"IDS": "#BCB6FF", "S1DM": "#AF42AE"}
     dist_order = ["Wind", "Bark Beetle", "Defoliators"]
 
     # --- Jaccard plot ---
@@ -2374,8 +2520,13 @@ def analyze_and_plot_manual_significance(ids_file, s1dm_file, manual_base_folder
     df_overlap["method"] = df_overlap["method"].map({"overlap_ids": "IDS", "overlap_s1dm": "S1DM"})
 
     # --- Create figure ---
-    fig, axes = plt.subplots(1, 2, figsize=(18, 6))
-    ax0, ax1 = axes
+    #fig, axes = plt.subplots(1, 2, figsize=(18, 6))
+    palette_custom = {"IDS":"#4C72B0","S1DM":"#55A868"}  # blue-green
+
+    fig, axes = plt.subplots(1,3, figsize=(20,6), gridspec_kw={'width_ratios':[1,0.05,1]})
+    ax0, ax_empty, ax1 = axes
+    ax_empty.axis('off')
+    #ax0, ax1 = axes
 
     # --- a) Jaccard boxplot ---
     sns.boxplot(data=df_jaccard, x="disturbance_label", y="jaccard", hue="method",
@@ -2413,8 +2564,10 @@ def analyze_and_plot_manual_significance(ids_file, s1dm_file, manual_base_folder
     handles = [
         mpatches.Patch(color=palette_custom['IDS'], label='IDS'),
         mpatches.Patch(color=palette_custom['S1DM'], label='S1DM'),
-        mlines.Line2D([], [], color='black', marker='*', linestyle='None', markersize=16, label='p < 0.05'),
-        mlines.Line2D([], [], color='black', marker='+', linestyle='None', markersize=16, label='p < 0.1')
+        # Use Line2D with empty line, only text in label
+        mlines.Line2D([], [], color='black', marker=r'$*$', linestyle='None', markersize=16, label='P < 0.05'),
+        mlines.Line2D([], [], color='black', marker=r'$+$', linestyle='None', markersize=16, label='P < 0.1')
+
     ]
     ax1.legend(handles=handles, loc='upper right', fontsize=16, frameon=True, facecolor='white')
     ax0.get_legend().remove()
@@ -2425,3 +2578,4 @@ def analyze_and_plot_manual_significance(ids_file, s1dm_file, manual_base_folder
     if save_path:
         plt.savefig(save_path, dpi=400, bbox_inches="tight")
     plt.show()
+

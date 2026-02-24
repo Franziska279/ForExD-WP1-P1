@@ -100,7 +100,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # Configure logging
-    logging.basicConfig(filename="process_1.log", level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+    logging.basicConfig(filename="process_2.log", level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
     # Run main function with parsed arguments
     main(

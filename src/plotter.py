@@ -84,7 +84,7 @@ class Plotter:
                 s1dm_frequency, 
                 ids_gdf, 
                 save_path=figure_radar_reduction_potential_path, 
-                plot_reduction=False
+                plot_reduction=True
             )
             
 
@@ -129,33 +129,33 @@ class Plotter:
                                                  manual_base_folder, 
                                                  os.getenv('RESULTS_DIR'),
                                                  figure_manual_significance_path)
+            print('Plotted')
+            # disturbance_files = {
+            #                     "wind": {
+            #                         "file": "/net/projects/forexd/WP1/02_ImprovedLabels/Scripts/ForExD-WP1-P1/data/Planet/Wind_0_larger_RGB_psscene_visual/composite_file_format.tif",
+            #                         "idx": 0,
+            #                         "date": "2018-04-16"
+            #                     },
+            #                     "defoliators": {
+            #                         "file": "/net/projects/forexd/WP1/02_ImprovedLabels/Scripts/ForExD-WP1-P1/data/Planet/Defoliators_17_psscene_visual/composite_file_format.tif",
+            #                         "idx": 17,
+            #                         "date": "2021-05-14"
+            #                     },
+            #                     "bark_beetle": {
+            #                         "file": "/net/projects/forexd/WP1/02_ImprovedLabels/Scripts/ForExD-WP1-P1/data/Planet/BarkBeetle_10_psscene_visual/composite_file_format.tif",
+            #                         "idx": 10,
+            #                         "date": "2018-04-28"
+            #                     }
+            #                 }
             
-            disturbance_files = {
-                                "wind": {
-                                    "file": "/net/projects/forexd/WP1/02_ImprovedLabels/Scripts/ForExD-WP1-P1/data/Planet/Wind_0_larger_RGB_psscene_visual/composite_file_format.tif",
-                                    "idx": 0,
-                                    "date": "2018-04-16"
-                                },
-                                "defoliators": {
-                                    "file": "/net/projects/forexd/WP1/02_ImprovedLabels/Scripts/ForExD-WP1-P1/data/Planet/Defoliators_17_psscene_visual/composite_file_format.tif",
-                                    "idx": 17,
-                                    "date": "2021-05-14"
-                                },
-                                "bark_beetle": {
-                                    "file": "/net/projects/forexd/WP1/02_ImprovedLabels/Scripts/ForExD-WP1-P1/data/Planet/BarkBeetle_10_psscene_visual/composite_file_format.tif",
-                                    "idx": 10,
-                                    "date": "2018-04-28"
-                                }
-                            }
-            
-            logging.info('Calculate Manual Examples')
+            # logging.info('Calculate Manual Examples')
 
-            plot_disturbance_layers(
-                disturbance_files,
-                manual_base_folder,
-                ids_gdf,
-                s1dm_gdf,
-                figure_path=figure_manual_examples_path)
+            # plot_disturbance_layers(
+            #     disturbance_files,
+            #     manual_base_folder,
+            #     ids_gdf,
+            #     s1dm_gdf,
+            #     figure_path=figure_manual_examples_path)
 
 
 
@@ -189,7 +189,7 @@ class Plotter:
 
         # Define file paths for shapefiles and output locations
         self.usa_filepath = os.path.join(os.getenv('REGION_SHAPE_DIR'), os.getenv('REGION_SHAPE_FILE'))
-        self.ids_path = os.path.join(os.getenv('RESULTS_DIR'), os.getenv('IDS_FILTERED_FILE_ESPG_4326').format(region_id=self.region_id))
+        self.ids_path = os.path.join(os.getenv('RESULTS_DIR'), os.getenv('IDS_FILTERED_FILE').format(region_id=self.region_id))
         crs = os.getenv('TCC_CRS')
         crs_number = crs.split(":")[-1] if crs else None
         self.tcc_downsampled = os.path.join(os.getenv('TCC_DIR'), 

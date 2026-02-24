@@ -13,6 +13,8 @@ results/radar_results/
 logs/
 timeseries/
 grids/
+figures_tcc*
+results_tcc*
 
 # Python cache files
 src/__pycache__/*.pyc

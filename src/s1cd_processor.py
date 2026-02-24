@@ -249,7 +249,7 @@ class S1CDProcessor:
                                                                                          tcc_year=(s1_year-1)))
             if tcc_path:
                 logging.info(f"Applying TCC mask from {tcc_path}...")
-                dataset = apply_tcc_mask(dataset, tcc_path)
+                dataset = apply_tcc_mask(dataset, tcc_path, threshold=0.1)
 
             # Step 4: Extract polygons from the masked dataset
             logging.info("Extracting polygons from the masked dataset...")

@@ -55,7 +55,7 @@ def load_and_preprocess_dataset(input_file):
     dataset = reproject_to_wgs84(dataset)
     return dataset 
 
-def apply_tcc_mask(dataset, tcc_raster_path):
+def apply_tcc_mask(dataset, tcc_raster_path, threshold):
     """
     Applies a Tree Canopy Cover (TCC) mask to the dataset based on the TCC raster file.
 
@@ -71,7 +71,7 @@ def apply_tcc_mask(dataset, tcc_raster_path):
     - xarray.DataArray: The masked dataset where TCC values are above the threshold.
       Returns `None` if an error occurs at any step.
     """
-    threshold = 0.3
+    
     # Step 1: Load the TCC raster data from the provided file path
     logging.info("Loading TCC raster data from: %s", tcc_raster_path)
     
