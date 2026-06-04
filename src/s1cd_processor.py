@@ -1,398 +1,279 @@
+"""
+S1CDProcessor — Sentinel-1 Change Detection Processing
+=======================================================
+Author:  Franziska Müller (Uni Leipzig / MPI-BGC)
+Project: ForExD-WP1-P1
+
+Description
+-----------
+Matches Sentinel-1 SAR change-detection tiles against filtered USDA IDS
+disturbance polygons to produce the refined disturbance mapping (S1DM).
+
+process_files() orchestrates the full pipeline:
+  1. Collect S1 tile boundaries and save as a reference shapefile
+  2. For each S1 tile (in parallel):
+       a. Parse the survey year from the filename
+       b. Load and preprocess the NetCDF tile
+       c. Apply TCC forest mask (using the year prior to the S1 detection year)
+       d. Vectorise change-detected pixels into polygons
+       e. For each spatial buffer: intersect with IDS polygons and save
+  3. Merge all per-tile shapefiles per buffer, filter by area, and save the
+     final S1DM shapefile
+
+All paths are set in __init__ from .env variables.
+Logging is configured centrally in main.py — do not call basicConfig here.
+"""
+
 import os
 import logging
 import shutil
 from pathlib import Path
+from concurrent.futures import ProcessPoolExecutor
+
 import geopandas as gpd
 import pandas as pd
-from shapely.geometry import MultiPolygon
-from dotenv import load_dotenv
-import geopandas as gpd
-from shapely.geometry import box
-import logging
-from func_file_io import load_data
-from func_data_preprocessing import extract_s1cd_filename_part, calculate_area_in_km2_s1cd
-from concurrent.futures import ProcessPoolExecutor
 import xarray as xr
+from dotenv import load_dotenv
+from shapely.geometry import box
+
+from func_file_io import load_data
+from func_data_preprocessing import get_tile_basename
 from func_s1cd_preprocessing import (
-    drop_unnecessary_vars,
-    rename_variables,
-    merge_shapefiles,
-    process_and_filter_usda_polygons,
-    extract_polygons_from_mask,
-    apply_tcc_mask,
-    load_and_preprocess_dataset,
-    extract_year_from_s1cd_filename,
-    calculate_and_filter_area
+    drop_coordinate_bounds,
+    standardize_variable_names,
+    merge_shapefiles_from_dir,
+    intersect_s1cd_with_ids,
+    vectorize_change_detections,
+    mask_non_forest_pixels,
+    load_s1cd_tile,
+    parse_year_from_filename,
+    filter_by_max_area,
 )
 
+
 class S1CDProcessor:
+    """
+    Matches Sentinel-1 change-detection tiles to USDA IDS polygons.
+    Instantiate with env_path and processing parameters, then call process_files().
+    """
 
     def __init__(self, env_path, buffer_years, spatial_buffer, max_jobs):
-        """Initialize the S1CDProcessor with environment variables, buffer settings, and logging."""
-        self._set_up_logging()
-        self._load_env_variables(env_path)
-
-        self.buffer_years = buffer_years  # Buffer for year filtering
-        self.spatial_buffer = spatial_buffer  
-        self.max_jobs = max_jobs
-
-    def _set_up_logging(self):
-        """Set up logging to a file with timestamps for tracking the process."""
-        logging.basicConfig(
-            filename='log_s1cd_processor.log',
-            level=logging.INFO, 
-            format='%(asctime)s - %(message)s'
-        )
-
-    def _load_env_variables(self, env_path):
-        """Load required environment variables from a .env file and ensure the paths exist."""
-        if not env_path.exists():
-            raise FileNotFoundError(f"The .env file does not exist at {env_path}")
+        if not Path(env_path).exists():
+            raise FileNotFoundError(f".env file not found at {env_path}")
         load_dotenv(dotenv_path=env_path)
 
-        # Load environment variables and validate
-        self.region = os.getenv('REGION')
-        if not self.region:
-            raise ValueError("The 'REGION' environment variable is not set.")
-        self.region_id = str(self.region).zfill(2)
+        region = os.getenv('REGION')
+        if not region:
+            raise ValueError("'REGION' environment variable is not set.")
 
-        # Set target CRS (Coordinate Reference System)
-        self.target_crs = os.getenv('TARGET_CRS')
-        self.equi7_crs = os.getenv('EQUI7_NA_EPSG')
+        self.region_id      = str(region).zfill(2)
+        self.target_crs     = os.getenv('TARGET_CRS')
+        self.equi7_crs      = os.getenv('EQUI7_NA_EPSG')
+        self.tcc_threshold  = float(os.getenv('TCC_THRESHOLD', 0.3))
+        self.buffer_years   = buffer_years
+        self.spatial_buffer = spatial_buffer
+        self.max_jobs       = max_jobs
 
-        # Set directory paths from environment variables
-        self.input_dir = os.getenv('SENTINEL1_TILES_DIR')
-        self.ids_filtered = os.path.join(os.getenv('RESULTS_DIR'), os.getenv('IDS_FILTERED_FILE').format(region_id=self.region_id))
-        self.s1_tiles_boundary_path =  os.path.join(os.getenv('RESULTS_DIR'), os.getenv('S1CD_TILES_BOUNDS_FILE').format(region_id=self.region_id))
-    
+        # Input / output directories
+        self.input_dir       = os.getenv('SENTINEL1_TILES_DIR')
         self.intermediate_dir = os.getenv('INTERMEDIATE_FILES_DIR')
-        self.metadata_dir = os.getenv('METADATA_FILES_DIR')
+        self.metadata_dir    = os.getenv('METADATA_FILES_DIR')
 
-        # Validate that the required directories exist
-        self._validate_directory(self.input_dir, "Input directory")
-        self._validate_directory(self.intermediate_dir, "Intermediate directory")
-        self._validate_directory(self.metadata_dir, "Metadata directory")
+        # Derived file paths
+        results_dir = os.getenv('RESULTS_DIR')
+        self.ids_filtered_path    = os.path.join(results_dir, os.getenv('IDS_FILTERED_FILE').format(region_id=self.region_id))
+        self.s1_tiles_boundary_path = os.path.join(results_dir, os.getenv('S1CD_TILES_BOUNDS_FILE').format(region_id=self.region_id))
 
-    def _validate_directory(self, directory_path, dir_name):
-        """Check if a directory exists, create it if not, and log the status."""
-        dir_path = Path(directory_path)
-        
-        if not dir_path.exists():
-            dir_path.mkdir(parents=True, exist_ok=True)
-            logging.info(f"{dir_name} directory was missing. Created at {dir_path}")
-        else:
-            logging.info(f"{dir_name} is valid at {dir_path}")
+        # TCC path template — filled per tile in _process_single_tile
+        tcc_crs_code = os.getenv('TCC_CRS', 'EPSG:27705').split(':')[1]
+        self.tcc_raster_template = os.path.join(
+            os.getenv('TCC_DIR'),
+            os.getenv('TCC_NORMALIZED_RASTER_TEMPLATE').format(
+                region_id=self.region_id, crs=tcc_crs_code, tcc_year='{tcc_year}'
+            )
+        )
+
+        # Output path template for final S1DM shapefile per buffer
+        self.s1dm_output_template = os.path.join(
+            results_dir, os.getenv('S1DM_SHAPE_FILE').format(region_id=self.region_id, buffer='{buffer}')
+        )
+
+        # Ensure required directories exist
+        for d in [self.input_dir, self.intermediate_dir, self.metadata_dir]:
+            os.makedirs(d, exist_ok=True)
+
+        logging.info(f"S1CDProcessor initialised — region {self.region_id}, buffers {self.spatial_buffer} m")
+
+    # ------------------------------------------------------------------
+    # Main entry point
+    # ------------------------------------------------------------------
 
     def process_files(self):
-        """
-        Process all input files concurrently.
-        """
-        logging.info("============================================")
-        logging.info("Starting processing of S1 Boundary Outlines...")
+        """Run the full S1CD processing pipeline."""
+        logging.info("=== S1CDProcessor: starting ===")
 
-        self._collect_and_save_s1_tile_boundary(self.input_dir, self.region_id, self.s1_tiles_boundary_path, self.equi7_crs)
-        logging.info("---------------------------------------------")
-        logging.info("Starting batch processing of input files...")
+        self._collect_s1_tile_boundaries()
 
-        # List all files in the input directory excluding Python files
-        input_files = [f for f in os.listdir(self.input_dir) if not f.endswith('.py')]
-        total_files = len(input_files)
-        
-        logging.info(f"Total files identified for processing: {total_files}")
-
-        # Handle case where no files are found for processing
-        if total_files == 0:
-            logging.warning("No valid input files found in the directory. Exiting process.")
+        input_files = sorted(f for f in os.listdir(self.input_dir) if not f.endswith('.py'))
+        if not input_files:
+            logging.warning("No input files found — aborting.")
             return
 
-        success_count, error_count = 0, 0
-
-        # Start processing files concurrently using ProcessPoolExecutor
-        logging.info(f"Processing {total_files} files concurrently with {self.max_jobs} workers...")
-        
+        logging.info(f"Processing {len(input_files)} tiles with {self.max_jobs} workers...")
         with ProcessPoolExecutor(max_workers=self.max_jobs) as executor:
-            # Using executor to process files concurrently
-            results = list(executor.map(self._process_file_wrapper, input_files))
+            results = list(executor.map(self._process_single_tile, input_files))
 
-            # Summing up the results to count successes and errors
-            success_count = sum(results)
-            error_count = len(results) - success_count
+        n_ok  = sum(results)
+        n_err = len(results) - n_ok
+        logging.info(f"Tile processing complete: {n_ok} succeeded, {n_err} failed.")
+        if n_err:
+            logging.warning(f"{n_err} tiles failed — check logs above for details.")
 
-        # Log summary of the processing results
-        logging.info(f"Batch processing complete.")
-        logging.info(f"Successfully processed {success_count} files.")
-        logging.error(f"Processing failed for {error_count} files.")
-
-        # If all files were processed successfully, proceed with merging and saving
-        
-        logging.info(f"{success_count} files processed successfully. Proceeding with merging and saving shapefiles.")
         self._merge_and_save_shapefiles()
-    
+        logging.info("=== S1CDProcessor: done ===")
 
-    def _merge_and_save_shapefiles(self):
+    # ------------------------------------------------------------------
+    # Per-tile processing (parallelised)
+    # ------------------------------------------------------------------
+
+    def _process_single_tile(self, file_name):
         """
-        Merges shapefiles from each buffer directory, calculates areas, filters the resulting GeoDataFrame, 
-        and saves the final merged shapefile.
+        Full processing pipeline for one S1 tile:
+          a. Parse survey year from filename
+          b. Load and preprocess the NetCDF tile
+          c. Apply TCC forest mask (year = s1_year - 1)
+          d. Vectorise change-detected pixels into polygons
+          e. Intersect with IDS polygons for each spatial buffer and save
+
+        Returns True on success, False on any error.
         """
-        logging.info("Starting the merge and save process for shapefiles...")
-
-        # Loop through each buffer and process its shapefiles
-        for buffer in self.spatial_buffer:
-            logging.info(f"Processing buffer: {buffer} m")
-
-            # Define the directory containing shapefiles for the current buffer
-            buffer_dir = os.path.join(self.intermediate_dir, f'buffer_{buffer}')
-            
-            # Merge shapefiles for the current buffer
-            logging.info(f"Merging shapefiles in directory: {buffer_dir}")
-            merged_gdf = merge_shapefiles(buffer_dir, self.target_crs)
-
-            if merged_gdf.empty:
-                logging.warning(f"No shapefiles found or failed to merge in: {buffer_dir}")
-                continue
-
-            # Calculate and filter the merged GeoDataFrame based on area
-            logging.info(f"Calculating area and filtering the merged GeoDataFrame for buffer: {buffer}")
-            filtered_gdf = calculate_and_filter_area(merged_gdf, self.target_crs)
-
-            if filtered_gdf.empty:
-                logging.warning(f"No valid data left after filtering for buffer: {buffer}. Skipping save.")
-                continue
-
-            # Define the output path for the final shapefile
-            shapefile_output_path = os.path.join(os.getenv('RESULTS_DIR'), os.getenv('S1DM_SHAPE_FILE').format(region_id=self.region_id, buffer=buffer))
-            logging.info(f"Output path: {shapefile_output_path}")
-            # Ensure the directory for the shapefile exists
-            os.makedirs(os.path.dirname(shapefile_output_path), exist_ok=True)
-
-            # Save the filtered GeoDataFrame to a shapefile
-            try:
-                logging.info(f"Saving filtered shapefile for buffer: {buffer} to {shapefile_output_path}")
-                filtered_gdf.to_file(shapefile_output_path, driver='ESRI Shapefile')
-                logging.info(f"Shapefile saved successfully for buffer {buffer} at {shapefile_output_path}")
-            except Exception as e:
-                logging.error(f"Error saving shapefile for buffer {buffer} to {shapefile_output_path}: {e}")
-
-
-            # Cleanup: Delete the buffer directory after saving
-            try:
-                shutil.rmtree(buffer_dir)
-                logging.info(f"Successfully deleted buffer directory: {buffer_dir}")
-            except OSError as e:
-                logging.error(f"Error deleting buffer directory {buffer_dir}: {e}")
-
-        logging.info("Merge and save process completed for all buffers.")
-
-    def _process_file_wrapper(self, file_name):
-        try:
-            if self._run_extraction_script(file_name):
-                logging.info(f"Successfully processed {file_name}")
-                return True
-            logging.error(f"Failed to process {file_name}")
+        input_path = os.path.join(self.input_dir, file_name)
+        if not os.path.exists(input_path):
+            logging.error(f"File not found: {input_path}")
             return False
+
+        try:
+            # a. Parse year from filename (S1 detection year)
+            s1_year = parse_year_from_filename(input_path)
+            logging.info(f"Processing {file_name} (year {s1_year})")
+
+            # b. Load and preprocess
+            s1cd_tile = load_s1cd_tile(input_path)
+
+            # c. Apply TCC mask — use the year prior to the S1 detection year
+            #    so the mask reflects pre-disturbance forest cover
+            tcc_path = self.tcc_raster_template.format(tcc_year=s1_year - 1)
+            if not os.path.exists(tcc_path):
+                logging.warning(f"TCC file not found for year {s1_year - 1}: {tcc_path} — skipping tile.")
+                return False
+            s1cd_tile = mask_non_forest_pixels(s1cd_tile, tcc_path, threshold=self.tcc_threshold)
+
+            # d. Vectorise: raster mask → polygon GeoDataFrame
+            detections_gdf = vectorize_change_detections(file_name, s1cd_tile)
+
+            # e. Intersect with IDS polygons for each buffer size
+            tile_basename = get_tile_basename(file_name)
+            for buffer in self.spatial_buffer:
+                output_shp  = os.path.join(self.intermediate_dir, f"buffer_{buffer}", f"{tile_basename}.shp")
+                output_meta = os.path.join(self.metadata_dir,     f"buffer_{buffer}", f"metadata_{tile_basename}.csv")
+                os.makedirs(os.path.dirname(output_shp),  exist_ok=True)
+                os.makedirs(os.path.dirname(output_meta), exist_ok=True)
+
+                intersect_s1cd_with_ids(
+                    detections_gdf, self.ids_filtered_path, s1_year,
+                    self.buffer_years, buffer, input_path,
+                    self.target_crs, output_shp, output_meta, tile_basename
+                )
+
+            logging.info(f"Tile {file_name} complete.")
+            return True
+
         except Exception as e:
             logging.error(f"Error processing {file_name}: {e}")
             return False
 
-    def _run_extraction_script(self, input_file):
+    # ------------------------------------------------------------------
+    # Post-processing: merge per-tile shapefiles into final S1DM output
+    # ------------------------------------------------------------------
+
+    def _merge_and_save_shapefiles(self):
         """
-        Run the extraction process for a single input file.
-        Includes applying a TCC mask, extracting polygons, and filtering.
+        For each spatial buffer:
+          1. Merge all per-tile intermediate shapefiles into one GeoDataFrame
+          2. Filter out polygons larger than 15 km² (area artefacts)
+          3. Save as the final S1DM shapefile
+          4. Delete the intermediate buffer directory
         """
-        input_path = os.path.join(self.input_dir, input_file)
-    
-        if not Path(input_path).exists():
-            logging.error(f"Input file {input_file} does not exist at {input_path}.")
-            return False
+        logging.info("Merging per-tile shapefiles into final S1DM outputs...")
 
-        logging.info(f"Extracting polygons from raster for {input_file}.")
-        if self._extract_polygons_from_raster(
-            input_path,
-            self.ids_filtered
-            ):
-            logging.info(f"Extraction successful for {input_file}.")
-            return True
-        else:
-            logging.error(f"Extraction failed for {input_file}")
-            return False
+        for buffer in self.spatial_buffer:
+            buffer_dir = os.path.join(self.intermediate_dir, f'buffer_{buffer}')
+            output_path = self.s1dm_output_template.format(buffer=buffer)
 
-    def _extract_polygons_from_raster(self, input_file, ids_usda_path):
-        """
-        Extract polygons from a raster file and process them by applying a Tree Canopy Cover (TCC) mask, 
-        filtering USDA polygons, and calculating areas before and after intersections. 
-        The results are saved as shapefiles and metadata tables.
+            merged_gdf = merge_shapefiles_from_dir(buffer_dir, self.target_crs)
+            if merged_gdf is None or merged_gdf.empty:
+                logging.warning(f"No shapefiles to merge for buffer {buffer} m — skipping.")
+                continue
 
-        Parameters:
-        - input_file (str): Path to the input raster file.
-        - ids_usda_path (str): Path to the USDA polygons shapefile.
-        - tcc_path (str): Path to the Tree Canopy Cover (TCC) raster file.
+            filtered_gdf = filter_by_max_area(merged_gdf, self.target_crs)
+            if filtered_gdf.empty:
+                logging.warning(f"No polygons remain after area filter for buffer {buffer} m — skipping.")
+                continue
 
-        Returns:
-        - bool: True if processing was successful, False if an error occurred.
-        """
-        try:
-            # Step 1: Extract year from the Sentinel-1 Cloud Data filename
-            s1_year = extract_year_from_s1cd_filename(input_file)
-            filename = os.path.basename(input_file)
-            logging.info(f"Processing file: {input_file} for year {s1_year}")
-
-            # Step 2: Load and preprocess the input raster dataset
-            logging.info(f"Loading and preprocessing dataset from {input_file}...")
-            dataset = load_and_preprocess_dataset(input_file)
-            
-            # Step 3: Apply Tree Canopy Cover (TCC) mask if path is provided
-            crs = os.getenv('TCC_CRS')
-            crs_number = crs.split(":")[-1] if crs else None
-            tcc_path = os.path.join(os.getenv('TCC_DIR'),
-                                    os.getenv('TCC_NORMALIZED_RASTER_TEMPLATE').format(region_id=self.region_id,
-                                                                                         crs=crs_number,
-                                                                                         tcc_year=(s1_year-1)))
-            if tcc_path:
-                logging.info(f"Applying TCC mask from {tcc_path}...")
-                dataset = apply_tcc_mask(dataset, tcc_path, threshold=0.1)
-
-            # Step 4: Extract polygons from the masked dataset
-            logging.info("Extracting polygons from the masked dataset...")
-            dataset = extract_polygons_from_mask(filename, dataset)
-            
-            # Step 5: Process and filter USDA polygons for each spatial buffer size
-            for buffer in self.spatial_buffer:
-                logging.info(f"Processing with buffer size: {buffer} meters...")
-                
-                # Define the output shapefile path
-                tile_name = extract_s1cd_filename_part(os.path.basename(input_file))
-                output_shapefile = os.path.join(self.intermediate_dir, f"buffer_{buffer}", f"{tile_name}.shp")
-                
-                # Define the output metadata CSV path
-                output_metadata = os.path.join(self.metadata_dir, f"buffer_{buffer}", f"metadata_table_{tile_name}.csv")
-
-                # Ensure output directories exist
-                os.makedirs(os.path.dirname(output_shapefile), exist_ok=True)
-                os.makedirs(os.path.dirname(output_metadata), exist_ok=True)
-
-                # Step 6: Process USDA polygons, filter by year, and apply spatial operations
-                logging.info(f"Processing and filtering USDA polygons for year {s1_year}...")
-                process_and_filter_usda_polygons(
-                    dataset, ids_usda_path, s1_year, self.buffer_years, buffer, input_file, 
-                    self.target_crs, output_shapefile, output_metadata, tile_name
-                )
-
-            # Step 7: Log success message
-            logging.info(f"Polygon extraction successful for {input_file}. Results saved to {output_shapefile} and metadata to {output_metadata}")
-
-            return True
-
-        except Exception as e:
-            # Log the error message if any exception occurs during the processing
-            logging.error(f"Error during polygon extraction for {input_file}: {e}")
-            return False
-
-    def _merge_geometries_and_keep_columns(self, gdf):
-        """
-        Merge geometries by 'IDX_D' and 'S1_YEAR' into a single geometry (MultiPolygon) and
-        keep the first value for all other columns.
-
-        Parameters:
-        - gdf (GeoDataFrame): The input GeoDataFrame with geometries and other columns.
-        
-        Returns:
-        - GeoDataFrame: A new GeoDataFrame with merged geometries and first values of other columns.
-        """
-        grouped_gdf = gdf.groupby(['IDX_D', 'S1_YEAR']).apply(
-            lambda group: group.unary_union  # Merge the geometries within each group
-        ).reset_index(name='geometry')
-
-        # Step 2: For other columns, keep the first value
-        for column in gdf.columns:
-            if column not in ['IDX_D', 'S1_YEAR', 'geometry']:  # Skip 'IDX_D', 'S1_YEAR', and 'geometry'
-                # Ensure the aggregation keeps the first value for each group
-                grouped_gdf[column] = gdf.groupby(['IDX_D', 'S1_YEAR'])[column].first().values
-
-        # Step 3: Convert to GeoDataFrame and ensure geometries are MultiPolygons if they aren't already
-        grouped_gdf = gpd.GeoDataFrame(grouped_gdf, geometry='geometry')
-
-        # Ensure the geometries are MultiPolygons if they aren't already
-        grouped_gdf['geometry'] = grouped_gdf['geometry'].apply(
-            lambda geom: MultiPolygon([geom]) if not isinstance(geom, MultiPolygon) else geom
-        )
-
-        # Step 4: Set CRS (coordinate reference system) if needed
-        grouped_gdf.set_crs(gdf.crs, allow_override=True, inplace=True)
-
-        return grouped_gdf
-
-
-
-    def _collect_and_save_s1_tile_boundary(self, input_dir, region_id, s1_tiles_boundary_path, crs):
-        """
-        Collects spatial boundaries of Sentinel-1 tiles and saves them as a shapefile.
-
-        Parameters:
-        - input_dir (str): Directory containing Sentinel-1 tile NetCDF files.
-        - region_id (str): Region identifier (not currently used but kept for future use).
-        - s1_tiles_boundary_path (str): Output shapefile path.
-
-        Returns:
-        - None
-        """
-
-        input_files = [f for f in os.listdir(input_dir) if not f.endswith('.py')]
-        total_files = len(input_files)
-        outline_s1cd_files = None
-        logging.info(f"Total files identified for processing: {total_files}")
-
-            
-        for file in input_files:
-            file_path = os.path.join(input_dir, file)
-
-            
+            os.makedirs(os.path.dirname(output_path), exist_ok=True)
             try:
-                # Open dataset
-                dataset = xr.open_dataset(file_path)
-                dataset = drop_unnecessary_vars(dataset)
-                dataset = rename_variables(dataset)
+                filtered_gdf.to_file(output_path, driver='ESRI Shapefile')
+                logging.info(f"S1DM shapefile saved ({buffer} m buffer) -> {output_path}")
+            except Exception as e:
+                logging.error(f"Error saving S1DM shapefile for buffer {buffer}: {e}")
+                continue
 
-                # Extract spatial bounds
-                dataset_lon_min, dataset_lon_max = float(dataset['x'].min()), float(dataset['x'].max())
-                dataset_lat_min, dataset_lat_max = float(dataset['y'].min()), float(dataset['y'].max())
+            # Clean up intermediate per-tile files
+            try:
+                shutil.rmtree(buffer_dir)
+                logging.info(f"Removed intermediate directory: {buffer_dir}")
+            except OSError as e:
+                logging.error(f"Could not remove {buffer_dir}: {e}")
 
-                logging.info(f"Processing {file}: Longitude [{dataset_lon_min}, {dataset_lon_max}], "
-                            f"Latitude [{dataset_lat_min}, {dataset_lat_max}]")
+        logging.info("Merge complete.")
 
-                # Create a bounding box polygon
-                bounding_box = box(dataset_lon_min, dataset_lat_min, dataset_lon_max, dataset_lat_max)
+    # ------------------------------------------------------------------
+    # Tile boundary collection (used for the study-area figure)
+    # ------------------------------------------------------------------
 
-                # Create a GeoDataFrame
-                new_gdf = gpd.GeoDataFrame(geometry=[bounding_box], crs=crs)
+    def _collect_s1_tile_boundaries(self):
+        """
+        Read all S1 tile NetCDF files, extract their spatial bounding boxes in the
+        original AEQD projection, and save as a shapefile for the study-area figure.
 
-                # Append to existing GeoDataFrame
-                if outline_s1cd_files is None:
-                    outline_s1cd_files = new_gdf
-                else:
-                    outline_s1cd_files = pd.concat([outline_s1cd_files, new_gdf], ignore_index=True)
+        Note: coordinates are read before reprojection, so the bounding boxes are
+        in the raw Azimuthal Equidistant CRS of the S1 tiles, not EPSG:27705.
+        """
+        logging.info("Collecting S1 tile bounding boxes...")
+        input_files = sorted(f for f in os.listdir(self.input_dir) if not f.endswith('.py'))
+
+        bounds_list = []
+        for file_name in input_files:
+            file_path = os.path.join(self.input_dir, file_name)
+            try:
+                ds = xr.open_dataset(file_path)
+                ds = drop_coordinate_bounds(ds)
+                ds = standardize_variable_names(ds)
+
+                lon_min, lon_max = float(ds['x'].min()), float(ds['x'].max())
+                lat_min, lat_max = float(ds['y'].min()), float(ds['y'].max())
+                bounds_list.append(box(lon_min, lat_min, lon_max, lat_max))
 
             except Exception as e:
-                logging.error(f"Error processing file {file}: {e}")
-        
-        # Ensure we have a valid dataset before saving
-        if outline_s1cd_files is not None and not outline_s1cd_files.empty:
-            try:
-                outline_s1cd = outline_s1cd_files.drop_duplicates().reset_index(drop=True)
-                
-                # Ensure CRS is explicitly set
-                if outline_s1cd.crs is None:
-                    logging.warning("GeoDataFrame has no CRS; setting it to Traget Crs.")
-                    outline_s1cd.set_crs(crs, inplace=True)
-                
-                # Save to shapefile
-                outline_s1cd.to_file(s1_tiles_boundary_path, driver="ESRI Shapefile")
+                logging.error(f"Error reading bounds from {file_name}: {e}")
 
-                # Log saved CRS
-                saved_gdf = gpd.read_file(s1_tiles_boundary_path)
-                logging.info(f"Boundary shapefile saved successfully at {s1_tiles_boundary_path}")
-                logging.info(f"Shapefile saved with CRS: {saved_gdf.crs}")
+        if not bounds_list:
+            logging.warning("No tile boundaries collected — boundary shapefile not created.")
+            return
 
-            except Exception as e:
-                logging.error(f"Failed to save boundary shapefile: {e}")
-        else:
-            logging.warning("No valid dataset boundaries were processed. No shapefile created.")
+        tiles_gdf = gpd.GeoDataFrame(geometry=bounds_list, crs=self.equi7_crs)
+        tiles_gdf = tiles_gdf.drop_duplicates().reset_index(drop=True)
+
+        os.makedirs(os.path.dirname(self.s1_tiles_boundary_path), exist_ok=True)
+        tiles_gdf.to_file(self.s1_tiles_boundary_path, driver="ESRI Shapefile")
+        logging.info(f"Tile boundary shapefile saved -> {self.s1_tiles_boundary_path}")

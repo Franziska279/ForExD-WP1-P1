@@ -11,9 +11,9 @@ from tqdm import tqdm
 from func_file_io import load_data
 from affine import Affine
 from pyproj import Transformer
-from func_data_preprocessing import extract_s1cd_filename_part, calculate_area_in_km2_s1cd
+from func_data_preprocessing import get_tile_basename, add_area_km2
 
-def extract_year_from_s1cd_filename(input_path):
+def parse_year_from_filename(input_path):
     """
     Extract the year from the filename, assuming a specific pattern '_year_'.
     Returns None if parsing fails.
@@ -25,12 +25,12 @@ def extract_year_from_s1cd_filename(input_path):
         logging.error(f"Error extracting year from filename {input_path}: {e}")
         return None
 
-def drop_unnecessary_vars(data):
+def drop_coordinate_bounds(data):
     """Drop unnecessary variables from the dataset."""
     data = data.drop_vars(["x_bnds", "y_bnds"], errors='ignore')
     return data
 
-def rename_variables(data):
+def standardize_variable_names(data):
     """Rename variables for consistency."""
     if 'unnamed' in data.variables:
         data = data.rename({'unnamed': 'layer'})
@@ -38,24 +38,24 @@ def rename_variables(data):
         data = data.rename({'X': 'x', 'Y': 'y'})
     return data
 
-def reproject_to_wgs84(data):
+def reproject_aeqd_to_wgs84(data):
     """Reproject the dataset to WGS 84 CRS."""
     
-    crs_azimuthal_equidistant = "+proj=aeqd +lat_0=52 +lon_0=-97.5 +x_0=8264722.17686 +y_0=4867518.35323 +datum=WGS84 +units=m +no_defs"
-    crs_wgs84 = 'GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],AUTHORITY["EPSG","6326"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4326"]]'
-    data.rio.write_crs(crs_azimuthal_equidistant, inplace=True)
+    src_crs = "+proj=aeqd +lat_0=52 +lon_0=-97.5 +x_0=8264722.17686 +y_0=4867518.35323 +datum=WGS84 +units=m +no_defs"
+    tgt_crs = 'GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],AUTHORITY["EPSG","6326"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4326"]]'
+    data.rio.write_crs(src_crs, inplace=True)
 
-    return data.rio.reproject(crs_wgs84)
+    return data.rio.reproject(tgt_crs)
 
-def load_and_preprocess_dataset(input_file):
+def load_s1cd_tile(input_file):
     """Load and preprocess the raster dataset."""
     dataset = xr.open_dataset(input_file)
-    dataset = drop_unnecessary_vars(dataset)
-    dataset = rename_variables(dataset)
-    dataset = reproject_to_wgs84(dataset)
+    dataset = drop_coordinate_bounds(dataset)
+    dataset = standardize_variable_names(dataset)
+    dataset = reproject_aeqd_to_wgs84(dataset)
     return dataset 
 
-def apply_tcc_mask(dataset, tcc_raster_path, threshold):
+def mask_non_forest_pixels(dataset, tcc_raster_path, threshold):
     """
     Applies a Tree Canopy Cover (TCC) mask to the dataset based on the TCC raster file.
 
@@ -143,50 +143,14 @@ def apply_tcc_mask(dataset, tcc_raster_path, threshold):
 
     return masked
 
-    # # Step 2: Extract the spatial bounds of the dataset (longitude and latitude ranges)
-    # dataset_lon_min, dataset_lon_max = dataset['x'].min(), dataset['x'].max()
-    # dataset_lat_min, dataset_lat_max = dataset['y'].min(), dataset['y'].max()
-
-    # logging.info("Dataset spatial bounds - Longitude: [%f, %f], Latitude: [%f, %f]",
-    #             dataset_lon_min, dataset_lon_max, dataset_lat_min, dataset_lat_max)
-
-    # # Step 3: Subset the TCC raster to the region of interest (dataset spatial bounds)
-    # logging.info("Extracting TCC data subset within dataset bounds...")
-    # tcc_subset = tcc_data.sel(x=slice(dataset_lon_min, dataset_lon_max),
-    #                           y=slice(dataset_lat_max, dataset_lat_min))
-
-    # # Step 4: Check if the subset is valid, return None if empty
-    # if tcc_subset.isnull().all():
-    #     logging.error("TCC data subset is empty for the given bounds.")
-    #     return None
-
-    # # Step 5: Interpolate the TCC data to match the dataset's grid (coordinate system)
-    # logging.info("Interpolating TCC data to match dataset grid...")
-    # try:
-    #     interpolated_tcc = tcc_subset.interp(x=dataset.coords['x'], y=dataset.coords['y'], method='nearest')
-    # except Exception as e:
-    #     logging.error("Interpolation failed: %s", e)
-    #     return None
-
-    # # Step 6: Apply the TCC mask to the dataset
-    # # Only retain values where the TCC is above the specified threshold (0.3 in this case)
-    # logging.info("Masking dataset based on TCC values...")
-    # threshold = 0.3
-    # masked_dataset = dataset.where(interpolated_tcc > threshold, 0).fillna(0)
-
-    # # Step 7: Return the masked dataset
-    # logging.info("Masking complete. Returning masked dataset.")
-    
-    # return masked_dataset
-
-def extract_polygons_from_mask(filename, masked_data_array):
+def vectorize_change_detections(filename, masked_array):
     """
     Extracts polygons from a masked data array, storing them in a GeoDataFrame 
     with metadata (year and tile) parsed from the filename.
 
     Parameters:
     - filename (str): The filename containing year and tile information.
-    - masked_data_array (xarray.DataArray): The masked data array with 'x' and 'y' coordinates 
+    - masked_array (xarray.DataArray): The masked data array with 'x' and 'y' coordinates 
       and a 'layer' attribute representing the mask layer.
 
     Returns:
@@ -201,47 +165,47 @@ def extract_polygons_from_mask(filename, masked_data_array):
     results_gdf = gpd.GeoDataFrame(columns=['geometry', 'S1_YEAR', 'S1_TILE'], crs="EPSG:4326")
     
     # Step 3: Extract the bounding box coordinates (min and max) from the masked data array
-    min_x, max_x = masked_data_array['x'].min().item(), masked_data_array['x'].max().item()
-    min_y, max_y = masked_data_array['y'].min().item(), masked_data_array['y'].max().item()
+    min_x, max_x = masked_array['x'].min().item(), masked_array['x'].max().item()
+    min_y, max_y = masked_array['y'].min().item(), masked_array['y'].max().item()
     
     # Step 4: Create a GeoDataFrame to represent the bounding box of the data array
     bounds_gdf = gpd.GeoDataFrame(geometry=[box(min_x, min_y, max_x, max_y)], crs="EPSG:4326")
     
     # Step 5: Drop the 'band' dimension only if it exists
-    if "band" in masked_data_array.dims:
-        cropped_mask = masked_data_array.squeeze("band")
+    if "band" in masked_array.dims:
+        mask_2d = masked_array.squeeze("band")
     else:
-        cropped_mask = masked_data_array
+        mask_2d = masked_array
     
     # Step 6: Define the affine transformation to map array indices to geospatial coordinates
     transform = (
-        Affine.translation(cropped_mask.x[0], cropped_mask.y[0]) * 
-        Affine.scale(cropped_mask.x[1] - cropped_mask.x[0], cropped_mask.y[1] - cropped_mask.y[0])
+        Affine.translation(mask_2d.x[0], mask_2d.y[0]) * 
+        Affine.scale(mask_2d.x[1] - mask_2d.x[0], mask_2d.y[1] - mask_2d.y[0])
     )
     
     # Step 7: Create a binary mask where values greater than zero are set to 1 (True)
-    binary_mask = (cropped_mask['layer'] > 0).astype(np.uint8)
+    binary_mask = (mask_2d['layer'] > 0).astype(np.uint8)
     
     # Step 8: Extract polygon shapes from the binary mask, using the affine transformation
-    extracted_shapes = list(rasterio.features.shapes(binary_mask.values, transform=transform))
+    shapes = list(rasterio.features.shapes(binary_mask.values, transform=transform))
     
     # Step 9: Filter and keep only the polygons with a value of 1 (representing valid mask regions)
-    polygons = [shape(geom) for geom, value in extracted_shapes if value == 1]
+    polygons = [shape(geom) for geom, value in shapes if value == 1]
     
     # Step 10: Create a GeoDataFrame from the list of extracted polygons
-    polygons_gdf = gpd.GeoDataFrame(geometry=polygons, crs=cropped_mask.spatial_ref)
+    detections_gdf = gpd.GeoDataFrame(geometry=polygons, crs=mask_2d.spatial_ref)
     
     # Step 11: Add metadata columns (year and tile) to the GeoDataFrame
-    polygons_gdf['S1_YEAR'] = year
-    polygons_gdf['S1_TILE'] = tile_name
+    detections_gdf['S1_YEAR'] = year
+    detections_gdf['S1_TILE'] = tile_name
     
     # Step 12: Append the new polygons to the results GeoDataFrame
-    results_gdf = pd.concat([results_gdf, polygons_gdf], ignore_index=True)
+    results_gdf = pd.concat([results_gdf, detections_gdf], ignore_index=True)
     
     # Return the final GeoDataFrame containing all extracted polygons with metadata
     return results_gdf
 
-def process_and_filter_usda_polygons(dataset, usda_data_path, reference_year, year_buffer, 
+def intersect_s1cd_with_ids(dataset, usda_data_path, reference_year, year_buffer, 
                                     buffer_distance, file_path, target_crs, output_shapefile, output_metadata, tile_name):
     """
     Process and filter USDA polygons based on a reference year and buffer distance, 
@@ -292,7 +256,7 @@ def process_and_filter_usda_polygons(dataset, usda_data_path, reference_year, ye
             (usda_gdf['SURVEY_Y'] <= reference_year + year_buffer)
         ]
         # Calculate the area of the filtered USDA polygons
-        filtered_usda_area_gdf = calculate_area_in_km2_s1cd(filtered_usda_gdf)
+        filtered_usda_area_gdf = add_area_km2(filtered_usda_gdf, col_name='area')
         total_usda_area = filtered_usda_area_gdf['area'].sum()
     except Exception as e:
         logging.error(f"Error filtering USDA polygons: {e}")
@@ -302,7 +266,7 @@ def process_and_filter_usda_polygons(dataset, usda_data_path, reference_year, ye
 
     # Compute the total area of the input polygons dataset
     try:
-        input_area_gdf = calculate_area_in_km2_s1cd(dataset)
+        input_area_gdf = add_area_km2(dataset, col_name='area')
         area_before_intersection = input_area_gdf['area'].sum()
     except Exception as e:
         logging.error(f"Error calculating area before intersection: {e}")
@@ -312,8 +276,8 @@ def process_and_filter_usda_polygons(dataset, usda_data_path, reference_year, ye
 
     # Perform spatial join to find polygons that intersect the filtered USDA polygons
     try:
-        intersecting_polygons_gdf = gpd.sjoin(dataset, filtered_usda_gdf, predicate='intersects')
-        intersecting_polygons_gdf = intersecting_polygons_gdf.rename(columns={'index_right': 'S1CD_IDX'})
+        intersecting_detections_gdf = gpd.sjoin(dataset, filtered_usda_gdf, predicate='intersects')
+        intersecting_detections_gdf = intersecting_detections_gdf.rename(columns={'index_right': 'S1CD_IDX'})
     except Exception as e:
         logging.error(f"Error during spatial join: {e}")
         return
@@ -322,7 +286,7 @@ def process_and_filter_usda_polygons(dataset, usda_data_path, reference_year, ye
 
     # Calculate the area of the intersecting polygons
     try:
-        intersecting_area_gdf = calculate_area_in_km2_s1cd(intersecting_polygons_gdf)
+        intersecting_area_gdf = add_area_km2(intersecting_detections_gdf, col_name='area')
         area_after_intersection = intersecting_area_gdf['area'].sum()
     except Exception as e:
         logging.error(f"Error calculating area after intersection: {e}")
@@ -332,7 +296,7 @@ def process_and_filter_usda_polygons(dataset, usda_data_path, reference_year, ye
 
     # Aggregate geometries by 'IDX_D' (dissolve operation)
     try:
-        aggregated_gdf = intersecting_polygons_gdf.dissolve(by='IDX_D')
+        aggregated_gdf = intersecting_detections_gdf.dissolve(by='IDX_D')
         aggregated_gdf.reset_index(inplace=True)
     except Exception as e:
         logging.error(f"Error during geometry aggregation: {e}")
@@ -375,7 +339,7 @@ def process_and_filter_usda_polygons(dataset, usda_data_path, reference_year, ye
 
     logging.info("Processing completed successfully.")
 
-def merge_shapefiles(input_dir, target_crs):
+def merge_shapefiles_from_dir(input_dir, target_crs):
     """
     Merges all shapefiles in the specified directory into a single GeoDataFrame.
 
@@ -388,7 +352,7 @@ def merge_shapefiles(input_dir, target_crs):
     logging.info(f"Starting to merge shapefiles from directory: {input_dir}")
 
     # List all shapefiles in the directory
-    files = [f for f in os.listdir(input_dir) if f.endswith('.shp')]
+    files = sorted(f for f in os.listdir(input_dir) if f.endswith('.shp'))
     if not files:
         logging.warning(f"No shapefiles found in directory: {input_dir}. Nothing to merge.")
         return None
@@ -423,12 +387,12 @@ def merge_shapefiles(input_dir, target_crs):
         return None
 
     # Optionally, call an additional method to clean/merge geometries and keep relevant columns
-    # merged_gdf = merge_geometries_and_keep_columns(merged_gdf)
+    # merged_gdf = dissolve_to_event_level(merged_gdf)
 
     logging.info(f"Shapefiles merged successfully. Total records: {len(merged_gdf)}")
     return merged_gdf
 
-def calculate_and_filter_area(gdf, target_crs):
+def filter_by_max_area(gdf, target_crs):
     """
     Calculate area in square kilometers and filter out polygons larger than 15 km².
     """
