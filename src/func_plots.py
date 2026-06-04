@@ -15,6 +15,7 @@ PLOTS                  : Top-level, figure-generating functions.
 # ── Standard library ──────────────────────────────────────────────────────
 import logging
 import os
+import re
 
 # ── Third-party ───────────────────────────────────────────────────────────
 import geopandas as gpd
@@ -2031,6 +2032,20 @@ def plot_overlap_omission(ids_gdf, s1dm_gdf, figure_path, summary_path):
     logging.info("Saved overlap/omission figure to %s", figure_path)
 
 
+def _ids_uses_hash_format(ids_file):
+    """Return True if the IDS shapefile uses hash-based IDX_D (new format).
+
+    New format: ``bark_beetle_2018_e808498a`` — last segment is 8 hex chars.
+    Old format: ``bark_beetle_2018_1136``     — last segment is all digits.
+    """
+    gdf = gpd.read_file(ids_file)
+    if "IDX_D" not in gdf.columns or gdf.empty:
+        return False
+    sample = gdf["IDX_D"].dropna().iloc[0]
+    suffix = sample.rsplit("_", 1)[-1]
+    return bool(re.fullmatch(r"[0-9a-f]{8}", suffix))
+
+
 def run_manual_validation(
     ids_file,
     s1dm_file,
@@ -2043,18 +2058,51 @@ def run_manual_validation(
     Thin wrapper that calls ``compute_manual_validation_metrics`` then
     passes the results to ``plot_manual_validation_boxplots``.
 
+    When the IDS file uses hash-based IDX_D (new format), automatically
+    loads the lookup table ``manual_labels_idx_lookup.csv`` from the
+    parent directory of *manual_base_folder* to map old folder names to
+    current IDX_D values.  Falls back to the existing direct-match /
+    geometry-fallback logic when the old sequential IDX_D format is
+    detected.
+
     Args:
         ids_file (str): Path to the IDS shapefile.
         s1dm_file (str): Path to the S1DM shapefile.
         manual_base_folder (str): Root folder with per-disturbance
             manual reference sub-folders.
-        result_path (str, optional): Reserved for future use (e.g.
-            saving the metrics DataFrame to disk).
+        result_path (str, optional): Reserved for future use.
         save_path (str, optional): Path to save the figure.
     """
+    idx_mapping = None
+
+    if _ids_uses_hash_format(ids_file):
+        lookup_csv = os.path.join(
+            os.path.dirname(manual_base_folder),
+            "manual_labels_idx_lookup.csv",
+        )
+        if os.path.exists(lookup_csv):
+            raw = pd.read_csv(lookup_csv)
+            idx_mapping = pd.DataFrame({
+                "manual_idx": raw["manual_folder"],
+                "ids_idx":    raw["new_IDX_D"],
+                "s1dm_idx":   raw["new_IDX_D"],
+            })
+            logging.info(
+                "run_manual_validation: hash IDX_D detected — "
+                "loaded lookup table (%d entries) from %s",
+                len(idx_mapping), lookup_csv,
+            )
+        else:
+            logging.warning(
+                "run_manual_validation: hash IDX_D detected but lookup "
+                "table not found at %s — falling back to geometry matching",
+                lookup_csv,
+            )
+
     df_results, sig_jaccard, sig_overlap = (
         compute_manual_validation_metrics(
-            ids_file, s1dm_file, manual_base_folder
+            ids_file, s1dm_file, manual_base_folder,
+            idx_mapping=idx_mapping,
         )
     )
     plot_manual_validation_boxplots(
