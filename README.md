@@ -1,4 +1,4 @@
-![header](header.png)
+![header](Header.png)
 
 # Hybrid forest disturbance classification using Sentinel-1 and inventory data: a case-study for Southeastern USA
 
