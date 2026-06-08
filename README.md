@@ -31,7 +31,7 @@ Global forest ecosystems face unprecedented challenges from fire, wind, drought,
 > | Dataset                           | Description                                    | Source                                                       |
 > | --------------------------------- | ---------------------------------------------- | ------------------------------------------------------------ |
 > | USDA IDS disturbance polygons     | Forest disturbance survey, CONUS               | [USDA Forest Health Protection](https://www.fs.usda.gov/science-technology/data-tools-products/fhp-mapping-reporting/detection-surveys) |
-> | IDS preprocessed for Region 8     | Filtered and harmonised IDS labels             | Preprocessing code available at [Eifler et al. (2026)](https://github.com/lauraeifler/Eifleretal2026_Disturbance_Data_Comparison) ;  Preprocessed File of Region 8 also available via Zenodo (to be added) |
+> | IDS preprocessed for Region 8     | Filtered and harmonised IDS labels             | Preprocessing code available at [Eifler et al. (2026)](https://github.com/lauraeifler/Eifleretal2026_Disturbance_Data_Comparison)  |
 > | NLCD Tree Canopy Cover            | Annual forest mask rasters, CONUS              | [USDA Forest Service](https://data.fs.usda.gov/geodata/rastergateway/treecanopycover/) |
 > | USFS Region 8 boundary            | Administrative region shapefile                | [USDA Forest Service EDW](https://data.fs.usda.gov/geodata/edw/datasets.php?dsetCategory=boundaries) ; also provided in `data/` |
 > | Sentinel-1 change detection tiles | NetCDF tiles, EQUI7 grid, 20 m                 | Zenodo repository (to be added)                              |
