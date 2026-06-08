@@ -19,19 +19,23 @@ Global forest ecosystems face unprecedented challenges from fire, wind, drought,
 ## Paper & Data
 
 > **Paper:** *Hybrid forest disturbance classification using Sentinel-1 and inventory data: a case-study for Southeastern USA*
-> EGUsphere preprint, 2025 — https://egusphere.copernicus.org/preprints/2025/egusphere-2025-4880/
-> DOI: https://doi.org/10.5194/egusphere-2025-4880
-
-> **Data:**
 >
-> | Dataset | Description | Source |
-> |---|---|---|
-> | USDA IDS disturbance polygons | Forest disturbance survey, CONUS | [USDA Forest Health Protection](https://www.fs.usda.gov/science-technology/data-tools-products/fhp-mapping-reporting/detection-surveys) |
-> | IDS preprocessed for Region 8 | Filtered and harmonised IDS labels | [Eifler et al. (2026)](https://github.com/lauraeifler/Eifleretal2026_Disturbance_Data_Comparison) — also available via Zenodo (to be added) |
-> | NLCD Tree Canopy Cover | Annual forest mask rasters, CONUS | [USDA Forest Service](https://data.fs.usda.gov/geodata/rastergateway/treecanopycover/) |
-> | USFS Region 8 boundary | Administrative region shapefile | [USDA Forest Service EDW](https://data.fs.usda.gov/geodata/edw/datasets.php?dsetCategory=boundaries) — also provided in `data/` |
-> | Sentinel-1 change detection tiles | NetCDF tiles, EQUI7 grid, 20 m | Zenodo repository (to be added) |
-> | Manual validation labels | GeoJSON polygons digitised from Planet imagery | Provided in `data/manual_planet_labels/` |
+> **EGUsphere preprint, 2025:** https://egusphere.copernicus.org/preprints/2025/egusphere-2025-4880/
+>
+> **DOI:** https://doi.org/10.5194/egusphere-2025-4880
+>
+> **Output Data Repository:** Zenodo to be added
+
+> **Input Data:**
+>
+> | Dataset                           | Description                                    | Source                                                       |
+> | --------------------------------- | ---------------------------------------------- | ------------------------------------------------------------ |
+> | USDA IDS disturbance polygons     | Forest disturbance survey, CONUS               | [USDA Forest Health Protection](https://www.fs.usda.gov/science-technology/data-tools-products/fhp-mapping-reporting/detection-surveys) |
+> | IDS preprocessed for Region 8     | Filtered and harmonised IDS labels             | Preprocessing code available at [Eifler et al. (2026)](https://github.com/lauraeifler/Eifleretal2026_Disturbance_Data_Comparison) ;  Preprocessed File of Region 8 also available via Zenodo (to be added) |
+> | NLCD Tree Canopy Cover            | Annual forest mask rasters, CONUS              | [USDA Forest Service](https://data.fs.usda.gov/geodata/rastergateway/treecanopycover/) |
+> | USFS Region 8 boundary            | Administrative region shapefile                | [USDA Forest Service EDW](https://data.fs.usda.gov/geodata/edw/datasets.php?dsetCategory=boundaries) ; also provided in `data/` |
+> | Sentinel-1 change detection tiles | NetCDF tiles, EQUI7 grid, 20 m                 | Zenodo repository (to be added)                              |
+> | Manual validation labels          | GeoJSON polygons digitized from Planet imagery | Provided in `data/manual_planet_labels/`                     |
 
 
 
@@ -50,23 +54,23 @@ main.py --run-plotter → generate all analysis figures and summary statistics
 
 **Required input data:**
 
-| Data | Description |
-|---|---|
-| USDA IDS polygons | Forest Health Protection disturbance survey, CONUS, Region 8 |
-| Sentinel-1 SAR tiles | Change detection NetCDF files, EQUI7 grid, 20 m resolution |
-| NLCD Tree Canopy Cover | Annual rasters (CONUS), used as forest mask |
-| USFS region boundary | Administrative region shapefile (Region 8) |
+| Data                     | Description                                                  |
+| ------------------------ | ------------------------------------------------------------ |
+| IDS polygons             | Forest Health Protection disturbance survey, CONUS, Region 8 |
+| Sentinel-1 SAR tiles     | Change detection NetCDF files, EQUI7 grid, 20 m resolution   |
+| NLCD Tree Canopy Cover   | Annual rasters (CONUS), used as forest mask                  |
+| USFS region boundary     | Administrative region shapefile (Region 8)                   |
 | Manual validation labels | GeoJSON polygons digitised from Planet imagery (provided in `data/`) |
 
 **Outputs:**
 
-| Output | Location |
-|---|---|
-| Filtered IDS shapefile | `RESULTS_DIR/region_08_dca_filtered_ids_usda_polygons_espg_27705.shp` |
-| S1DM shapefile | `RESULTS_DIR/radar_enhanced_forest_disturbance_mapping_region_08_buffer_500_s1dm.shp` |
+| Output                   | Location                                                     |
+| ------------------------ | ------------------------------------------------------------ |
+| Filtered IDS shapefile   | `RESULTS_DIR/region_08_dca_filtered_ids_usda_polygons_espg_27705.shp` |
+| S1DM shapefile           | `RESULTS_DIR/radar_enhanced_forest_disturbance_mapping_region_08_buffer_500_s1dm.shp` |
 | Overlap/omission summary | `RESULTS_DIR/region_08_overlap_omission_summary_buffer_500.csv` |
-| Size/shift statistics | `RESULTS_DIR/region_08_size_shift_stats_buffer_500.csv` |
-| Figures | `FIGURES_DIR/p1_f1_*.png` … `p1_f11_*.png` |
+| Size/shift statistics    | `RESULTS_DIR/region_08_size_shift_stats_buffer_500.csv`      |
+| Figures                  | `FIGURES_DIR/p1_f1_*.png` … `p1_f11_*.png`                   |
 
 ---
 
@@ -76,20 +80,20 @@ Python 3.12. Tested with conda environment `emp`. All required packages and thei
 
 Key dependencies:
 
-| Package | Version |
-|---|---|
-| geopandas | 1.0.1 |
-| shapely | 2.0.6 |
-| rasterio | 1.3.10 |
-| rioxarray | 0.17.0 |
-| xarray | 2026.1.0 |
-| pandas | 2.2.2 |
-| numpy | 1.26.4 |
-| matplotlib | 3.9.2 |
-| seaborn | 0.13.2 |
-| scipy | 1.14.1 |
-| python-dotenv | 1.0.1 |
-| GDAL | 3.9.2 |
+| Package       | Version  |
+| ------------- | -------- |
+| geopandas     | 1.0.1    |
+| shapely       | 2.0.6    |
+| rasterio      | 1.3.10   |
+| rioxarray     | 0.17.0   |
+| xarray        | 2026.1.0 |
+| pandas        | 2.2.2    |
+| numpy         | 1.26.4   |
+| matplotlib    | 3.9.2    |
+| seaborn       | 0.13.2   |
+| scipy         | 1.14.1   |
+| python-dotenv | 1.0.1    |
+| GDAL          | 3.9.2    |
 
 Install:
 
@@ -111,27 +115,23 @@ cp environment/.env.example environment/.env
 
 Edit `environment/.env`. Set these paths for your system:
 
-| Variable | Points to | Data source |
-|---|---|---|
-| `FOREXD_DIR` | **Absolute path to this repository root** | — |
-| `DATA_DIR` | Root directory of all input datasets | — |
-| `SENTINEL1_TILES_DIR` | Sentinel-1 change detection NetCDF tiles | Zenodo (see Data above) |
-| `IDS_REGIONS_DIR` | USDA IDS CONUS table directory | [Eifler et al. (2026)](https://github.com/lauraeifler/Eifleretal2026_Disturbance_Data_Comparison) |
-| `TCC_DIR` | NLCD Tree Canopy Cover raster directory | [USDA Forest Service](https://data.fs.usda.gov/geodata/rastergateway/treecanopycover/) |
-| `REGION_SHAPE_DIR` | USFS region boundary shapefile directory | Provided in `data/S_USA.AdministrativeRegion/` |
-| `MANUAL_DIR` | Manual validation GeoJSON labels | Provided in `data/manual_planet_labels/` |
-| `RESULTS_DIR` | Output directory for shapefiles and CSVs | Created automatically |
-| `FIGURES_DIR` | Output directory for figures | Created automatically |
-| `INTERMEDIATE_FILES_DIR` | Temporary per-tile intermediate files | Created automatically |
-| `METADATA_FILES_DIR` | Per-tile metadata CSVs | Created automatically |
+| Variable              | Points to                                 | Data source                                                  |
+| --------------------- | ----------------------------------------- | ------------------------------------------------------------ |
+| `FOREXD_DIR`          | **Absolute path to this repository root** | /                                                            |
+| `DATA_DIR`            | Root directory of all input datasets      | --  please set the data sources below accordingly            |
+| `SENTINEL1_TILES_DIR` | Sentinel-1 change detection NetCDF tiles  | Zenodo (see Data above)                                      |
+| `IDS_REGIONS_DIR`     | USDA IDS CONUS table directory            | [Eifler et al. (2026)](https://github.com/lauraeifler/Eifleretal2026_Disturbance_Data_Comparison) (see Data above) |
+| `TCC_DIR`             | NLCD Tree Canopy Cover raster directory   | [USDA Forest Service](https://data.fs.usda.gov/geodata/rastergateway/treecanopycover/) |
+| `REGION_SHAPE_DIR`    | USFS region boundary shapefile directory  | Provided in `data/S_USA.AdministrativeRegion/`               |
+| `MANUAL_DIR`          | Manual validation GeoJSON labels          | Provided in `data/manual_planet_labels/`                     |
 
-The following settings can stay at their defaults:
+The following settings must stay at their defaults:
 
-| Variable | Default | Description |
-|---|---|---|
-| `REGION` | `8` | USFS region number |
-| `TCC_THRESHOLD` | `0.3` | Minimum tree canopy cover (0–1) to classify a pixel as forest |
-| `TARGET_CRS` | `EPSG:4326` | CRS of output shapefiles |
+| Variable        | Default     | Description                                                  |
+| --------------- | ----------- | ------------------------------------------------------------ |
+| `REGION`        | `8`         | USFS region number                                           |
+| `TCC_THRESHOLD` | `0.3`       | Minimum tree canopy cover (0–1) to classify a pixel as forest |
+| `TARGET_CRS`    | `EPSG:4326` | CRS of output shapefiles                                     |
 
 ---
 
@@ -166,12 +166,12 @@ python main.py \
 
 **Stage flags:**
 
-| Flag | Runs | Notes |
-|---|---|---|
-| `--run-ids` | IDS filtering | Re-run if IDS input data changes |
-| `--run-tcc` | TCC mask preparation | Only needed once; output is shared across runs |
-| `--run-s1cd` | S1CD ↔ IDS matching | Re-run if IDS or S1CD data changes |
-| `--run-plotter` | All figures | Requires IDS and S1CD outputs to exist |
+| Flag            | Runs                 | Notes                                          |
+| --------------- | -------------------- | ---------------------------------------------- |
+| `--run-ids`     | IDS filtering        | Re-run if IDS input data changes               |
+| `--run-tcc`     | TCC mask preparation | Only needed once; output is shared across runs |
+| `--run-s1cd`    | S1CD ↔ IDS matching  | Re-run if IDS or S1CD data changes             |
+| `--run-plotter` | All figures          | Requires IDS and S1CD outputs to exist         |
 
 ---
 
