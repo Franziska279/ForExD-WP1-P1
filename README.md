@@ -1,10 +1,12 @@
 ![header](header.png)
 
-# ForExD-WP1-P1 — Hybrid forest disturbance classification using Sentinel-1 and inventory data: a case-study for Southeastern USA
+# Hybrid forest disturbance classification using Sentinel-1 and inventory data: a case-study for Southeastern USA
 
-> **Authors:** Franziska Müller, Laura Eifler, Felix Cremer, Prof. Dr. Gustau Camps-Valls, Prof. Dr. Ana Bastos
-> **Affiliation:** Universität Leipzig / MPI for Biogeochemistry
-> **License:** MIT
+**Authors:** Franziska Müller, Laura Eifler, Felix Cremer, Prof. Dr. Gustau Camps-Valls, Prof. Dr. Ana Bastos
+
+**Affiliation:** Universität Leipzig / MPI for Biogeochemistry
+
+**License:** MIT
 
 ---
 
