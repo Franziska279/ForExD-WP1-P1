@@ -18,17 +18,18 @@ Global forest ecosystems face unprecedented challenges from fire, wind, drought,
 
 > **Paper:** *Hybrid forest disturbance classification using Sentinel-1 and inventory data: a case-study for Southeastern USA*
 > EGUsphere preprint, 2025 — https://egusphere.copernicus.org/preprints/2025/egusphere-2025-4880/
-DOI:  https://doi.org/10.5194/egusphere-2025-4880
+> DOI: https://doi.org/10.5194/egusphere-2025-4880
 
 > **Data:**
 >
 > | Dataset | Description | Source |
 > |---|---|---|
 > | USDA IDS disturbance polygons | Forest disturbance survey, CONUS | [USDA Forest Health Protection](https://www.fs.usda.gov/science-technology/data-tools-products/fhp-mapping-reporting/detection-surveys) |
-> | IDS preprocessed for Region 8 | Filtered and harmonised IDS labels | [Eifler et al. 2026](https://github.com/lauraeifler/Eifleretal2026_Disturbance_Data_Comparison) |
+> | IDS preprocessed for Region 8 | Filtered and harmonised IDS labels | [Eifler et al. (2026)](https://github.com/lauraeifler/Eifleretal2026_Disturbance_Data_Comparison) — also available via Zenodo (to be added) |
 > | NLCD Tree Canopy Cover | Annual forest mask rasters, CONUS | [USDA Forest Service](https://data.fs.usda.gov/geodata/rastergateway/treecanopycover/) |
-> | USFS Region 8 boundary | Administrative region shapefile | [USDA Forest Service EDW](https://data.fs.usda.gov/geodata/edw/datasets.php?dsetCategory=boundaries) |
+> | USFS Region 8 boundary | Administrative region shapefile | [USDA Forest Service EDW](https://data.fs.usda.gov/geodata/edw/datasets.php?dsetCategory=boundaries) — also provided in `data/` |
 > | Sentinel-1 change detection tiles | NetCDF tiles, EQUI7 grid, 20 m | Zenodo repository (to be added) |
+> | Manual validation labels | GeoJSON polygons digitised from Planet imagery | Provided in `data/manual_planet_labels/` |
 
 
 
@@ -106,23 +107,23 @@ GDAL must also be available on `PATH` (used via `gdalwarp` in the TCC step).
 cp environment/.env.example environment/.env
 ```
 
-Edit `environment/.env`. The paths you **must** set for your system:
+Edit `environment/.env`. Set these paths for your system:
 
-| Variable | Description |
-|---|---|
-| `FOREXD_DIR` | **Absolute path to this repository root** |
-| `DATA_DIR` | Root directory of all input datasets |
-| `SENTINEL1_TILES_DIR` | Sentinel-1 change detection NetCDF tiles |
-| `IDS_REGIONS_DIR` | USDA IDS CONUS table directory |
-| `TCC_DIR` | NLCD Tree Canopy Cover raster directory |
-| `REGION_SHAPE_DIR` | USFS administrative region boundary directory |
-| `MANUAL_DIR` | Manual validation GeoJSON labels (default: `$FOREXD_DIR/data/manual_planet_labels/`) |
-| `RESULTS_DIR` | Output directory for shapefiles and CSVs |
-| `FIGURES_DIR` | Output directory for figures |
-| `INTERMEDIATE_FILES_DIR` | Temporary directory for per-tile intermediate shapefiles |
-| `METADATA_FILES_DIR` | Output directory for per-tile metadata CSVs |
+| Variable | Points to | Data source |
+|---|---|---|
+| `FOREXD_DIR` | **Absolute path to this repository root** | — |
+| `DATA_DIR` | Root directory of all input datasets | — |
+| `SENTINEL1_TILES_DIR` | Sentinel-1 change detection NetCDF tiles | Zenodo (see Data above) |
+| `IDS_REGIONS_DIR` | USDA IDS CONUS table directory | [Eifler et al. (2026)](https://github.com/lauraeifler/Eifleretal2026_Disturbance_Data_Comparison) |
+| `TCC_DIR` | NLCD Tree Canopy Cover raster directory | [USDA Forest Service](https://data.fs.usda.gov/geodata/rastergateway/treecanopycover/) |
+| `REGION_SHAPE_DIR` | USFS region boundary shapefile directory | Provided in `data/S_USA.AdministrativeRegion/` |
+| `MANUAL_DIR` | Manual validation GeoJSON labels | Provided in `data/manual_planet_labels/` |
+| `RESULTS_DIR` | Output directory for shapefiles and CSVs | Created automatically |
+| `FIGURES_DIR` | Output directory for figures | Created automatically |
+| `INTERMEDIATE_FILES_DIR` | Temporary per-tile intermediate files | Created automatically |
+| `METADATA_FILES_DIR` | Per-tile metadata CSVs | Created automatically |
 
-Settings that can stay at their defaults:
+The following settings can stay at their defaults:
 
 | Variable | Default | Description |
 |---|---|---|
