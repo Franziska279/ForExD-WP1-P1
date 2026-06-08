@@ -146,6 +146,13 @@ cd src
 sbatch run_main.sh
 ```
 
+or if not in a SLURM environment:
+
+```bash
+cd src
+./run_main.sh
+```
+
 ### Locally
 
 ```bash
