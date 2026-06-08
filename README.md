@@ -152,6 +152,7 @@ python main.py \
     --spatial-buffer 500 \
     --max-jobs 10 \
     --run-ids \
+    --run-tcc\
     --run-s1cd \
     --run-plotter
 ```
@@ -187,10 +188,9 @@ ForExD-WP1-P1/
 │   ├── func_tcc_application.py
 │   └── run_main.sh               # SLURM submission script
 ├── data/
-│   ├── manual_planet_labels/     # Manual validation GeoJSON (per event)
-│   ├── manual_labels_idx_lookup.csv  # Mapping of manual folder names to current IDX_D
-│   └── S_USA.AdministrativeRegion/   # USFS region boundary shapefile
-└── grids/                        # EQUI7 grid definitions
+    ├── manual_planet_labels/     # Manual validation GeoJSON (per event)
+    ├── manual_labels_idx_lookup.csv  # Mapping of manual folder names to current IDX_D
+    └── S_USA.AdministrativeRegion/   # USFS region boundary shapefile
 ```
 
 ---
