@@ -1,32 +1,56 @@
-# ignore ALL these files
-src/logs/
-src/figures_median/
-src/aggregated_timeseries/
-src/aggregated_timeseries_median/
-data/s*
-data/t*
+# Output directories (pipeline results)
 results_original/
 figures_tcc*
 results_tcc*
-
 figures_c*
+src/logs/
+src/func_helpers_s2.py
+src/func_indecies.py
+# Large input data / licensed imagery (downloaded separately — see README)
+data/tcc_equi7_reproj.tif
+data/Planet/
+data/S_USA.AdministrativeRegion/
+data/manual_planet_labels/bark_beetle_2019_1434_2/
+data/manual_planet_labels/planet_labels/
 
-# Python cache files
+# Local config (copy from environment/.env.example)
+.env
+environment/.env
+
+# Dead code / internal files — not part of published pipeline
+src/tcc_processor_terminal_input.py
+src/func_preprocessing.py
+src/func_helpers_s2.py
+src/func_indecies.py
+src/calculate_jaccard_similarity.py
+src/restructure_hulls_minicube_names.py
+src/manual_disturbance_analysis.py
+src/manual_disturbance_data.py
+src/run_equi7_grid_creator.py
+src/equi7_grid_creator.py
+src/bux_fix_tcc processor.ipynb
+src/Review_responses.ipynb
+src/10_plot_s2_spatial_temporal.ipynb
+src/threshold_analysis.ipynb
+src/ids_s1dm_comparison_analysis.ipynb
+condaenv.*.requirements.txt
+package-list.txt
+
+# Logs and IDE artifacts
+src/*.log
+*.log
+src/*.code-workspace
+*.code-workspace
+.vscode/
+.idea/
+.scr/
+.venv/
+
+# Python cache
 src/__pycache__/*.pyc
 src/*.pyo
 src/*.pyd
 src/.ipynb_checkpoints/
-
-# Local dev stuff
-.scr/
-.venv/
-.env
-environment/.env
-
-# VSCode / PyCharm configs (optional, if you don’t want to track them)
-.vscode/
-.idea/
-
 
 # NFS lock files
 *.nfs*
