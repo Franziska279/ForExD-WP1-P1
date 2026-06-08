@@ -33,7 +33,7 @@ Global forest ecosystems face unprecedented challenges from fire, wind, drought,
 > | USDA IDS disturbance polygons     | Forest disturbance survey, CONUS               | [USDA Forest Health Protection](https://www.fs.usda.gov/science-technology/data-tools-products/fhp-mapping-reporting/detection-surveys) |
 > | IDS preprocessed for Region 8     | Filtered and harmonised IDS labels             | Preprocessing code available at [Eifler et al. (2026)](https://github.com/lauraeifler/Eifleretal2026_Disturbance_Data_Comparison)  |
 > | NLCD Tree Canopy Cover            | Annual forest mask rasters, CONUS              | [USDA Forest Service](https://data.fs.usda.gov/geodata/rastergateway/treecanopycover/) |
-> | USFS Region 8 boundary            | Administrative region shapefile                | [USDA Forest Service EDW](https://data.fs.usda.gov/geodata/edw/datasets.php?dsetCategory=boundaries) ; also provided in `data/` |
+> | USFS Region 8 boundary            | Administrative region shapefile                | [USDA Forest Service EDW](https://data.fs.usda.gov/geodata/edw/datasets.php?dsetCategory=boundaries) (Forest Service Regional Boundaries); also provided in `data/` |
 > | Sentinel-1 change detection tiles | NetCDF tiles, EQUI7 grid, 20 m                 | Zenodo repository (to be added)                              |
 > | Manual validation labels          | GeoJSON polygons digitized from Planet imagery | Provided in `data/manual_planet_labels/`                     |
 
@@ -56,7 +56,7 @@ main.py --run-plotter → generate all analysis figures and summary statistics
 
 | Data                     | Description                                                  |
 | ------------------------ | ------------------------------------------------------------ |
-| IDS polygons             | Forest Health Protection disturbance survey, CONUS, Region 8 |
+| IDS polygons             | Preprocessed IDS polygons according to [Eifler et al. (2026)](https://github.com/lauraeifler/Eifleretal2026_Disturbance_Data_Comparison) ( Forest Health Protection disturbance survey, CONUS, Region 8 |
 | Sentinel-1 SAR tiles     | Change detection NetCDF files, EQUI7 grid, 20 m resolution   |
 | NLCD Tree Canopy Cover   | Annual rasters (CONUS), used as forest mask                  |
 | USFS region boundary     | Administrative region shapefile (Region 8)                   |
