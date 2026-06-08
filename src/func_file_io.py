@@ -1,160 +1,149 @@
-# file_io.py
-import pandas as pd
+"""
+func_file_io.py — File I/O Utilities
+======================================
+Author:  Franziska Müller (Uni Leipzig / MPI-BGC)
+Project: ForExD-WP1-P1
+
+Description
+-----------
+Generic load/save helpers used across the pipeline. Supports CSV (with optional
+WKT geometry), ESRI Shapefiles, and NetCDF files.
+"""
+
+import logging
 import os
-import geopandas as gpd
-from shapely import wkt
-import subprocess
 import shutil
+import subprocess
+
+import geopandas as gpd
+import pandas as pd
 import xarray as xr
+from shapely import wkt
+
 
 def load_data(file_path, crs="EPSG:4326"):
     """
-    Load data from a CSV file or shapefile. If the CSV contains geometry data in WKT format,
-    it will be loaded as a GeoDataFrame; otherwise, it will be loaded as a regular DataFrame.
+    Load a data file into a GeoDataFrame or DataFrame depending on format and content.
 
-    Args:
-        file_path (str): Path to the data file (CSV or shapefile).
-        crs (str): Coordinate reference system for the GeoDataFrame, default is "EPSG:4326".
+    Supported formats:
+      .csv  — loaded as DataFrame; if a 'geometry' column with WKT strings is
+              present, converted to GeoDataFrame with the given CRS
+      .shp  — loaded as GeoDataFrame via geopandas
+      .nc   — loaded as xarray Dataset (chunked for memory efficiency)
 
-    Returns:
-        gpd.GeoDataFrame or pd.DataFrame: Loaded data as a GeoDataFrame if geometry is present,
-                                          otherwise as a regular DataFrame.
+    Parameters
+    ----------
+    file_path : str    path to the data file
+    crs       : str    CRS to assign when reading a CSV with geometry (default EPSG:4326)
+
+    Returns
+    -------
+    gpd.GeoDataFrame, pd.DataFrame, or xr.Dataset depending on file type.
     """
     if file_path.endswith('.csv'):
-        print(f"Loading CSV file from: {file_path}")
+        logging.info(f"Loading CSV: {file_path}")
         df = pd.read_csv(file_path)
-
-        # Check if a 'geometry' column is present in the CSV
         if 'geometry' in df.columns:
-            print("Detected 'geometry' column in CSV; converting to GeoDataFrame...")
-            df['geometry'] = df['geometry'].apply(wkt.loads)  # Convert WKT to geometries
-            gdf = gpd.GeoDataFrame(df, geometry='geometry').set_crs(crs)  # Set CRS
-            return gdf
-        else:
-            print("No 'geometry' column detected; loading as a regular DataFrame.")
-            return df
+            logging.info("Geometry column found — converting to GeoDataFrame")
+            df['geometry'] = df['geometry'].apply(wkt.loads)
+            return gpd.GeoDataFrame(df, geometry='geometry').set_crs(crs)
+        return df
 
     elif file_path.endswith('.shp'):
-        print(f"Loading shapefile from: {file_path}")
+        logging.info(f"Loading shapefile: {file_path}")
         return gpd.read_file(file_path)
-    
+
     elif file_path.endswith('.nc'):
-        print(f"Loading NetCDF file from: {file_path}")
-        # Load the NetCDF file as an xarray Dataset
-        dataset = xr.open_dataset(file_path, chunks={'time': 10, 'lat': 100, 'lon': 100})
-        return dataset
+        logging.info(f"Loading NetCDF: {file_path}")
+        return xr.open_dataset(file_path, chunks={'time': 10, 'lat': 100, 'lon': 100})
 
     else:
-        raise ValueError("Unsupported file format. Please use a .csv or .shp file.")
+        raise ValueError(f"Unsupported file format: {file_path}. Use .csv, .shp, or .nc")
+
 
 def save_shapefile(data, file_path):
     """
-    Save a GeoDataFrame to a shapefile, overwriting if it already exists.
-    
-    Args:
-        data (gpd.GeoDataFrame): GeoDataFrame to save.
-        file_path (str): Path where the shapefile should be saved.
+    Save a GeoDataFrame to an ESRI Shapefile, overwriting any existing file.
+
+    Creates the output directory if it does not exist. Removes all associated
+    sidecar files (.shx, .dbf, .prj) before writing to avoid stale data.
+
+    Parameters
+    ----------
+    data      : gpd.GeoDataFrame
+    file_path : str   full path to the .shp output file
     """
-    # Create the directory for the file if it does not exist
     directory = os.path.dirname(file_path)
-    if not os.path.exists(directory):
-        os.makedirs(directory)
-        print(f"Created directory: {directory}")
+    os.makedirs(directory, exist_ok=True)
 
-    # Check if the file already exists
+    # Remove existing shapefile components to avoid leftover sidecar files
     if os.path.exists(file_path):
-        print(f"File already exists at {file_path}. Overwriting...")
-        # Remove the existing shapefile and associated files
+        logging.info(f"Overwriting existing shapefile: {file_path}")
         for ext in ['.shp', '.shx', '.dbf', '.prj']:
+            sidecar = file_path.replace('.shp', ext)
             try:
-                os.remove(file_path.replace('.shp', ext))
+                os.remove(sidecar)
             except OSError as e:
-                print(f"Error removing file {file_path.replace('.shp', ext)}: {e}")
+                logging.warning(f"Could not remove {sidecar}: {e}")
 
-    # Save the GeoDataFrame to a shapefile
-    print(f"Saving GeoDataFrame to shapefile at: {file_path}")
+    logging.info(f"Saving shapefile → {file_path}")
     data.to_file(file_path, index=False)
-    print("File saved successfully.")
+    logging.info("Shapefile saved.")
 
 
-def transform_crs(data, target_crs):
+def reproject(data, target_crs):
     """
-    Transform the CRS of a GeoDataFrame to the specified CRS.
-    
-    Args:
-        data (gpd.GeoDataFrame): GeoDataFrame with geometries to transform.
-        target_crs (str): Target CRS in EPSG format (e.g., 'EPSG:27705').
-        
-    Returns:
-        gpd.GeoDataFrame: GeoDataFrame with transformed CRS.
-    """
-    print(f"Transforming CRS to {target_crs}...")
-    data_transformed = data.to_crs(target_crs)
-    print("CRS transformation complete.")
-    return data_transformed
+    Reproject a GeoDataFrame to target_crs and return the result.
 
-def save_transformed_shapefile(data, target_crs, file_path):
+    Parameters
+    ----------
+    data       : gpd.GeoDataFrame
+    target_crs : str   e.g. 'EPSG:27705'
     """
-    Transform a GeoDataFrame to the target CRS and save it as a shapefile.
-    
-    Args:
-        data (gpd.GeoDataFrame): GeoDataFrame to transform and save.
-        target_crs (str): Target CRS in EPSG format (e.g., 'EPSG:27705').
-        file_path (str): Path to save the transformed shapefile.
-    """
-    print(f"Saving transformed GeoDataFrame to shapefile at: {file_path}")
-    data_transformed = transform_crs(data, target_crs)
-    data_transformed.to_file(file_path, index=False)
-    print("Transformed shapefile saved successfully.")
+    logging.info(f"Reprojecting to {target_crs}")
+    return data.to_crs(target_crs)
 
-def run_command(command):
+
+def reproject_and_save(data, target_crs, file_path):
+    """Reproject data to target_crs and save as a shapefile."""
+    save_shapefile(reproject(data, target_crs), file_path)
+
+
+def save_gdf(gdf, output_dir, output_filename):
+    """Save a GeoDataFrame to output_dir/output_filename."""
+    output_path = os.path.join(output_dir, output_filename)
+    logging.info(f"Saving result → {output_path}")
+    gdf.to_file(output_path)
+
+
+def delete_directory(input_dir):
+    """Remove a directory and all its contents."""
+    try:
+        shutil.rmtree(input_dir)
+        logging.info(f"Removed directory: {input_dir}")
+    except OSError as e:
+        logging.error(f"Error removing directory {input_dir}: {e}")
+
+
+def run_shell_command(command):
+    """Run a shell command via subprocess, raising on failure."""
     try:
         subprocess.run(command, shell=True, check=True)
     except subprocess.CalledProcessError as e:
-        print(f"An error occurred while running command: {command}\nError: {e}")
+        logging.error(f"Command failed: {command}\n{e}")
 
 
-
-def save_result(gdf, output_dir, output_filename):
+def load_tcc_dataset(tcc_nc_path):
     """
-    Save the resulting GeoDataFrame to a new shapefile.
+    Load a pre-processed Tree Canopy Cover (TCC) NetCDF file as an xarray Dataset.
 
-    Parameters:
-    - gdf (GeoDataFrame): GeoDataFrame to be saved.
-    - output_dir (str): Directory where the output shapefile will be saved.
-    - output_filename (str): Name of the output shapefile.
+    Parameters
+    ----------
+    tcc_nc_path : str   path to the TCC .nc file
+
+    Returns
+    -------
+    xr.Dataset
     """
-    print(f"Saving result to {os.path.join(output_dir, output_filename)}...")
-    output_path = os.path.join(output_dir, output_filename)
-    gdf.to_file(output_path)
-    print("Result saved successfully.")
-
-
-def remove_directory(input_dir):
-    """
-    Remove the specified directory and all of its contents.
-
-    Parameters:
-    - input_dir (str): Directory to be removed.
-    """
-    try:
-        shutil.rmtree(input_dir)
-        print(f"Successfully removed directory and all contents: {input_dir}")
-    except OSError as e:
-        print(f"Error removing directory and all contents: {input_dir} - {e}")
-
-
-
-def load_tcc_nc_dataset(tcc_nc_path):
-    """
-    Load and process the REFDM dataset by dissolving it based on the USDA_IDX column.
-
-    Parameters:
-        refdm_path (str): Path to the REFDM shapefile.
-    
-    Returns:
-        GeoDataFrame: Processed REFDM GeoDataFrame with unique events.
-    """
-    # Load the shapefile using geopandas
-    tcc_dataset = xr.open_dataset(tcc_nc_path)
-    return tcc_dataset
+    logging.info(f"Loading TCC NetCDF: {tcc_nc_path}")
+    return xr.open_dataset(tcc_nc_path)

@@ -25,7 +25,7 @@ from scipy.stats import ttest_rel
 # Helper Functions
 # -------------------
 
-def paired_ttest_significance(x, y, alpha1=0.05, alpha2=0.1, alternative="greater"):
+def paired_ttest(x, y, alpha1=0.05, alpha2=0.1, alternative="greater"):
     """
     Perform a one-sided paired t-test and return p-value and significance symbol.
 
@@ -68,7 +68,7 @@ def compute_hausdorff_distance(geom_candidate, geom_manual):
     return geom_candidate.hausdorff_distance(geom_manual)
 
 
-def compute_overlap_jaccard_hausdorff(geom_candidate, geom_manual):
+def compute_jaccard_overlap_hausdorff(geom_candidate, geom_manual):
     """
     Compute overlap percentage, Jaccard similarity, and Hausdorff distance
     between candidate and manual geometries.
@@ -195,9 +195,9 @@ def plot_metrics(df_results, out_folder, dist_order):
     sig_jaccard, sig_hausdorff, sig_overlap = {}, {}, {}
     for d, group in df_results.groupby("disturbance_label"):
         if len(group) > 1:
-            _, sig_j = paired_ttest_significance(group["jaccard_s1dm"], group["jaccard_ids"])
-            _, sig_h = paired_ttest_significance(group["hausdorff_s1dm"], group["hausdorff_ids"])
-            _, sig_o = paired_ttest_significance(group["overlap_s1dm"], group["overlap_ids"])
+            _, sig_j = paired_ttest(group["jaccard_s1dm"], group["jaccard_ids"])
+            _, sig_h = paired_ttest(group["hausdorff_s1dm"], group["hausdorff_ids"])
+            _, sig_o = paired_ttest(group["overlap_s1dm"], group["overlap_ids"])
             sig_jaccard[d] = sig_j
             sig_hausdorff[d] = sig_h
             sig_overlap[d] = sig_o

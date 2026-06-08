@@ -1,463 +1,343 @@
-import geopandas as gpd
-import pandas as pd
-from tqdm import tqdm
-import xarray as xr
+"""
+func_data_preprocessing.py — IDS Data Preprocessing Functions
+==============================================================
+Author:  Franziska Müller (Uni Leipzig / MPI-BGC)
+Project: ForExD-WP1-P1
+
+Description
+-----------
+Preprocessing functions for the USDA IDS (Insect and Disease Survey) dataset,
+called by IDSProcessor in ids_processor.py. The pipeline runs in this order:
+
+  clean_raw_ids_data()             -- column cleanup, severity + year filter
+  merge_fragmented_polygons()      -- merge fragmented polygons iteratively
+  drop_compound_survey_events()    -- drop compound survey entries (±5 yrs)
+  extract_recurring_disturbances() -- extract multi-year overlap records (±2 yrs)
+  build_overlap_pair_records()     -- explode and annotate overlap pairs
+  apply_study_filters()            -- final year/type/size filter
+
+Also contains add_area_km2() and get_tile_basename() which are imported
+by func_s1cd_preprocessing.py.
+"""
+
+import hashlib
+import logging
 import os
 import geopandas as gpd
-import rasterio
-from shapely.geometry import box, shape
-from affine import Affine
 import pandas as pd
 import numpy as np
-import rioxarray
-from func_file_io import load_data
+from tqdm import tqdm
 
 
-def rename_columns_and_process_data(gdf):
+# ==============================================================
+# IDS Preprocessing Pipeline
+# ==============================================================
+
+def clean_raw_ids_data(gdf):
     """
-    Rename columns to ensure no column name exceeds 10 characters, filter and process data.
-    
-    Parameters:
-    - gdf (GeoDataFrame): The input geospatial dataframe.
-    
-    Returns:
-    - GeoDataFrame: Processed and filtered GeoDataFrame.
+    First cleaning pass on the raw IDS GeoDataFrame:
+      - Truncates all column names to 10 characters (ESRI shapefile limit)
+      - Keeps only 'Severe' damage entries (or rows with no severity info)
+      - Drops columns not needed downstream
+      - Removes pre-2010 survey records
+      - Fixes any invalid geometries using a zero-width buffer
+
+    Returns the cleaned GeoDataFrame.
     """
-    gdf = gdf.rename(columns={col: col[:10] for col in gdf.columns})  # Truncate column names to 10 chars
+    n_start = len(gdf)
+    logging.info(f"clean_raw_ids_data: starting with {n_start} records")
+
+    # ESRI shapefiles truncate field names to 10 characters — enforce this now
+    # so column references are consistent throughout the pipeline
+    gdf = gdf.rename(columns={col: col[:10] for col in gdf.columns})
+
+    # Keep only records with severe damage or no severity recorded.
+    # Light/moderate damage entries are excluded from the analysis.
+    n_before = len(gdf)
     gdf = gdf[gdf['PERCENT_AF'].isna() | gdf['PERCENT_AF'].str.contains("Severe", case=False, na=False)]
-    gdf = gdf.drop(columns=['PERCENT_AF', 'HOST', 'HOST_CODE', 'DCA_CODE', 'DAMAGE_TYP', 'DAMAGE_T_1', 'cluster_id'])
-    gdf = gdf[gdf['SURVEY_YEA'] > 2009]  # Filter data based on SURVEY_YEA
-    gdf['geometry'] = gdf.geometry.apply(lambda geom: geom if geom.is_valid else geom.buffer(0))
+    logging.info(f"Severity filter: {len(gdf)} remaining (removed {n_before - len(gdf)})")
+
+    # Drop columns that carry no information for our analysis
+    cols_to_drop = ['PERCENT_AF', 'HOST', 'HOST_CODE', 'DCA_CODE', 'DAMAGE_TYP', 'DAMAGE_T_1', 'cluster_id']
+    gdf = gdf.drop(columns=[c for c in cols_to_drop if c in gdf.columns])
+
+    # Restrict to post-2009 surveys; earlier records have inconsistent spatial quality
+    n_before = len(gdf)
+    gdf = gdf[gdf['SURVEY_YEA'] > 2009]
+    logging.info(f"Year filter (>2009): {len(gdf)} remaining (removed {n_before - len(gdf)})")
+
+    # Fix invalid geometries that would cause spatial operations to fail
+    n_invalid = (~gdf.geometry.is_valid).sum()
+    if n_invalid > 0:
+        logging.info(f"Fixing {n_invalid} invalid geometries with buffer(0)")
+        gdf['geometry'] = gdf.geometry.apply(lambda geom: geom if geom.is_valid else geom.buffer(0))
+
+    logging.info(f"clean_raw_ids_data: finished with {len(gdf)} records (removed {n_start - len(gdf)} total)")
     return gdf
 
-def merge_and_iterate(gdf, max_iterations=10):
+
+def merge_fragmented_polygons(gdf, max_iterations=10):
     """
-    Iteratively merges intersecting geometries with the same DCA_ID and SURVEY_YEA
-    until no further merges occur.
-    
-    Parameters:
-    - gdf (GeoDataFrame): The input GeoDataFrame with geometries to merge.
-    - max_iterations (int): Maximum iterations to attempt.
-    
-    Returns:
-    - GeoDataFrame: The fully merged GeoDataFrame.
+    Iteratively merges spatially intersecting polygons that share the same
+    DCA_ID and SURVEY_YEA. A single disturbance event is often mapped as
+    multiple non-contiguous polygons — this step collapses them into one.
+
+    Repeats until no further merges occur or max_iterations is reached.
     """
-    prev_len = len(gdf)
+    n_prev = len(gdf)
     for iteration in range(max_iterations):
-        print(f"> Iteration {iteration + 1}")
-        gdf = merge_intersecting_geometries(gdf)
-        if len(gdf) == prev_len:
-            print(">> No more changes detected, stopping iterations.")
+        logging.info(f"merge_fragmented_polygons: iteration {iteration + 1}, {n_prev} records")
+        gdf = _dissolve_same_event_polygons(gdf)
+        if len(gdf) == n_prev:
+            logging.info("merge_fragmented_polygons: no further changes, stopping.")
             break
-        prev_len = len(gdf)
-    print(f"   Final number of merged records: {len(gdf)}")
+        n_prev = len(gdf)
+    logging.info(f"merge_fragmented_polygons: finished with {len(gdf)} records")
     return gdf
 
-def merge_intersecting_geometries(gdf):
+
+def _dissolve_same_event_polygons(gdf):
     """
-    Merge geometries that spatially intersect and share the same DCA_ID & SURVEY_YEA.
-    
-    Parameters:
-    - gdf (GeoDataFrame): Input GeoDataFrame.
-    
-    Returns:
-    - GeoDataFrame: GeoDataFrame with merged intersecting geometries.
+    Single-pass merge: finds all polygon pairs that intersect AND share the
+    same DCA_ID and SURVEY_YEA, assigns them to a group, then dissolves each
+    group into one polygon (keeping the first value for all attribute columns).
     """
     gdf = gdf.reset_index(drop=True)
-    spatial_intersections = gpd.sjoin(gdf, gdf, how="inner", predicate="intersects", lsuffix="left", rsuffix="right")
-    spatial_intersections = spatial_intersections[
-        (spatial_intersections["SURVEY_YEA_left"] == spatial_intersections["SURVEY_YEA_right"]) &
-        (spatial_intersections["DCA_ID_left"] == spatial_intersections["DCA_ID_right"])
+
+    # Spatial self-join to find all intersecting polygon pairs
+    intersections = gpd.sjoin(gdf, gdf, how="inner", predicate="intersects",
+                              lsuffix="left", rsuffix="right")
+
+    # Keep only pairs that represent the same disturbance event (same type and year)
+    intersections = intersections[
+        (intersections["SURVEY_YEA_left"] == intersections["SURVEY_YEA_right"]) &
+        (intersections["DCA_ID_left"]     == intersections["DCA_ID_right"])
     ]
-    spatial_intersections = spatial_intersections.loc[:, ~spatial_intersections.columns.str.endswith('_right')]
-    spatial_intersections.columns = spatial_intersections.columns.str.replace('_left', '', regex=False)
-    
+
+    # Drop the "_right" duplicate columns and clean up suffixes
+    intersections = intersections.loc[:, ~intersections.columns.str.endswith('_right')]
+    intersections.columns = intersections.columns.str.replace('_left', '', regex=False)
+
+    # Assign each polygon to a group; polygons in the same group will be dissolved
     gdf["group"] = -1
     group_id = 0
-    for idx, row in spatial_intersections.iterrows():
+    for idx, row in intersections.iterrows():
         if gdf.at[row.name, "group"] == -1:
             gdf.at[row.name, "group"] = group_id
-        intersecting_idx = spatial_intersections.index[spatial_intersections.index == row.name]
-        gdf.loc[intersecting_idx, "group"] = gdf.at[row.name, "group"]
+        gdf.loc[intersections.index[intersections.index == row.name], "group"] = gdf.at[row.name, "group"]
         group_id += 1
 
     return gdf.dissolve(by=["group"], aggfunc="first").reset_index(drop=True)
 
-def remove_temporal_overlaps(gdf, year_column='SURVEY_YEA', geometry_column='geometry', year_range=5):
+
+def drop_compound_survey_events(gdf, year_col='SURVEY_YEA', geom_col='geometry', year_range=5):
     """
-    Remove entries that overlap temporally and spatially within the specified year range.
-    
-    Parameters:
-    - gdf (GeoDataFrame): Input GeoDataFrame.
-    - year_column (str): Column name for the survey year.
-    - geometry_column (str): Column name for geometry.
-    - year_range (int): Temporal window to consider overlaps.
-    
-    Returns:
-    - GeoDataFrame: GeoDataFrame with overlapping entries removed.
+    Removes entries that both:
+      - spatially intersect another polygon, AND
+      - fall within ±year_range survey years of that polygon
+
+    These are compound events — the same disturbance location surveyed across
+    multiple years — and are removed to avoid counting the same event multiple times.
+
+    Returns the GeoDataFrame with compound entries dropped.
     """
-    overlapping_indices = set()
-    for index, row in tqdm(gdf.iterrows(), total=gdf.shape[0], desc=f"Removing overlaps within ±{year_range} years"):
-        time_window = gdf[year_column].between(row[year_column] - year_range, row[year_column] + year_range)
-        overlaps = gdf[time_window & gdf[geometry_column].intersects(row[geometry_column])]
-        if len(overlaps) > 1:
-            overlapping_indices.update(overlaps.index)
-    return gdf.drop(index=overlapping_indices)
+    indices_to_drop = set()
+    for idx, row in tqdm(gdf.iterrows(), total=len(gdf), desc=f"Dropping compound events (±{year_range} yrs)"):
+        in_time_range = gdf[year_col].between(row[year_col] - year_range, row[year_col] + year_range)
+        overlaps = gdf[in_time_range & gdf[geom_col].intersects(row[geom_col])]
+        if len(overlaps) > 1:  # >1 because every polygon intersects itself
+            indices_to_drop.update(overlaps.index)
+    return gdf.drop(index=indices_to_drop)
 
-def keep_and_analyze_overlaps(gdf, id_column='ID_E', year_column='SURVEY_YEA', geometry_column='geometry', year_range=2):
+
+def extract_recurring_disturbances(gdf, id_col='ID_E', year_col='SURVEY_YEA',
+                                   geom_col='geometry', year_range=2):
     """
-    Keep spatially overlapping entries, analyze overlaps, and add ID_O for overlapping IDs.
-    
-    Parameters:
-    - gdf (GeoDataFrame): Input GeoDataFrame.
-    - id_column (str): ID column to use for overlap analysis.
-    - year_column (str): Survey year column.
-    - geometry_column (str): Geometry column for spatial analysis.
-    - year_range (int): Year range within which overlaps are considered.
-    
-    Returns:
-    - GeoDataFrame: Filtered and analyzed GeoDataFrame with overlap information.
+    Identifies polygons that spatially overlap another polygon within ±year_range years.
+    These are disturbances recorded in consecutive survey years — kept separately
+    for the year-lag analysis (Figure 4).
+
+    For each overlapping pair, records the partner event IDs ('ID_O') and computes
+    summary statistics (overlap duration, partner DCA_IDs).
+
+    Returns a GeoDataFrame of recurring records, or None if none are found.
     """
-    gdf['ID_O'] = None
-    for index, row in tqdm(gdf.iterrows(), total=gdf.shape[0], desc=f"Finding overlaps within ±{year_range} years"):
-        time_window = gdf[year_column].between(row[year_column] - year_range, row[year_column] + year_range)
-        overlaps = gdf.loc[time_window & gdf[geometry_column].intersects(row[geometry_column]) & (gdf[id_column] != row[id_column])]
-        if not overlaps.empty:
-            gdf.at[index, 'ID_O'] = overlaps[id_column].tolist()
+    gdf = gdf.copy()
+    gdf['ID_O'] = None  # Will hold the list of overlapping partner IDs
 
-    gdf_overlap_analyzed = gdf.dropna(subset=['ID_O'])
-    gdf_overlap_analyzed['Longest_Duration'] = None
-    gdf_overlap_analyzed['DCA_ID_Count'] = None
-    gdf_overlap_analyzed['DCA_ID_List'] = None
-    for idx, row in tqdm(gdf_overlap_analyzed.iterrows(), total=gdf_overlap_analyzed.shape[0], desc="Analyzing overlaps"):
-        overlap_ids = row['ID_O']
-        if overlap_ids:
-            overlap_data = gdf_overlap_analyzed[gdf_overlap_analyzed[id_column].isin(overlap_ids)]
-            gdf_overlap_analyzed.at[idx, 'Longest_Duration'] = overlap_data[year_column].max() - overlap_data[year_column].min() + 1
-            dca_ids = overlap_data['DCA_ID'].tolist()
-            gdf_overlap_analyzed.at[idx, 'DCA_ID_Count'] = len(dca_ids)
-            gdf_overlap_analyzed.at[idx, 'DCA_ID_List'] = dca_ids
+    for idx, row in tqdm(gdf.iterrows(), total=len(gdf), desc=f"Finding recurring disturbances (±{year_range} yrs)"):
+        in_time_range = gdf[year_col].between(row[year_col] - year_range, row[year_col] + year_range)
+        partner_events = gdf.loc[
+            in_time_range &
+            gdf[geom_col].intersects(row[geom_col]) &
+            (gdf[id_col] != row[id_col])  # exclude self
+        ]
+        if not partner_events.empty:
+            gdf.at[idx, 'ID_O'] = partner_events[id_col].tolist()
 
-    return gdf_overlap_analyzed[gdf_overlap_analyzed.apply(lambda row: row['DCA_ID_List'] == [row['DCA_ID']], axis=1)]
-
-
-def filter_and_enrich_overlaps(gdf, year_col='SURVEY_YEA', id_col='ID_E', dca_col='DCA_ID'):
-    """
-    Filter and enrich overlaps based on DCA_ID match, and explode overlap IDs.
-    
-    Parameters:
-    - gdf (GeoDataFrame): Input GeoDataFrame.
-    - year_col (str): Survey year column.
-    - id_col (str): ID column.
-    - dca_col (str): DCA_ID column.
-    
-    Returns:
-    - GeoDataFrame: Filtered and enriched GeoDataFrame.
-    """
-    exploded_df = gdf.explode('ID_O').drop(columns=['Longest_Duration', 'DCA_ID_Count', 'DCA_ID_List'])
-    year_lookup = gdf.set_index(id_col)[year_col].to_dict()
-    dca_lookup = gdf.set_index(id_col)[dca_col].to_dict()
-    
-    exploded_df['O_Year'] = exploded_df['ID_O'].map(year_lookup)
-    exploded_df['O_DCA_ID'] = exploded_df['ID_O'].map(dca_lookup)
-    exploded_df['O_Y_diff'] = exploded_df['O_Year'] - exploded_df[year_col]
-    
-    return exploded_df
-
-
-def filter_disturbance_data(data, excluded_dca_types, start_year=2015, end_year=2021):
-    """
-    Filters the input data for specific time, size, disturbance types, and overlapping conditions.
-    Removes overlapping entries with specified mismatches.
-    
-    Parameters:
-    - data: GeoDataFrame containing the original data.
-    - excluded_dca_types: List of disturbance types to exclude.
-    - start_year: Start year for filtering.
-    - end_year: End year for filtering.
-
-    Returns:
-    - combined_gdf: Filtered and cleaned GeoDataFrame.
-    """
-    
-    # Step 1: Split Data into Overlapping and Non-overlapping Entries
-    without_id_o = data[data['ID_O'].isnull()].copy()
-    with_id_o = data[data['ID_O'].notnull()].copy()
-    
-    # Step 2: Apply Filters to Non-overlapping Entries
-    non_overlap_filtered = without_id_o[
-        (without_id_o['SURVEY_Y'] > start_year) & 
-        (without_id_o['SURVEY_Y'] <= end_year) & 
-        (~without_id_o['DCA_ID'].isin(excluded_dca_types))
-    ].copy()
-
-    # Calculate area and filter by size for non-overlapping entries
-    non_overlap_filtered = calculate_area_in_km2(non_overlap_filtered)
-    non_overlap_filtered = non_overlap_filtered[non_overlap_filtered['area_km2'] <= 15]
-
-    # Step 3: Apply Filters to Overlapping Entries
-    # Filter by time, type, and size for overlapping entries
-    overlap_filtered = with_id_o[
-        (with_id_o['SURVEY_Y'] > start_year) & 
-        (with_id_o['SURVEY_Y'] <= end_year) & 
-        (~with_id_o['DCA_ID'].isin(excluded_dca_types))
-    ].copy()
-    overlap_filtered = calculate_area_in_km2(overlap_filtered)
-    overlap_filtered = overlap_filtered[overlap_filtered['area_km2'] <= 15]
-
-    # Ensure 'ID_E' and 'ID_O' are integers
-    overlap_filtered['ID_E'] = overlap_filtered['ID_E'].astype(int)
-    overlap_filtered['ID_O'] = overlap_filtered['ID_O'].astype(int)
-    overlap_filtered = overlap_filtered[overlap_filtered['ID_E'] != overlap_filtered['ID_O']]
-
-    # Step 4: Identify and Remove Invalid Overlapping Matches
-    # Find mismatches in DCA_ID between overlapping pairs
-    mismatch_df = overlap_filtered[
-        (overlap_filtered['DCA_ID'] != overlap_filtered['O_DCA_ID'])
-    ]
-    # Identify invalid overlap entries (size, type, time, or DCA mismatch)
-    invalid_ids = set(mismatch_df['ID_E']).union(set(mismatch_df['ID_O']))
-    valid_overlap_df = overlap_filtered[
-        ~overlap_filtered['ID_E'].isin(invalid_ids) &
-        ~overlap_filtered['ID_O'].isin(invalid_ids)&
-        (overlap_filtered['ID_E'] != overlap_filtered['ID_O'])  # Exclude self overlaps
-    ]
-
-    # Step 5: Combine Non-overlapping and Valid Overlapping Entries
-    combined_df = pd.concat([non_overlap_filtered, valid_overlap_df], ignore_index=True)
-    
-    # Step 6: Assign Unique Identifier and Return
-    combined_df['IDX_D'] = combined_df.apply(lambda row: f"{row['DCA_ID']}_{row['SURVEY_Y']}_{row.name}", axis=1)
-    combined_gdf = gpd.GeoDataFrame(combined_df, geometry='geometry')
-
-    print(f"Final combined data size: {len(combined_gdf)}")
-    return combined_gdf
-
-def calculate_area_in_km2(gdf):
-    """
-    Calculate the area of each polygon in the GeoDataFrame in square kilometers.
-
-    Parameters:
-    gdf (GeoDataFrame): GeoDataFrame with geometries.
-
-    Returns:
-    GeoDataFrame: GeoDataFrame with an added column for area in square kilometers.
-    """
-    if gdf.crs != 'EPSG:4326':
-        gdf = gdf.to_crs('EPSG:4326')
-    projected_gdf = gdf.to_crs('EPSG:3857')
-    projected_gdf['area_km2'] = projected_gdf.geometry.area / 1e6
-    gdf['area_km2'] = projected_gdf['area_km2']
-
-    return gdf
-
-def calculate_area_in_km2_s1cd(gdf):
-    """
-    Calculate the area of each polygon in the GeoDataFrame in square kilometers.
-
-    Parameters:
-    gdf (GeoDataFrame): GeoDataFrame with geometries.
-
-    Returns:
-    GeoDataFrame: GeoDataFrame with an added column for area in square kilometers.
-    """
-    if gdf.crs != 'EPSG:4326':
-        gdf = gdf.to_crs('EPSG:4326')
-    projected_gdf = gdf.to_crs('EPSG:3857')
-    projected_gdf['area'] = projected_gdf.geometry.area / 1e6
-    gdf['area'] = projected_gdf['area']
-
-    return gdf
-
-
-######### S1CD Preprocessing   #####################
-
-# Function to extract the year from the filename
-def extract_year_from_filename(input_path):
-    """
-    Extract the year from the filename, which is expected to follow a '_year_' pattern.
-    
-    Parameters:
-    - input_path (str): Path to the input file.
-    
-    Returns:
-    - int: The extracted year.
-    """
-    filename = os.path.basename(input_path)
-    try:
-        s1_year = int(filename.split('_year_')[-1].split('_')[0])
-        return s1_year
-    except (IndexError, ValueError) as e:
-        print(f"Error extracting year from filename {filename}: {e}")
+    # Keep only rows that have at least one recurring partner
+    recurring_gdf = gdf.dropna(subset=['ID_O'])
+    if recurring_gdf.empty:
         return None
 
-# Function to extract a specific part of the filename
-def extract_s1cd_filename_part(filename):
+    # Compute summary statistics for each recurring record
+    recurring_gdf = recurring_gdf.copy()
+    recurring_gdf['Longest_Duration'] = None
+    recurring_gdf['DCA_ID_Count']     = None
+    recurring_gdf['DCA_ID_List']      = None
+
+    for idx, row in tqdm(recurring_gdf.iterrows(), total=len(recurring_gdf), desc="Analysing recurring events"):
+        partner_events = recurring_gdf[recurring_gdf[id_col].isin(row['ID_O'])]
+        recurring_gdf.at[idx, 'Longest_Duration'] = partner_events[year_col].max() - partner_events[year_col].min() + 1
+        partner_dca_ids = partner_events['DCA_ID'].tolist()
+        recurring_gdf.at[idx, 'DCA_ID_Count'] = len(partner_dca_ids)
+        recurring_gdf.at[idx, 'DCA_ID_List']  = partner_dca_ids
+
+    # Keep only records where the partner has the same disturbance type
+    return recurring_gdf[recurring_gdf.apply(lambda r: r['DCA_ID_List'] == [r['DCA_ID']], axis=1)]
+
+
+def build_overlap_pair_records(gdf, year_col='SURVEY_YEA', id_col='ID_E', dca_col='DCA_ID'):
     """
-    Extract the first 10 parts of the filename, split by underscores.
-    
-    Parameters:
-    - filename (str): The input filename.
-    
-    Returns:
-    - str: Extracted part of the filename.
+    Prepares the recurring-events subset for the year-lag analysis:
+      - Explodes the 'ID_O' list so each overlapping pair becomes a separate row
+      - Looks up the partner's survey year ('O_Year') and disturbance type ('O_DCA_ID')
+      - Computes the year difference between the two observations ('O_Y_diff')
+
+    The resulting table drives the year-lag figures showing how many years apart
+    the same disturbance was detected by S1 vs. recorded in IDS.
     """
-    parts = filename.split('_')
-    return '_'.join(parts[:10])
+    # One row per overlapping pair (explode the partner-ID list)
+    pairs = gdf.explode('ID_O').drop(columns=['Longest_Duration', 'DCA_ID_Count', 'DCA_ID_List'])
 
-# Function to load the dataset and preprocess
-def load_and_preprocess_dataset(input_file):
+    # Build lookup tables from the original dataframe to annotate each pair
+    survey_year_by_id = gdf.set_index(id_col)[year_col].to_dict()
+    dca_type_by_id    = gdf.set_index(id_col)[dca_col].to_dict()
+
+    pairs['O_Year']   = pairs['ID_O'].map(survey_year_by_id)
+    pairs['O_DCA_ID'] = pairs['ID_O'].map(dca_type_by_id)
+    pairs['O_Y_diff'] = pairs['O_Year'] - pairs[year_col]  # positive = partner detected later
+
+    return pairs
+
+
+def apply_study_filters(gdf, excluded_dca_types, start_year=2015, end_year=2021):
     """
-    Load and preprocess the S1 Change Detection raster file.
-    
-    Parameters:
-    - input_file (str): Path to the input raster file.
-    - filename (str): Name of the file used for logging purposes.
-    
-    Returns:
-    - xarray.Dataset: Preprocessed dataset.
+    Final filter step applied to the combined (recurring + unique) dataset:
+      1. Splits into unique-survey and recurring-survey subsets
+      2. Applies year range and disturbance-type filters to both
+      3. Drops polygons larger than 15 km² (likely mapping artefacts)
+      4. For recurring pairs: removes pairs where the disturbance type differs
+         between the two observations (unreliable pairing)
+      5. Merges both subsets and assigns a unique IDX_D identifier to each record
+
+    Parameters
+    ----------
+    gdf                : GeoDataFrame  combined IDS dataset with 'ID_O' column
+    excluded_dca_types : list of str   DCA_ID values to drop (e.g. 'other')
+    start_year         : int           first year to include (exclusive: > start_year)
+    end_year           : int           last year to include (inclusive: <= end_year)
     """
-    filename = os.path.basename(input_file)
-    print(f"Loading and preprocessing dataset: {filename}")
-    # dataset = xr.open_dataset(input_file)  # Assume load_data is a function to load the dataset
-    # print('loaded .............')
-    # dataset = drop_unnecessary_vars(dataset)
-    # dataset = rename_variables(dataset)
-    # dataset = reproject_to_wgs84(dataset)
-    # return dataset
+    logging.info(f"apply_study_filters: starting with {len(gdf)} records")
 
-# Helper function to drop unnecessary variables
-def drop_unnecessary_vars(dataset):
-    """Drop unnecessary variables from the dataset."""
-    variables_to_remove = ["x_bnds", "y_bnds"]
-    dataset = dataset.drop_vars([var for var in variables_to_remove if var in dataset.variables])
-    return dataset
+    # --- Split into unique and recurring surveys ---
+    unique_surveys    = gdf[gdf['ID_O'].isnull()].copy()
+    recurring_surveys = gdf[gdf['ID_O'].notnull()].copy()
+    logging.info(f"  Unique surveys: {len(unique_surveys)}, Recurring: {len(recurring_surveys)}")
 
-# Helper function to rename variables
-def rename_variables(dataset):
-    """Rename variables for consistency."""
-    if 'unnamed' in dataset.variables:
-        dataset = dataset.rename({'unnamed': 'layer'})
-    if 'X' in dataset.variables and 'Y' in dataset.variables:
-        dataset = dataset.rename({'X': 'x', 'Y': 'y'})
-    return dataset
+    def _year_type_filter(df):
+        return df[
+            (df['SURVEY_Y'] > start_year) &
+            (df['SURVEY_Y'] <= end_year) &
+            (~df['DCA_ID'].isin(excluded_dca_types))
+        ].copy()
 
-# Helper function to reproject dataset to WGS84
-def reproject_to_wgs84(dataset):
-    """Reproject the dataset to the WGS 84 CRS."""
-    crs_azimuthal_equidistant = "+proj=aeqd +lat_0=52 +lon_0=-97.5 +datum=WGS84 +units=m"
-    crs_wgs84 = 'EPSG:4326'
-    dataset.rio.write_crs(crs_azimuthal_equidistant, inplace=True)
-    return dataset.rio.reproject(crs_wgs84)
+    # --- Filter and size-cap unique surveys ---
+    unique_filtered = _year_type_filter(unique_surveys)
+    logging.info(f"  Unique after year/type filter: {len(unique_filtered)}")
+    unique_filtered = _drop_oversized_polygons(unique_filtered)
+    logging.info(f"  Unique after area filter (≤15 km²): {len(unique_filtered)}")
 
-def apply_tcc_mask(dataset, TCC_path_2017):
+    # --- Filter and size-cap recurring surveys ---
+    recurring_filtered = _year_type_filter(recurring_surveys)
+    logging.info(f"  Recurring after year/type filter: {len(recurring_filtered)}")
+    recurring_filtered = _drop_oversized_polygons(recurring_filtered)
+    logging.info(f"  Recurring after area filter (≤15 km²): {len(recurring_filtered)}")
 
-    # Step 1: Define the path to the TIF file
-    print("Step 1: Get the TIF file...")
-    #TCC_path_2017 = "/Net/Groups/BGI/work_2/ForExD/WP1/Data/nlcd_tcc_CONUS_2017_v2021-4/wp1_nlcd_tcc_conus_2017_v2021_4_20m_4326_cropped_region_08.tif"
+    # Ensure IDs are integers; remove self-pairing rows
+    recurring_filtered['ID_E'] = recurring_filtered['ID_E'].astype(int)
+    recurring_filtered['ID_O'] = recurring_filtered['ID_O'].astype(int)
+    recurring_filtered = recurring_filtered[recurring_filtered['ID_E'] != recurring_filtered['ID_O']]
 
-    # Step 2: Open the entire TIF file
-    print("Step 2: Opening the entire TIF file...")
-    tcc_2017 = rioxarray.open_rasterio(TCC_path_2017, decode_coords="all", masked=True)
+    # Remove pairs where the two observations disagree on disturbance type
+    dca_mismatch    = recurring_filtered[recurring_filtered['DCA_ID'] != recurring_filtered['O_DCA_ID']]
+    invalid_event_ids = set(dca_mismatch['ID_E']).union(set(dca_mismatch['ID_O']))
+    clean_recurring = recurring_filtered[
+        ~recurring_filtered['ID_E'].isin(invalid_event_ids) &
+        ~recurring_filtered['ID_O'].isin(invalid_event_ids)
+    ]
+    logging.info(f"  Recurring after DCA mismatch removal: {len(clean_recurring)}")
 
-    # Step 3: Extract the spatial extent from the NetCDF file
-    print("Step 3: Extracting spatial extent from the NetCDF file...")
-    min_lon, max_lon = dataset['x'].min(), dataset['x'].max()
-    min_lat, max_lat = dataset['y'].min(), dataset['y'].max()
+    # --- Combine and assign unique identifiers ---
+    ids = pd.concat([unique_filtered, clean_recurring], ignore_index=True)
 
-    # Step 4: Select the subset using xarray's indexing capabilities
-    print("Step 4: Selecting the subset using xarray's indexing capabilities...")
-    subset = tcc_2017.sel(x=slice(min_lon, max_lon), y=slice(max_lat, min_lat))
+    # IDX_D uniquely identifies each record: type_year_<geomHash>
+    # Uses first 8 hex chars of SHA-1(WKB) so the ID is stable across
+    # re-runs with different filter parameters (unlike a row index).
+    ids['IDX_D'] = ids.apply(
+        lambda row: (
+            f"{row['DCA_ID']}_{row['SURVEY_Y']}_"
+            f"{hashlib.sha1(row.geometry.wkb).hexdigest()[:8]}"
+        ),
+        axis=1,
+    )
 
-    # Step 5: Calculate the minimum value of the subset
-    print("Step 5: Calculating the minimum value of the subset...")
-    min_value = subset.min() if not subset.isnull().all() else 0
-
-    # Step 6: Calculate the normalized subset
-    print("Step 6: Calculating the normalized subset...")
-    normalized_subset = (subset - min_value) / (subset.max() - min_value) if subset.max() != min_value else subset
-
-    # Step 7: Set values equal to 1 to 0
-    print("Step 7: Setting values equal to 1 to 0...")
-    normalized_subset = normalized_subset.where(normalized_subset != 1, 0)
-
-    # Step 8: Reindex the normalized subset to match the coordinates of dataset_wgs84
-    print("Step 8: Reindexing the normalized subset...")
-    normalized_subset = normalized_subset.reindex(x=dataset.coords['x'], method='nearest')
-    normalized_subset = normalized_subset.reindex(y=dataset.coords['y'], method='nearest')
-
-    # Step 9: Apply masking based on the normalized subset
-    print("Step 9: Applying masking based on the normalized subset...")
-    masked_mc = dataset.where(normalized_subset > 0.3, 0).fillna(0)
-
-    return masked_mc
+    result = gpd.GeoDataFrame(ids, geometry='geometry')
+    logging.info(f"apply_study_filters: finished with {len(result)} records")
+    return result
 
 
-# Function to extract polygons from the dataset
-def extract_polygons_from_mask(masked_mc, filename):
+def _drop_oversized_polygons(gdf, max_km2=15):
+    """Add area column and keep only polygons ≤ max_km2 square kilometres."""
+    gdf = add_area_km2(gdf)
+    return gdf[gdf['area_km2'] <= max_km2]
+
+
+# ==============================================================
+# Area Utilities
+# ==============================================================
+
+def add_area_km2(gdf, col_name='area_km2'):
     """
-    Extract polygons from the masked dataset using a binary mask.
-    
-    Parameters:
-    - masked_mc (xarray.DataArray): The masked data array.
-    - filename (str): Filename used to extract year and tile info.
-    
-    Returns:
-    - GeoDataFrame: A GeoDataFrame containing the extracted polygons.
+    Add a column with polygon area in square kilometres.
+
+    Reprojects to EPSG:3857 (metres) for accurate area calculation, then
+    attaches the result back to the original GeoDataFrame (preserving its CRS).
+
+    Parameters
+    ----------
+    gdf      : GeoDataFrame
+    col_name : str   name of the new area column (default 'area_km2';
+                     S1CD code passes 'area' to match its expected column name)
     """
-    s1_year = extract_year_from_filename(filename)
-    tile_name = filename[13:23]
-    
-    # Get bounds of the dataset
-    min_lon, max_lon, min_lat, max_lat = masked_mc['x'].min().item(), masked_mc['x'].max().item(), masked_mc['y'].min().item(), masked_mc['y'].max().item()
-    
-    # Create a mask and extract polygons
-    transform = Affine.translation(masked_mc.x[0], masked_mc.y[0]) * Affine.scale(masked_mc.x[1] - masked_mc.x[0], masked_mc.y[1] - masked_mc.y[0])
-    mask = (masked_mc['layer'] > 0).astype(np.uint8)
-    shapes = list(rasterio.features.shapes(mask, transform=transform))
-    polygons_list = [shape(geom) for geom, value in shapes if value == 1]
+    if gdf.crs is None or gdf.crs.to_epsg() != 4326:
+        gdf = gdf.to_crs('EPSG:4326')
+    projected = gdf.to_crs('EPSG:3857')
+    gdf = gdf.copy()
+    gdf[col_name] = projected.geometry.area / 1e6
+    return gdf
 
-    # Convert to GeoDataFrame
-    polygons_gdf = gpd.GeoDataFrame(geometry=polygons_list, crs=masked_mc.spatial_ref)
-    polygons_gdf['S1_YEAR'], polygons_gdf['S1_TILE'] = s1_year, tile_name
 
-    return polygons_gdf
+# ==============================================================
+# Utilities used by func_s1cd_preprocessing.py
+# ==============================================================
 
-# Function to filter and save the polygons based on USDA data
-def filter_and_save_polygons(ids_usda_path, polygons_gdf, s1_year, filter_years, filename, target_crs, output_folder):
+def get_tile_basename(filename):
     """
-    Filter polygons based on USDA survey data and spatial intersection, then save to shapefile.
-    
-    Parameters:
-    - ids_usda_path (str): Path to the USDA shapefile.
-    - polygons_gdf (GeoDataFrame): Polygons to be filtered.
-    - s1_year (int): Sentinel-1 year for filtering.
-    - filter_years (int): Number of years to filter around the given year.
-    - filename (str): Input filename for metadata.
-    - target_crs (str): Target CRS.
-    - output_folder (str): Directory to save the resulting shapefile.
-    
-    Returns:
-    - GeoDataFrame: Filtered and merged polygons.
+    Extract the first 10 underscore-separated parts of a Sentinel-1 tile filename.
+    Used to derive a consistent base name for output shapefiles.
+
+    Example: 's1_cd_northamerica_year_2018_tile_EU010M_E040N027T3.nc'
+             → 's1_cd_northamerica_year_2018_tile_EU010M_E040N027T3'
     """
-    ids_usda_gdf = gpd.read_file(ids_usda_path)
-    ids_usda_gdf['geometry'] = ids_usda_gdf['geometry'].buffer(0.005)
-    
-    # Filter USDA data based on year range
-    year_range = (ids_usda_gdf['SURVEY_Y'] >= s1_year - filter_years) & (ids_usda_gdf['SURVEY_Y'] <= s1_year + filter_years)
-    filtered_ids_usda = ids_usda_gdf[year_range]
-    
-    # Spatially join polygons with filtered USDA data
-    intersecting_polygons = gpd.sjoin(polygons_gdf, filtered_ids_usda, how='inner', predicate='intersects')
-
-    # Aggregate polygons and reproject to target CRS
-    merged_polygons = intersecting_polygons.dissolve(by='IDX_D')
-    merged_polygons = merged_polygons.to_crs(target_crs)
-
-    # Save to shapefile
-    os.makedirs(output_folder, exist_ok=True)
-    shapefile_path = os.path.join(output_folder, f"{extract_s1cd_filename_part(filename)}.shp")
-    merged_polygons.to_file(shapefile_path, driver='ESRI Shapefile')
-    print(f"Intersecting polygons saved as shapefile: {shapefile_path}")
-
-    return merged_polygons
+    return '_'.join(filename.split('_')[:10])

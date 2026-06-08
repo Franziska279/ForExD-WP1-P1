@@ -1797,13 +1797,15 @@ def plot_spatial_overlap_histograms(
         t for t in DISTURBANCE_ORDER
         if t in results_df["DCA_ID"].unique()
     ]
-    # First bin [-10, 0) captures exact zeros; subsequent bins are 10 % wide.
-    bins = [-10] + list(np.arange(1, 101, 10))
+    # Zero bin [-20, 1e-9) is 20 units wide — same as all other bins — so the
+    # grey bar is visually the same width as the coloured bars.  The 1e-9
+    # boundary (instead of exactly 0) ensures 0.0 values land in the grey bin.
+    bins = [-20, 1e-9, 20, 40, 60, 80, 100]
 
     # ── Plotting ──────────────────────────────────────────────────
     fig, axes = plt.subplots(1, 2, figsize=(15, 5))
-    axes[0].axvspan(-10, 0, color="grey", alpha=0.3)
-    axes[1].axvspan(-10, 0, color="grey", alpha=0.3)
+    axes[0].axvspan(-20, 0, color="grey", alpha=0.3)
+    axes[1].axvspan(-20, 0, color="grey", alpha=0.3)
 
     hist_kw = dict(
         bins=bins, element="bars", kde=False,
@@ -1842,9 +1844,9 @@ def plot_spatial_overlap_histograms(
         ))
 
     # ── Axes formatting ───────────────────────────────────────────
-    # Tick positions are centred on each 20 %-wide visual group.
-    tick_positions = np.array([0, 20, 40, 60, 80, 100]) - 5
-    tick_labels = [0, 20, 40, 60, 80, 100]
+    # All bins are 20 units wide; ticks centred on each bar (-10, 10, 30, 50, 70, 90).
+    tick_positions = [-10, 10, 30, 50, 70, 90]
+    tick_labels    = [0, 20, 40, 60, 80, 100]
 
     x_label_ids = (
         r"$\frac{A_{\text{IDS} \bigcap \text{S1DM}}}"
@@ -1859,7 +1861,7 @@ def plot_spatial_overlap_histograms(
     axes[0].tick_params(axis="both", which="major", labelsize=16)
     axes[0].grid(True, linestyle="--", alpha=0.8)
     axes[0].set_yticks([0.1, 0.2, 0.3, 0.4, 0.5])
-    axes[0].set_xlim(left=-10, right=101)
+    axes[0].set_xlim(left=-20, right=101)
     axes[0].set_xticks(tick_positions)
     axes[0].set_xticklabels(tick_labels)
     axes[0].legend(handles=legend_ids, loc="upper right", fontsize=16, title_fontsize=18)
@@ -1868,7 +1870,7 @@ def plot_spatial_overlap_histograms(
     axes[1].tick_params(axis="both", which="major", labelsize=16)
     axes[1].grid(True, linestyle="--", alpha=0.8)
     axes[1].set_yticks([0.1, 0.2, 0.3, 0.4, 0.5])
-    axes[1].set_xlim(left=-10, right=101)
+    axes[1].set_xlim(left=-20, right=101)
     axes[1].set_ylabel("")
     axes[1].tick_params(left=False)
     axes[1].set_xticks(tick_positions)
@@ -2077,7 +2079,7 @@ def run_manual_validation(
 
     if _ids_uses_hash_format(ids_file):
         lookup_csv = os.path.join(
-            os.path.dirname(manual_base_folder),
+            os.path.dirname(os.path.normpath(manual_base_folder)),
             "manual_labels_idx_lookup.csv",
         )
         if os.path.exists(lookup_csv):

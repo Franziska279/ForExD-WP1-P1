@@ -5,20 +5,11 @@ src/aggregated_timeseries/
 src/aggregated_timeseries_median/
 data/s*
 data/t*
-results/
-results_clean/
-results/intermediate_results/
-results/timeseries/
-results/radar_results/
-results_test/
-logs/
-timeseries/
-grids/
+results_original/
 figures_tcc*
 results_tcc*
-figures_fin/
-figures_fin_test/
-figures_test/
+
+figures_c*
 
 # Python cache files
 src/__pycache__/*.pyc
@@ -30,6 +21,7 @@ src/.ipynb_checkpoints/
 .scr/
 .venv/
 .env
+environment/.env
 
 # VSCode / PyCharm configs (optional, if you don’t want to track them)
 .vscode/

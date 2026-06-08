@@ -1,140 +1,27 @@
-# import os
-# import geopandas as gpd
-# import pandas as pd
-# import logging
-# from dotenv import load_dotenv
-# from pathlib import Path
-# from func_plots import plot_regions_disturbances
-# from func_file_io import load_data, save_shapefile
-# from func_helper import parse_custom_colors
-# from func_data_preprocessing import (
-#     process_and_merge_disturbances, remove_overlapping_entries, filter_disturbance_data,
-#     keep_overlapping_entries, analyze_overlaps, analyze_and_enrich_overlaps
-# )
+"""
+IDSProcessor — USDA Insect and Disease Survey Data Preparation
+==============================================================
+Author:  Franziska Müller (Uni Leipzig / MPI-BGC)
+Project: ForExD-WP1-P1
 
+Description
+-----------
+Loads and prepares the USDA IDS (Insect and Disease Survey) forest disturbance
+dataset for a given USFS region. The processor runs four steps in sequence:
 
-# class IDSProcessor:
-#     def __init__(self, env_path):
-#         self._set_up_logging()
-#         # Load environment variables and set up paths and parameters
-#         load_dotenv(dotenv_path=env_path)
-#         self.region = os.getenv('REGION')
-#         self.region_id = str(self.region).zfill(2)
-#         self.target_crs = "EPSG:27705"
+  1. load()                         -- read the raw IDS shapefile from disk
+  2. resolve_polygon_overlaps() -- merge fragmented polygons, remove
+                                          temporal/spatial duplicates, and flag
+                                          overlapping multi-year events
+  3. filter_by_study_criteria()        -- restrict to a year range and disturbance
+                                          types of interest, drop large polygons (>15 km²)
+  4. save_and_plot()                   -- write the cleaned dataset as shapefiles
+                                          (original CRS + Equi7 reprojection) and
+                                          generate the study-area overview figure
 
-#         # File paths and configurations based on environment variables
-#         self.region_shape_path = f"{os.getenv('REGION_SHAPE')}S_USA.AdministrativeRegion.shp"
-#         self.ids_region_file_path = f"{os.getenv('IDS_REGIONS')}CONUS_Region{self.region}_dissolved.csv"
-#         self.file_output_path = f"{os.getenv('RESULTS')}/region_{self.region_id}_dca_filtered_ids_usda_polygons.shp"
-#         self.file_equi7_output_path = f"{os.getenv('RESULTS')}/region{self.region_id}_dca_filtered_ids_usda_polygons_espg_27705.shp"
-#         self.figure_output_path = f"{os.getenv('FIGURES')}/p1_f1_disturbances_region_{self.region_id}.png"
-#         self.custom_colors_json = os.getenv('COLORS')
-
-#         # Ensure the directories exist, create them if they don't
-#         os.makedirs(os.path.dirname(self.region_shape_path), exist_ok=True)
-#         os.makedirs(os.path.dirname(self.ids_region_file_path), exist_ok=True)
-#         os.makedirs(os.path.dirname(self.file_output_path), exist_ok=True)
-#         os.makedirs(os.path.dirname(self.file_equi7_output_path), exist_ok=True)
-#         os.makedirs(os.path.dirname(self.figure_output_path), exist_ok=True)
-
-#         # Initialize data as None; will be populated in load_data method
-#         self.data = None
-
-#         logging.info("======================================================================\n >>  IDSProcessor initialized.")
-
-#     def _set_up_logging(self):
-#         """Set up logging to file with timestamp."""
-#         logging.basicConfig(filename='log_ids_processor.log', level=logging.INFO, format='%(asctime)s - %(message)s')
-
-
-#     def load_data(self):
-#         logging.info(f"Loading CSV file for Region {self.region_id}...")
-#         self.data = load_data(self.ids_region_file_path)
-#         logging.info(f"Data loaded successfully. Records: {len(self.data)}")
-#         return self.data
-
-#     def exclude_include_overlapping_entries(self):
-#         logging.info("Processing and cleaning disturbance data...")
-#         self.data = process_and_merge_disturbances(self.data)
-#         self.data = self.data[self.data['SURVEY_YEAR'] > 2009]
-#         logging.info("Filtered data for survey years > 2009.")
-
-#         logging.info("Removing temporal and spatial overlaps...")
-#         gdf_no_overlap = remove_overlapping_entries(self.data, year_range=5)
-#         logging.info(f"Number of records after removing overlaps: {len(gdf_no_overlap)}")
-
-#         # Optional: Keep overlaps if needed for analysis
-#         gdf_overlap = keep_overlapping_entries(self.data, year_range=2)
-#         if gdf_overlap is not None:
-#             logging.info(f"Number of records with detected overlaps: {len(gdf_overlap)}")
-#             gdf_overlap_analyzed = analyze_overlaps(gdf_overlap)
-#             self.data = pd.concat([gdf_no_overlap, gdf_overlap_analyzed], ignore_index=True)
-#         else:
-#             self.data = gdf_no_overlap
-#         logging.info("Analyzing and enriching overlaps completed.")
-
-#         self.data = analyze_and_enrich_overlaps(self.data)
-
-#         # Rename columns to avoid issues with field name normalization
-#         column_renames = {
-#             'SURVEY_YEAR': 'SURVEY_Y',
-#             'DA_Code_USDA': 'DA_C_USDA'
-#         }
-#         self.data = self.data.rename(columns=column_renames)
-#         logging.info("Renamed columns for compatibility.")
-#         return self.data
-
-#     def filter_data(self):
-#         logging.info("Filtering disturbance data...")
-#         excluded_dca_types = ['other', 'multi_damage', 'other_abiotic', 'other_biotic']
-#         self.data = filter_disturbance_data(self.data, excluded_dca_types, start_year=2016, end_year=2020)
-#         logging.info(f"Data filtered successfully. Remaining records: {len(self.data)}")
-#         return self.data
-
-#     def print_status(self):
-#         # Output summary for current data
-#         total_elements = len(self.data)
-#         unique_events = len(self.data['ID_E'].unique())
-#         overlapping_events = total_elements - unique_events
-
-#         logging.info(f"Number of elements: {total_elements}")
-#         logging.info(f"Unique events | Total events: {unique_events} | {total_elements}")
-#         logging.info(f"Overlapping events: {overlapping_events}")
-
-#         print(f"Number of elements: {total_elements}")
-#         print(f"Unique events | Total events: {unique_events} | {total_elements}")
-#         print(f"Overlapping events: {overlapping_events}")
-
-#     def save_and_plot(self):
-#         logging.info("Saving data in original CRS...")
-#         try:
-#             # Save original CRS shapefile
-#             save_shapefile(self.data, self.file_output_path)
-#             logging.info(f"Data saved successfully to {self.file_output_path}")
-#         except Exception as e:
-#             logging.error(f"Error saving original CRS data: {e}")
-
-#         logging.info("Reprojecting data to target CRS and saving...")
-#         try:
-#             # Reproject to target CRS
-#             data_transformed = self.data.to_crs(self.target_crs)
-#             save_shapefile(data_transformed, self.file_equi7_output_path)
-#             logging.info(f"Reprojected data saved successfully to {self.file_equi7_output_path}")
-#         except Exception as e:
-#             logging.error(f"Error reprojecting and saving data: {e}")
-
-#         logging.info("Plotting regions disturbances...")
-#         try:
-#             plot_regions_disturbances(
-#                 self.data,
-#                 self.region_shape_path,
-#                 output_file=self.figure_output_path,
-#                 custom_colors=parse_custom_colors(self.custom_colors_json),
-#                 region_nr=self.region_id
-#             )
-#             logging.info(f"Plot saved to {self.figure_output_path}")
-#         except Exception as e:
-#             logging.error(f"Error during plotting: {e}")
+All file paths are read from the .env file (see environment/.env.example).
+Logging is configured centrally in main.py — do not call basicConfig here.
+"""
 
 import os
 import logging
@@ -142,123 +29,142 @@ import pandas as pd
 import geopandas as gpd
 from dotenv import load_dotenv
 from pathlib import Path
-from func_plots import plot_regions_disturbances
 from func_file_io import load_data, save_shapefile
-from func_helper import parse_custom_colors
+from func_helper import parse_color_map
 from func_data_preprocessing import (
-    rename_columns_and_process_data, merge_and_iterate, filter_disturbance_data,
-    remove_temporal_overlaps, keep_and_analyze_overlaps, filter_and_enrich_overlaps
+    clean_raw_ids_data, merge_fragmented_polygons, apply_study_filters,
+    drop_compound_survey_events, extract_recurring_disturbances, build_overlap_pair_records
 )
+
 
 class IDSProcessor:
     def __init__(self, region_id, env_path):
-        self._set_up_logging()
-        load_dotenv(dotenv_path=env_path)  # Load environment variables
+        load_dotenv(dotenv_path=env_path)
 
-        # Store region info
         self.region_id = str(region_id).zfill(2)
+        # Equi7 North America CRS — used for the reprojected output shapefile
         self.target_crs = os.getenv('EQUI7_NA_EPSG')
 
-        # Load paths from .env
+        # Assemble file paths from .env directory variables and file-name templates
         self.region_shape_path = os.path.join(os.getenv('REGION_SHAPE_DIR'), os.getenv('REGION_SHAPE_FILE'))
         self.ids_region_file_path = os.path.join(os.getenv('IDS_REGIONS_DIR'), os.getenv('IDS_SHAPE_FILE').format(region_id=self.region_id))
         self.file_output_path = os.path.join(os.getenv('RESULTS_DIR'), os.getenv('IDS_FILTERED_FILE').format(region_id=self.region_id))
+        # Reprojected output path derived from the standard output path
         self.file_equi7_output_path = self.file_output_path.replace('.shp', '_espg_27705.shp')
-        self.figure_output_path = os.path.join(os.getenv('FIGURES_DIR'), os.getenv('FIGURE_STUDY_AREA').format(region_id=self.region_id))  # Buffer is a placeholder
-
+        self.figure_output_path = os.path.join(os.getenv('FIGURES_DIR'), os.getenv('FIGURE_STUDY_AREA').format(region_id=self.region_id))
         self.custom_colors_json = os.getenv('COLORS')
 
-        # Ensure required directories exist
-        for path in [self.region_shape_path, self.ids_region_file_path, self.file_output_path, self.file_equi7_output_path, self.figure_output_path]:
+        # Make sure all output directories exist before writing
+        for path in [self.region_shape_path, self.ids_region_file_path,
+                     self.file_output_path, self.file_equi7_output_path, self.figure_output_path]:
             os.makedirs(os.path.dirname(path), exist_ok=True)
 
-        # Initialize data
-        self.data = None
+        self.ids = None
+        logging.info(f"IDSProcessor initialised for Region {self.region_id}")
 
-        logging.info(f">> IDSProcessor initialized for Region {self.region_id}")
+    # ------------------------------------------------------------------
+    # Step 1 — Load raw IDS data
+    # ------------------------------------------------------------------
+    def load(self):
+        """Load the raw IDS shapefile for this region from disk."""
+        logging.info(f"Loading IDS file for Region {self.region_id}: {self.ids_region_file_path}")
+        self.ids = load_data(self.ids_region_file_path)
+        logging.info(f"Loaded {len(self.ids)} records.")
 
-    def _set_up_logging(self):
-        """Set up logging to file with timestamp."""
-        logging.basicConfig(filename='ids_processor.log', level=logging.INFO, format='%(asctime)s - %(message)s')
+    # ------------------------------------------------------------------
+    # Step 2 — Resolve overlapping and fragmented polygons
+    # ------------------------------------------------------------------
+    def resolve_polygon_overlaps(self):
+        """
+        Clean and restructure the raw IDS data in four sub-steps:
+          a) Rename columns (shapefile 10-char limit), severity filter, year filter (>2009)
+          b) Iteratively merge spatially fragmented polygons that share DCA_ID + year
+          c) Remove entries that spatially and temporally overlap within ±5 years
+             (these are likely duplicates across survey years)
+          d) Keep entries with overlaps within ±2 years for separate analysis —
+             these represent the same disturbance recorded multiple times and carry
+             useful year-lag information
+        The non-overlapping and overlapping subsets are then concatenated and enriched.
+        """
+        logging.info("Cleaning and restructuring IDS data...")
 
-    def loading(self):
-        """Loads CSV disturbance data for the given region."""
-        logging.info(f"Loading CSV file for Region {self.region_id}...")
-        self.data = load_data(self.ids_region_file_path)
-        logging.info(f"Data loaded successfully. Records: {len(self.data)}")
-        return self.data
+        # a) Column cleanup and basic filtering
+        ids = clean_raw_ids_data(self.ids)
+        logging.info(f"After column cleanup: {len(ids)} records (removed {len(self.ids) - len(ids)})")
 
-    def exclude_include_overlapping_entries(self):
-        """Filters data, removes spatial & temporal overlaps, and processes disturbances."""
-        logging.info("Processing and cleaning disturbance data...")
+        # b) Merge spatially fragmented polygons (same disturbance, same year, intersecting)
+        ids = merge_fragmented_polygons(ids)
+        ids["ID_E"] = ids.index  # Assign a unique event ID based on the index
+        logging.info(f"After geometry merging: {len(ids)} records")
 
-        # Apply the functions step by step
-        ids = rename_columns_and_process_data(self.data)
-        merged_ids_p = merge_and_iterate(ids)
-        merged_ids_p["ID_E"] = merged_ids_p.index  # Add ID_E column based on the index
+        # c) Remove compound events — polygons overlapping spatially within ±5 survey years
+        unique_surveys = drop_compound_survey_events(ids, year_range=5)
+        logging.info(f"After temporal overlap removal (±5 yrs): {len(unique_surveys)} records remaining")
 
-        gdf_no_overlap = remove_temporal_overlaps(merged_ids_p, year_range=5)
-        logging.info(f"Remove temproal overlaps -  number of records: {len(gdf_no_overlap)}")
-        gdf_overlap = keep_and_analyze_overlaps(merged_ids_p, year_range=2)
+        # d) Separately keep entries with overlaps within ±2 years for year-lag analysis
+        recurring_surveys = extract_recurring_disturbances(ids, year_range=2)
 
-        logging.info(f"Keep temproal overlaps -  number of records: {len(gdf_overlap)}")
-        data = pd.concat([gdf_no_overlap, gdf_overlap], ignore_index=True)
-        
-        data = filter_and_enrich_overlaps(data)
+        if recurring_surveys is not None:
+            logging.info(f"Overlapping records kept for year-lag analysis (±2 yrs): {len(recurring_surveys)}")
+            ids = pd.concat([unique_surveys, recurring_surveys], ignore_index=True)
+        else:
+            logging.info("No overlapping records detected within ±2 years.")
+            ids = unique_surveys
 
-        # Rename columns for compatibility
-        data.rename(columns={'SURVEY_YEA': 'SURVEY_Y', 'DA_Code_USDA': 'DA_C_USDA'}, inplace=True)
+        logging.info(f"After concatenation: {len(ids)} records")
 
-        logging.info(f"Column renaming complete. Final number of records: {len(data)}")
-        self.data = data
-        return self.data
+        # Enrich the overlapping entries with year difference and partner DCA_ID
+        ids = build_overlap_pair_records(ids)
+        logging.info(f"After enrichment: {len(ids)} records")
 
+        # Rename columns to stay within the 10-character shapefile field name limit
+        ids.rename(columns={'SURVEY_YEA': 'SURVEY_Y', 'DA_Code_USDA': 'DA_C_USDA'}, inplace=True)
 
-    def filter_data(self, start_year, end_year, excluded_dca_types):
-        """Filters disturbance data based on user-specified years and types."""
-        logging.info("Filtering disturbance data...")
-        self.data = filter_disturbance_data(self.data, excluded_dca_types, start_year, end_year)
-        logging.info(f"Filtered dataset. Remaining records: {len(self.data)}")
-        return self.data
+        self.ids = ids
+        logging.info(f"Step 2 complete. Final record count: {len(self.ids)}")
 
-    def print_status(self):
-        """Prints and logs summary of dataset."""
-        total_elements = len(self.data)
-        unique_events = len(self.data['ID_E'].unique())
-        overlapping_events = total_elements - unique_events
+    # ------------------------------------------------------------------
+    # Step 3 — Filter to study period and disturbance types
+    # ------------------------------------------------------------------
+    def filter_by_study_criteria(self, start_year, end_year, excluded_dca_types):
+        """
+        Restrict the dataset to the study year range and relevant disturbance types,
+        and drop polygons larger than 15 km² (likely mapping artefacts).
+        """
+        logging.info(f"Filtering to {start_year}–{end_year}, excluding: {excluded_dca_types}")
+        logging.info(f"Records before filter: {len(self.ids)}")
+        self.ids = apply_study_filters(self.ids, excluded_dca_types, start_year, end_year)
+        logging.info(f"Records after filter: {len(self.ids)}")
 
-        logging.info(f"Total Elements: {total_elements}")
-        logging.info(f"Unique Events: {unique_events} | Overlapping Events: {overlapping_events}")
+    # ------------------------------------------------------------------
+    # Utility — print a short dataset summary
+    # ------------------------------------------------------------------
+    def log_summary(self):
+        """Log and print a summary of the current dataset state."""
+        total = len(self.ids)
+        unique = len(self.ids['ID_E'].unique())
+        logging.info(f"Total records: {total} | Unique events: {unique} | Overlapping: {total - unique}")
+        print(f"Total records: {total} | Unique events: {unique} | Overlapping: {total - unique}")
 
-        print(f"Total Elements: {total_elements}")
-        print(f"Unique Events: {unique_events} | Overlapping Events: {overlapping_events}")
-
+    # ------------------------------------------------------------------
+    # Step 4 — Save outputs and generate figure
+    # ------------------------------------------------------------------
     def save_and_plot(self):
-        """Saves dataset and generates disturbance plots."""
-        logging.info("Saving data in original CRS...")
+        """
+        Write two shapefiles (original CRS and Equi7 reprojection) and generate
+        the study-area overview figure showing all disturbance polygons.
+        """
+        # Save in the original CRS (WGS84 / EPSG:4326)
         try:
-            save_shapefile(self.data, self.file_output_path)
-            logging.info(f"Data saved to {self.file_output_path}")
+            save_shapefile(self.ids, self.file_output_path)
+            logging.info(f"Saved (original CRS) → {self.file_output_path}")
         except Exception as e:
-            logging.error(f"Error saving original CRS data: {e}")
+            logging.error(f"Error saving original CRS shapefile: {e}")
 
-        logging.info("Reprojecting data and saving...")
+        # Reproject to Equi7 North America and save
         try:
-            data_transformed = self.data.to_crs(self.target_crs)
-            save_shapefile(data_transformed, self.file_equi7_output_path)
-            logging.info(f"Reprojected data saved to {self.file_equi7_output_path}")
+            ids_equi7 = self.ids.to_crs(self.target_crs)
+            save_shapefile(ids_equi7, self.file_equi7_output_path)
+            logging.info(f"Saved (Equi7 CRS) → {self.file_equi7_output_path}")
         except Exception as e:
-            logging.error(f"Error saving transformed data: {e}")
-
-        logging.info("Generating disturbance plots...")
-        try:
-            plot_regions_disturbances(
-                self.data,
-                self.region_shape_path,
-                output_file=self.figure_output_path,
-                custom_colors=parse_custom_colors(self.custom_colors_json),
-                region_nr=self.region_id
-            )
-            logging.info(f"Plot saved to {self.figure_output_path}")
-        except Exception as e:
-            logging.error(f"Error generating plots: {e}")
+            logging.error(f"Error saving Equi7 shapefile: {e}")

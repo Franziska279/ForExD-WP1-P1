@@ -10,7 +10,7 @@ import xarray as xr
 from equi7grid_lite import Equi7Grid
 from tqdm import tqdm  # For progress bars
 from dotenv import load_dotenv
-from func_helper import load_and_extract_region
+from func_helper import load_region_boundary
 
 
 class Equi7GridCreator:
@@ -100,7 +100,7 @@ class Equi7GridCreator:
         logging.info("Generating Equi7 grid.")
         try:
             grid_system = Equi7Grid(min_grid_size=self.resolution * self.pixel_size)
-            region = load_and_extract_region(self.region_shapefile, self.region_id)
+            region = load_region_boundary(self.region_shapefile, self.region_id)
             grid = grid_system.create_grid(level=0, zone="NA", mask=region)
             grid.to_file(self.grid_filepath)
 

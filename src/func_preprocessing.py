@@ -273,7 +273,10 @@ def preprocess_sentinel_data(idx, logger, path, output_path):
 def calculate_area_and_centroid_meters(gdf):
     """Calculate area in square meters, square kilometers, and convex hull area for a GeoDataFrame."""
     # Set the coordinate reference system (CRS) for the GeoDataFrame to WGS84
-    gdf.crs = 'EPSG:4326'
+    print(gdf.crs)
+    if gdf.crs is None:
+        gdf = gdf.set_crs('EPSG:4326')
+    #gdf.crs = 'EPSG:4326'
     
     # Define the target projection system (e.g., UTM Zone 18N)
     target_crs = 'EPSG:27705'
@@ -306,18 +309,18 @@ def calculate_area_and_centroid_meters(gdf):
     # Return the GeoDataFrame with the new area and convex hull columns
     return gdf
 
-def calculate_size_shift_difference(ids_gdf, refdm_gdf_dissolved, id_col="IDX_D"):
+def calculate_size_shift_difference(ids_gdf, s1dm_gdf_dissolved, id_col="IDX_D"):
     """
     Calculate the centroid shift and size differences between polygons in two GeoDataFrames based on USDA_IDX.
 
-    This function compares two GeoDataFrames (`ids_gdf` and `refdm_gdf_dissolved`) by calculating:
+    This function compares two GeoDataFrames (`ids_gdf` and `s1dm_gdf_dissolved`) by calculating:
     1. The centroid shift between corresponding polygons.
     2. The size difference between the polygons' areas.
     3. The convex hull size difference for each polygon.
 
     Parameters:
     - ids_gdf (GeoDataFrame): GeoDataFrame containing polygons with USDA_IDX and their geometry (including areas).
-    - refdm_gdf_dissolved (GeoDataFrame): GeoDataFrame containing reference polygons with USDA_IDX and their geometry.
+    - s1dm_gdf_dissolved (GeoDataFrame): GeoDataFrame containing reference polygons with USDA_IDX and their geometry.
 
     Returns:
     - result_gdf (GeoDataFrame): A GeoDataFrame containing USDA_IDX, centroid shift, size difference, and geometry.
@@ -325,7 +328,7 @@ def calculate_size_shift_difference(ids_gdf, refdm_gdf_dissolved, id_col="IDX_D"
 
     # Step 1: Calculate area and centroid in meters for both GeoDataFrames
     ids = calculate_area_and_centroid_meters(ids_gdf)
-    refdm = calculate_area_and_centroid_meters(refdm_gdf_dissolved)
+    refdm = calculate_area_and_centroid_meters(s1dm_gdf_dissolved)
 
     # Step 2: Initialize lists to store results
     usda_idx_list = []

@@ -11,7 +11,7 @@ import rioxarray
 from matplotlib.patches import Patch
 from func_plots import plot_region_bounds, plot_tcc_region_bounds
 from func_file_io import load_data, save_shapefile, run_command
-from func_helper import load_and_extract_region
+from func_helper import load_region_boundary
 
 class TCCProcessor:
     """
@@ -86,7 +86,7 @@ class TCCProcessor:
         if not self.__confirm_and_delete(output_file):
             return
         command = f"gdalwarp -t_srs '{crs}' {input_file} {output_file}"
-        run_command(command)
+        run_shell_command(command)
         print("Reprojection completed.")
 
     def __change_resolution(self, input_file, output_file, resolution):
@@ -101,7 +101,7 @@ class TCCProcessor:
         if not self.__confirm_and_delete(output_file):
             return
         command = f"gdalwarp -tr {resolution[0]} {resolution[1]} {input_file} {output_file}"
-        run_command(command)
+        run_shell_command(command)
         print("Resolution change completed.")
 
     def __crop_to_bounds(self, input_file, output_file, minx, miny, maxx, maxy):
@@ -116,7 +116,7 @@ class TCCProcessor:
         if not self.__confirm_and_delete(output_file):
             return
         command = f"gdalwarp -te {minx} {miny} {maxx} {maxy} {input_file} {output_file}"
-        run_command(command)
+        run_shell_command(command)
         print("Cropping completed.")
 
     def __get_region_shape_bounds(self, fig_path):
@@ -126,7 +126,7 @@ class TCCProcessor:
         Returns:
             tuple: Bounds as (minx, miny, maxx, maxy) for cropping.
         """
-        region = load_and_extract_region(self.region_shape_path_epsg4326, self.region_id)
+        region = load_region_boundary(self.region_shape_path_epsg4326, self.region_id)
         bounds = region.total_bounds
         x_min, y_min, x_max, y_max = bounds
 
@@ -229,7 +229,7 @@ class TCCProcessor:
             tif_filepath (str): Path to the TIFF file.
         """
 
-        region = load_and_extract_region(self.region_shape_path_epsg4326, self.region_id)
+        region = load_region_boundary(self.region_shape_path_epsg4326, self.region_id)
         data = rioxarray.open_rasterio(tif_filepath)
         plot_tcc_region_bounds(data, region, self.region_id, fig_path)
 
