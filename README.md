@@ -1,3 +1,5 @@
+![header](header.png)
+
 # ForExD-WP1-P1 — Improved Forest Disturbance Labels via Sentinel-1
 
 **Authors:** Franziska Müller, Laura Eifler, Felix Cremer, Prof. Dr. Gustau Camps-Valls, Prof. Dr. Ana Bastos
@@ -29,6 +31,8 @@ S1CD: Zenodo repository
 ---
 
 ## Pipeline overview
+
+![Methods flowchart](Flowchart_Methods.png)
 
 ```
 main.py --run-ids     → filter and reproject USDA IDS disturbance polygons
