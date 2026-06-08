@@ -61,23 +61,32 @@ main.py --run-plotter → generate all analysis figures and summary statistics
 
 ## Requirements
 
-Python 3.12 and the following packages (tested with conda environment `emp`):
+Python 3.12. Tested with conda environment `emp`. All required packages and their exact versions are listed in `requirements.txt`.
 
-```
-geopandas=1.0.1  shapely=2.0.6  rasterio=1.3.10  rioxarray
-xarray  pandas=2.2.2  numpy=1.26.4  matplotlib  seaborn
-scipy  python-dotenv  tqdm  affine  pyproj
-```
+Key dependencies:
 
-GDAL must be available on `PATH` (used via `gdalwarp` in the TCC step).
+| Package | Version |
+|---|---|
+| geopandas | 1.0.1 |
+| shapely | 2.0.6 |
+| rasterio | 1.3.10 |
+| rioxarray | 0.17.0 |
+| xarray | 2026.1.0 |
+| pandas | 2.2.2 |
+| numpy | 1.26.4 |
+| matplotlib | 3.9.2 |
+| seaborn | 0.13.2 |
+| scipy | 1.14.1 |
+| python-dotenv | 1.0.1 |
+| GDAL | 3.9.2 |
 
-Create the environment:
+Install:
 
 ```bash
-conda create -n emp python=3.12 geopandas=1.0.1 pandas rasterio rioxarray xarray \
-    numpy matplotlib seaborn scipy python-dotenv tqdm affine pyproj -c conda-forge
-conda activate emp
+pip install -r requirements.txt
 ```
+
+GDAL must also be available on `PATH` (used via `gdalwarp` in the TCC step).
 
 ---
 
