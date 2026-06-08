@@ -1,6 +1,6 @@
 ![header](header.png)
 
-# ForExD-WP1-P1 — Improved Forest Disturbance Labels via Sentinel-1
+# ForExD-WP1-P1 — Hybrid forest disturbance classification using Sentinel-1 and inventory data: a case-study for Southeastern USA
 
 **Authors:** Franziska Müller, Laura Eifler, Felix Cremer, Prof. Dr. Gustau Camps-Valls, Prof. Dr. Ana Bastos
 **Affiliation:** Universität Leipzig / MPI for Biogeochemistry
@@ -16,15 +16,19 @@ Global forest ecosystems face unprecedented challenges from fire, wind, drought,
 
 ## Paper & Data
 
-> **Paper:** *[Title]* — *[Journal, Year]*
-> DOI: [to be added]
+> **Paper:** *Hybrid forest disturbance classification using Sentinel-1 and inventory data: a case-study for Southeastern USA*
+> EGUsphere preprint, 2025 — https://egusphere.copernicus.org/preprints/2025/egusphere-2025-4880/
+DOI:  https://doi.org/10.5194/egusphere-2025-4880
 
-> **Data:** 
-IDS full dataset: https://www.fs.usda.gov/science-technology/data-tools-products/fhp-mapping-reporting/detection-surveys  + IDS preprocessed by Eifler et al. (link Github):
-TCC: https://data.fs.usda.gov/geodata/rastergateway/treecanopycover/
-US Region Shape file: https://apps.fs.usda.gov/arcx/rest/services/EDW/EDW_RegionBoundaries_01/MapServer
-Forest Service Regional Boundaries in (https://data.fs.usda.gov/geodata/edw/datasets.php?dsetCategory=boundaries)
-S1CD: Zenodo repository
+> **Data:**
+>
+> | Dataset | Description | Source |
+> |---|---|---|
+> | USDA IDS disturbance polygons | Forest disturbance survey, CONUS | [USDA Forest Health Protection](https://www.fs.usda.gov/science-technology/data-tools-products/fhp-mapping-reporting/detection-surveys) |
+> | IDS preprocessed for Region 8 | Filtered and harmonised IDS labels | [Eifler et al. 2026](https://github.com/lauraeifler/Eifleretal2026_Disturbance_Data_Comparison) |
+> | NLCD Tree Canopy Cover | Annual forest mask rasters, CONUS | [USDA Forest Service](https://data.fs.usda.gov/geodata/rastergateway/treecanopycover/) |
+> | USFS Region 8 boundary | Administrative region shapefile | [USDA Forest Service EDW](https://data.fs.usda.gov/geodata/edw/datasets.php?dsetCategory=boundaries) |
+> | Sentinel-1 change detection tiles | NetCDF tiles, EQUI7 grid, 20 m | Zenodo repository (to be added) |
 
 
 
@@ -198,3 +202,5 @@ ForExD-WP1-P1/
 ## Reproducibility
 
 Results are fully deterministic: tile processing order is fixed alphabetically. The TCC threshold of 0.3 (30 % tree canopy cover) and spatial buffer of 500 m match the values reported in the paper. To reproduce the exact paper results, use the data provided in the data repository linked above.
+
+> **Note:** Due to floating-point precision in the spatial buffer operation (`GeoDataFrame.buffer()`), results may differ from the original paper by up to ~0.3 % of events. This is within the expected range of spatial join noise and does not affect any scientific conclusions.
