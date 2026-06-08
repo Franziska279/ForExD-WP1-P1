@@ -56,7 +56,7 @@ main.py --run-plotter → generate all analysis figures and summary statistics
 
 | Data                     | Description                                                  |
 | ------------------------ | ------------------------------------------------------------ |
-| IDS polygons             | Preprocessed IDS polygons according to [Eifler et al. (2026)](https://github.com/lauraeifler/Eifleretal2026_Disturbance_Data_Comparison) ( Forest Health Protection disturbance survey, CONUS, Region 8 |
+| IDS polygons             | Preprocessed IDS polygons according to [Eifler et al. (2026)](https://github.com/lauraeifler/Eifleretal2026_Disturbance_Data_Comparison), Region 8 |
 | Sentinel-1 SAR tiles     | Change detection NetCDF files, EQUI7 grid, 20 m resolution   |
 | NLCD Tree Canopy Cover   | Annual rasters (CONUS), used as forest mask                  |
 | USFS region boundary     | Administrative region shapefile (Region 8)                   |
