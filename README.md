@@ -24,7 +24,7 @@ Global forest ecosystems face unprecedented challenges from fire, wind, drought,
 >
 > **DOI:** https://doi.org/10.5194/egusphere-2025-4880
 >
-> **Output Data Repository:** Zenodo to be added
+> **Output Data Repository:** [Sentinel-1 Disturbance Map](https://doi.org/10.5281/zenodo.15672487)
 
 > **Input Data:**
 >
@@ -34,7 +34,7 @@ Global forest ecosystems face unprecedented challenges from fire, wind, drought,
 > | IDS preprocessed for Region 8     | Filtered and harmonised IDS labels             | Preprocessing code available at [Eifler et al. (2026)](https://github.com/lauraeifler/Eifleretal2026_Disturbance_Data_Comparison)  |
 > | NLCD Tree Canopy Cover            | Annual forest mask rasters, CONUS              | [USDA Forest Service](https://data.fs.usda.gov/geodata/rastergateway/treecanopycover/) |
 > | USFS Region 8 boundary            | Administrative region shapefile                | [USDA Forest Service EDW](https://data.fs.usda.gov/geodata/edw/datasets.php?dsetCategory=boundaries) (Forest Service Regional Boundaries); also provided in `data/` |
-> | Sentinel-1 change detection tiles | NetCDF tiles, EQUI7 grid, 20 m                 | Zenodo repository (to be added)                              |
+> | Sentinel-1 change detection tiles | NetCDF tiles, EQUI7 grid, 20 m                 | [Satellite-Based Forest Disturbance Dataset from Sentinel-1 SAR (2016–2021)](https://doi.org/10.5281/zenodo.16903909)                             |
 > | Manual validation labels          | GeoJSON polygons digitized from Planet imagery | Provided in `data/manual_planet_labels/`                     |
 
 
@@ -119,7 +119,7 @@ Edit `environment/.env`. Set these paths for your system:
 | --------------------- | ----------------------------------------- | ------------------------------------------------------------ |
 | `FOREXD_DIR`          | **Absolute path to this repository root** | /                                                            |
 | `DATA_DIR`            | Root directory of all input datasets      | --  please set the data sources below accordingly            |
-| `SENTINEL1_TILES_DIR` | Sentinel-1 change detection NetCDF tiles  | Zenodo (see Data above)                                      |
+| `SENTINEL1_TILES_DIR` | Sentinel-1 change detection NetCDF tiles  | [Satellite-Based Forest Disturbance Dataset from Sentinel-1 SAR (2016–2021)](https://doi.org/10.5281/zenodo.16903909)            |
 | `IDS_REGIONS_DIR`     | USDA IDS CONUS table directory            | [Eifler et al. (2026)](https://github.com/lauraeifler/Eifleretal2026_Disturbance_Data_Comparison) (see Data above) |
 | `TCC_DIR`             | NLCD Tree Canopy Cover raster directory   | [USDA Forest Service](https://data.fs.usda.gov/geodata/rastergateway/treecanopycover/) |
 | `REGION_SHAPE_DIR`    | USFS region boundary shapefile directory  | Provided in `data/S_USA.AdministrativeRegion/`               |
