@@ -20,9 +20,9 @@ Global forest ecosystems face unprecedented challenges from fire, wind, drought,
 
 > **Paper:** *Hybrid forest disturbance classification using Sentinel-1 and inventory data: a case-study for Southeastern USA*
 >
-> **EGUsphere preprint, 2025:** https://egusphere.copernicus.org/preprints/2025/egusphere-2025-4880/
+> **NHESS Article, 2026:** [Paper](https://nhess.copernicus.org/articles/26/2785/2026/)
 >
-> **DOI:** https://doi.org/10.5194/egusphere-2025-4880
+> **DOI:** https://doi.org/10.5194/nhess-26-2785-2026
 >
 > **Output Data Repository:** [Sentinel-1 Disturbance Map](https://doi.org/10.5281/zenodo.15672487)
 
