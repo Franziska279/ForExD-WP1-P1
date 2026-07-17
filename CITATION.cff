@@ -6,7 +6,7 @@ authors:
     orcid: "https://orcid.org/0009-0003-5815-1928"
 title: "ForExD-WP1-P1: Code repository for \"Hybrid forest disturbance classification using Sentinel-1 and inventory data: a case-study for Southeastern USA\""
 version: 1.0.0
-date-released: 2026-06-10
+date-released: 2026-06-12
 url: "https://github.com/Franziska279/ForExD-WP1-P1"
 identifiers:
   - type: doi
