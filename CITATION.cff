@@ -10,7 +10,7 @@ date-released: 2026-07-17
 url: "https://github.com/Franziska279/ForExD-WP1-P1"
 identifiers:
   - type: doi
-    value: "10.xxxx/xxxxx"
+    value: "10.5281/zenodo.21416524"
 references:
   - type: article
     title: "Hybrid forest disturbance classification using Sentinel-1 and inventory data: a case-study for Southeastern USA"
