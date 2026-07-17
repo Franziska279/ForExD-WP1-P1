@@ -1,0 +1,181 @@
+{
+    "@context": "https://w3id.org/codemeta/3.0",
+    "@type": [
+        "SoftwareSourceCode",
+        "SoftwareApplication"
+    ],
+    "author": [
+        {
+            "affiliation": {
+                "name": "University Leipzig, Department of Remote Sensing and Earth System Science",
+                "@type": "Organization"
+            },
+            "email": "franziska.mueller@uni-leipzig.de",
+            "familyName": "Müller",
+            "givenName": "Franziska",
+            "identifier": "Franziska279",
+            "@id": "https://github.com/Franziska279",
+            "@type": "Person"
+        },
+        {
+            "schema:author": "https://github.com/Franziska279",
+            "roleName": "Developer",
+            "@type": "Role"
+        }
+    ],
+    "codeRepository": "https://github.com/Franziska279/ForExD-WP1-P1",
+    "dateCreated": "2024-05-10",
+    "dateModified": "2026-06-12",
+    "description": "Forest Disturbance detection and differentiation based on different remote sensing products",
+    "downloadUrl": "https://github.com/Franziska279/ForExD-WP1-P1/releases",
+    "keywords": [
+        "forest disturbance",
+        "SAR  ",
+        "remote sensing",
+        "Sentinel-1",
+        "change detection"
+    ],
+    "license": "https://spdx.org/licenses/MIT",
+    "name": "ForExD-WP1-P1",
+    "programmingLanguage": "Python",
+    "referencePublication": [
+        {
+            "author": [
+                {
+                    "affiliation": {
+                        "name": "University Leipzig",
+                        "@type": "Organization"
+                    },
+                    "email": "franziska.mueller@uni-leipzig.de",
+                    "familyName": "Müller",
+                    "givenName": "Franziska",
+                    "@id": "https://orcid.org/0009-0003-5815-1928",
+                    "@type": "Person"
+                },
+                {
+                    "familyName": "Eifler",
+                    "givenName": "Laura",
+                    "@id": "_:author_reference_2",
+                    "@type": "Person"
+                },
+                {
+                    "familyName": "Cremer",
+                    "givenName": "Felix",
+                    "@id": "_:author_reference_3",
+                    "@type": "Person"
+                },
+                {
+                    "familyName": "Beck",
+                    "givenName": "Pieter",
+                    "@id": "_:author_reference_4",
+                    "@type": "Person"
+                },
+                {
+                    "familyName": "Gustau",
+                    "givenName": "Camps-Valls",
+                    "@id": "_:author_reference_5",
+                    "@type": "Person"
+                },
+                {
+                    "familyName": "Bastos",
+                    "givenName": "Ana",
+                    "@id": "_:author_reference_6",
+                    "@type": "Person"
+                }
+            ],
+            "datePublished": "2026-06-12",
+            "identifier": "10.5194/nhess-26-2785-2026",
+            "name": "Hybrid forest disturbance classification using Sentinel-1 and inventory data: a case-study for Southeastern USA",
+            "url": "https://nhess.copernicus.org/articles/26/2785/2026/",
+            "@type": "ScholarlyArticle"
+        }
+    ],
+    "runtimePlatform": [
+        "Python: 1.0.1",
+        "Conda",
+        "```ForExD-WP1-P1/│   └── .env.example              # Configuration template│   ├── main.py                   # Pipeline entry point│   ├── ids_processor.py          # Stage 1 — IDS filtering│   ├── tcc_processor.py          # Stage 2 — TCC mask preparation│   ├── s1cd_processor.py         # Stage 3 — S1CD matching│   ├── plotter.py                # Stage 4 — figure generation│   └── run_main.sh               # SLURM submission script    ├── manual_planet_labels/     # Manual validation GeoJSON (per event)    ├── manual_labels_idx_lookup.csv  # Mapping of manual folder names to current IDX_D    └── S_USA.AdministrativeRegion/   # USFS region boundary shapefile```"
+    ],
+    "softwareRequirements": [
+        {
+            "name": "geopandas",
+            "version": "==1.0.1",
+            "@type": "SoftwareApplication"
+        },
+        {
+            "name": "shapely",
+            "version": "==2.0.6",
+            "@type": "SoftwareApplication"
+        },
+        {
+            "name": "rasterio",
+            "version": "==1.3.10",
+            "@type": "SoftwareApplication"
+        },
+        {
+            "name": "rioxarray",
+            "version": "==0.17.0",
+            "@type": "SoftwareApplication"
+        },
+        {
+            "name": "xarray",
+            "version": "==2026.1.0",
+            "@type": "SoftwareApplication"
+        },
+        {
+            "name": "pandas",
+            "version": "==2.2.2",
+            "@type": "SoftwareApplication"
+        },
+        {
+            "name": "numpy",
+            "version": "==1.26.4",
+            "@type": "SoftwareApplication"
+        },
+        {
+            "name": "matplotlib",
+            "version": "==3.9.2",
+            "@type": "SoftwareApplication"
+        },
+        {
+            "name": "seaborn",
+            "version": "==0.13.2",
+            "@type": "SoftwareApplication"
+        },
+        {
+            "name": "scipy",
+            "version": "==1.14.1",
+            "@type": "SoftwareApplication"
+        },
+        {
+            "name": "python-dotenv",
+            "version": "==1.0.1",
+            "@type": "SoftwareApplication"
+        },
+        {
+            "name": "tqdm",
+            "version": "==4.66.5",
+            "@type": "SoftwareApplication"
+        },
+        {
+            "name": "affine",
+            "version": "==2.4.0",
+            "@type": "SoftwareApplication"
+        },
+        {
+            "name": "pyproj",
+            "version": "==3.6.1",
+            "@type": "SoftwareApplication"
+        },
+        {
+            "name": "GDAL",
+            "version": "==3.9.2",
+            "@type": "SoftwareApplication"
+        },
+        {
+            "name": "pyogrio",
+            "version": "==0.9.0",
+            "@type": "SoftwareApplication"
+        }
+    ],
+    "issueTracker": "https://api.github.com/repos/Franziska279/ForExD-WP1-P1/issues"
+}
