@@ -214,3 +214,6 @@ ForExD-WP1-P1/
 Results are fully deterministic: tile processing order is fixed alphabetically. The TCC threshold of 0.3 (30 % tree canopy cover) and spatial buffer of 500 m match the values reported in the paper. To reproduce the exact paper results, use the data provided in the data repository linked above.
 
 > **Note:** Due to floating-point precision in the spatial buffer operation (`GeoDataFrame.buffer()`), results may differ from the original paper by up to ~0.3 % of events. This is within the expected range of spatial join noise and does not affect any scientific conclusions.
+
+## Development Notes
+Parts of this codebase were developed with the assistance of GitHub Copilot for debugging and documentation. All scientific logic, methodology, and validation were designed and verified by the authors.
