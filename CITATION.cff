@@ -1,33 +1,32 @@
 cff-version: 1.2.0
 message: "If you use this code/repository, please cite it as below. This citation is for the software only! For the associated research, cite the paper listed under 'references' instead."
-
 authors:
-- family-names: "Müller"
-  given-names: "Franziska"
-  orcid: "https://orcid.org/0009-0003-5815-1928"
-title: title: "ForExD-WP1-P1 — code repository for \"Hybrid forest disturbance classification using Sentinel-1 and inventory data: a case-study for Southeastern USA\""
+  - family-names: "Müller"
+    given-names: "Franziska"
+    orcid: "https://orcid.org/0009-0003-5815-1928"
+title: "ForExD-WP1-P1 — code repository for \"Hybrid forest disturbance classification using Sentinel-1 and inventory data: a case-study for Southeastern USA\""
 version: 1.0.0
 date-released: 2026-06-10
 url: "https://github.com/Franziska279/ForExD-WP1-P1"
 identifiers:
   - type: doi
-
+    value: "10.xxxx/xxxxx"
 references:
   - type: article
     title: "Hybrid forest disturbance classification using Sentinel-1 and inventory data: a case-study for Southeastern USA"
     authors:
-      - family-names: Müller
-        given-names: Franziska
-      - family-names: Eifler
-        given-names: Laura
-      - family-names: Cremer
-        given-names: Felix
-    - family-names: Beck
-        given-names: Pieter
-      - family-names: Camps-Valls
-        given-names: Gustau
-      - family-names: Bastos
-        given-names: Ana
+      - family-names: "Müller"
+        given-names: "Franziska"
+      - family-names: "Eifler"
+        given-names: "Laura"
+      - family-names: "Cremer"
+        given-names: "Felix"
+      - family-names: "Beck"
+        given-names: "Pieter"
+      - family-names: "Camps-Valls"
+        given-names: "Gustau"
+      - family-names: "Bastos"
+        given-names: "Ana"
     year: 2026
     journal: "Natural Hazards and Earth System Sciences"
-    doi: https://doi.org/10.5194/nhess-26-2785-2026
+    doi: "10.5194/nhess-26-2785-2026"
