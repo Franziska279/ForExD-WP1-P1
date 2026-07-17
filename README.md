@@ -1,3 +1,10 @@
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![Python](https://img.shields.io/badge/python-3.12-lightgrey.svg)
+[![Paper DOI](https://img.shields.io/badge/paper-10.5194%2Fnhess--26--2785--2026-pink)](https://doi.org/10.5194/nhess-26-2785-2026)
+![Release](https://img.shields.io/github/v/release/Franziska279/ForExD-WP1-P1?color=success)
+[![DOI](https://zenodo.org/badge/798760712.svg)](https://doi.org/10.5281/zenodo.21416523)
+
+
 ![header](Header.png)
 
 # Hybrid forest disturbance classification using Sentinel-1 and inventory data: a case-study for Southeastern USA
