@@ -9,6 +9,8 @@ title: title: "ForExD-WP1-P1 — code repository for \"Hybrid forest disturbance
 version: 1.0.0
 date-released: 2026-06-10
 url: "https://github.com/Franziska279/ForExD-WP1-P1"
+identifiers:
+  - type: doi
 
 references:
   - type: article
