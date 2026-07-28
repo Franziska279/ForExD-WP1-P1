@@ -31,7 +31,7 @@ Global forest ecosystems face unprecedented challenges from fire, wind, drought,
 >
 > **DOI:** https://doi.org/10.5194/nhess-26-2785-2026
 >
-> **Output Data Repository:** [Sentinel-1 Disturbance Map](https://doi.org/10.5281/zenodo.15672487)
+> **Output Data Repository:** [Sentinel-1 Disturbance Map](https://doi.org/10.5281/zenodo.21643945)
 
 > **Input Data:**
 >
